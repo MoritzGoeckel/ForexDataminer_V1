@@ -24,7 +24,7 @@ namespace NinjaTrader_Client
         Main main;
         private void Form1_Load(object sender, EventArgs e)
         {
-            main = new Main();
+            main = new Main(Application.StartupPath);
             main.uiDataChanged += updateUI;
         }
 

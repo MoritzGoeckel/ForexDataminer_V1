@@ -1,7 +1,9 @@
-﻿using NinjaTrader_Client.Model;
+﻿using Newtonsoft.Json.Linq;
+using NinjaTrader_Client.Model;
 using NinjaTrader_Client.Trader.Model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,11 +16,12 @@ namespace NinjaTrader_Client.Trader
         Database priceDatabase;
         NinjaTraderAPI api;
         SSI_Downloader ssi;
+        Config config;
 
         public delegate void UIDataChangedHandler(UIData uiData);
         public event UIDataChangedHandler uiDataChanged;
 
-        public Main()
+        public Main(string startupPath)
         {
             List<string> instruments = new List<string>();
             instruments.Add("EURUSD");
@@ -37,8 +40,11 @@ namespace NinjaTrader_Client.Trader
             instruments.Add("GBPCHF");
             instruments.Add("GBPJPY");
 
+            config = new Config(startupPath);
 
-            mongodb = new MongoFacade(@"E:\Programmieren\C# Neu\NinjaTrader_Client\Output\Database\mongo\mongod.exe", @"E:\Programmieren\C# Neu\NinjaTrader_Client\Output\Database\data", "nt_trader");
+            //mongodb = new MongoFacade(@"E:\Programmieren\C# Neu\NinjaTrader_Client\Output\Database\mongo\mongod.exe", @"E:\Programmieren\C# Neu\NinjaTrader_Client\Output\Database\data", "nt_trader");
+            mongodb = new MongoFacade(config.mongodbExePath, config.mongodbDataPath, "nt_trader");
+            
             priceDatabase = new Database(mongodb);
             api = new NinjaTraderAPI(instruments);
             ssi = new SSI_Downloader(instruments);
