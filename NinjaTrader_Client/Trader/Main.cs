@@ -75,7 +75,7 @@ namespace NinjaTrader_Client.Trader
             UIData uiData = new UIData();
             uiData.dbErrors = priceDatabase.errors;
             uiData.dataSets = insertedSets++;
-
+            
             if (uiDataChanged != null)
                 uiDataChanged(uiData);
         }

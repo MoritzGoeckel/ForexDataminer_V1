@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
+using Newtonsoft.Json.Linq;
 using NinjaTrader_Client.Model;
 using NinjaTrader_Client.Trader.Model;
 using System;
@@ -76,7 +77,7 @@ namespace NinjaTrader_Client.Trader
         {
             var collection = mongodb.getCollection(instrument + "_" + indicatorName);
 
-            var docsDarunter = collection.Find(Query.LT("timestamp", timestamp + 1)).SetSortOrder(SortBy.Descending("timestamp")).SetLimit(1);
+            var docsDarunter = collection.Find(Query.LT("timestamp", timestamp + 1L)).SetSortOrder(SortBy.Descending("timestamp")).SetLimit(1);
             BsonDocument darunter = docsDarunter.ToList<BsonDocument>()[0];
 
             return new IndicatorData(darunter["timestamp"].AsInt64, darunter["value"].AsDouble);
@@ -85,7 +86,7 @@ namespace NinjaTrader_Client.Trader
         public List<IndicatorData> getIndicator(long startTimestamp, long endTimestamp, string indicatorName, string instrument)
         {
             var collection = mongodb.getCollection(instrument + "_" + indicatorName);
-            var docs = collection.Find(Query.And(Query.LT("timestamp", endTimestamp + 1), Query.GT("timestamp", startTimestamp - 1))).SetSortOrder(SortBy.Ascending("timestamp"));
+            var docs = collection.Find(Query.And(Query.LT("timestamp", endTimestamp + 1L), Query.GT("timestamp", startTimestamp - 1L))).SetSortOrder(SortBy.Ascending("timestamp"));
 
             List<IndicatorData> output = new List<IndicatorData>();
             foreach (BsonDocument doc in docs)
@@ -96,6 +97,45 @@ namespace NinjaTrader_Client.Trader
             return output;
         }
 
+        public BsonDocument getExportData(long startTime)
+        {
+            BsonDocument exportData = new BsonDocument();
+
+            List<MongoCollection<BsonDocument>> list = mongodb.getCollections();
+            foreach (MongoCollection<BsonDocument> collection in list)
+            {
+                if (collection.Name.Contains("system.indexes") == false)
+                {
+                    var docs = collection.Find(Query.GT("timestamp", startTime - 1L)).SetSortOrder(SortBy.Ascending("timestamp"));
+
+                    var array = new BsonArray();
+                    foreach (var item in docs)
+                    {
+                        array.Add(item);
+                    }
+
+                    exportData[collection.Name] = array;
+                }
+            }
+
+            return exportData;
+        }
+
+        public void importData(string data)
+        {
+            BsonDocument doc = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(data);
+            foreach(string name in doc.Names)
+            {
+                mongodb.getCollection(name).Insert(doc[name].AsBsonArray); //Untested
+            }
+
+            /*foreach(string name in doc.Names)
+            {
+                foreach (BsonDocument entry in doc[name].AsBsonArray)
+                    mongodb.getCollection(name).Insert(entry);
+            }*/
+        }
+
         public long getSetsCount()
         {
             long all = 0;
@@ -103,6 +143,25 @@ namespace NinjaTrader_Client.Trader
                 all += collection.Count(); //Could be done more effictient by counting inserts
 
             return all;
+        }
+
+        public long getLastTimestamp()
+        {
+            long lastTimestamp = 0;
+            List<MongoCollection<BsonDocument>> list = mongodb.getCollections();
+            foreach (MongoCollection<BsonDocument> collection in list)
+            {
+                if (collection.Name.Contains("system.indexes") == false)
+                {
+                    var docs = collection.Find(Query.Exists("timestamp")).SetSortOrder(SortBy.Descending("timestamp")).SetLimit(1);
+                    long currentTs = docs.ToList<BsonDocument>()[0]["timestamp"].AsInt64;
+
+                    if (currentTs > lastTimestamp)
+                        lastTimestamp = currentTs;
+                }
+            }
+
+            return lastTimestamp;
         }
 
         public void megrate()

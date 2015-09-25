@@ -14,3 +14,4 @@ E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\bin\Debug\netchart
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\bin\Debug\netchartdir.xml
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\Debug\NinjaTrader_Client.ChartingForm.resources
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\Debug\NinjaTrader_Client.MainForm.resources
+E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\Debug\NinjaTrader_Client.ExportImportForm.resources

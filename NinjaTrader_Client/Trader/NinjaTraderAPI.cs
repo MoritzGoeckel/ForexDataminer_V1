@@ -20,6 +20,12 @@ namespace NinjaTrader_Client.Trader
         public delegate void TickdataArrivedHandler(Tickdata data, string instrument);
         public event TickdataArrivedHandler tickdataArrived;
 
+        private bool connected = false;
+        public bool isConnected()
+        {
+            return connected;
+        }
+
         public NinjaTraderAPI(List<string> instrumentNames)
         {
             instruments = new Dictionary<string,Tickdata>();
@@ -29,7 +35,7 @@ namespace NinjaTrader_Client.Trader
 
 
             ntClient = new Client();
-            if (ntClient.Connected(1) == 0)
+            if (ntClient.Connected(0) == 0)
             {
                 foreach (KeyValuePair<string, Tickdata> pair in instruments)
                     if (ntClient.SubscribeMarketData(pair.Key) != 0)
@@ -37,10 +43,12 @@ namespace NinjaTrader_Client.Trader
 
                 updateDataThread = new Thread(updateData);
                 updateDataThread.Start();
+                connected = true;
             }
             else
             {
-                throw new Exception("Not connected to NT: " + ntClient.Connected(0));
+                connected = false;
+                //throw new Exception("Not connected to NT: " + ntClient.Connected(0));
             }
         }
 
@@ -71,12 +79,15 @@ namespace NinjaTrader_Client.Trader
         {
             this.resume = false;
 
-            foreach (KeyValuePair<string, Tickdata> pair in instruments)
-                if (ntClient.SubscribeMarketData(pair.Key) != 0)
-                    throw new Exception("Can't unsubscribe to " + pair.Key);
+            if (isConnected())
+            {
+                foreach (KeyValuePair<string, Tickdata> pair in instruments)
+                    if (ntClient.SubscribeMarketData(pair.Key) != 0)
+                        throw new Exception("Can't unsubscribe to " + pair.Key);
 
-            if (ntClient.TearDown() != 0)
-                throw new Exception("Can't teardown dll!");
+                if (ntClient.TearDown() != 0)
+                    throw new Exception("Can't teardown dll!");
+            }
         }
     }
 }

@@ -62,5 +62,11 @@ namespace NinjaTrader_Client
             if(MessageBox.Show("Wirklich migrieren?", "", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
                 main.getDatabase().megrate();
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            ExportImportForm eiForm = new ExportImportForm(main.getDatabase());
+            eiForm.Show();
+        }
     }
 }
