@@ -31,7 +31,7 @@ namespace NinjaTrader_Client.Trader
             return new Tickdata(darunter["timestamp"].AsInt64, darunter["last"].AsDouble, darunter["bid"].AsDouble, darunter["ask"].AsDouble);
         }
 
-        public List<Tickdata> getPrice(long startTimestamp, long endTimestamp, string instrument)
+        public List<Tickdata> getPrices(long startTimestamp, long endTimestamp, string instrument)
         {
             var collection = mongodb.getCollection(instrument);
             var docs = collection.Find(Query.And(Query.LT("timestamp", endTimestamp + 1), Query.GT("timestamp", startTimestamp - 1))).SetSortOrder(SortBy.Ascending("timestamp"));
@@ -83,7 +83,7 @@ namespace NinjaTrader_Client.Trader
             return new IndicatorData(darunter["timestamp"].AsInt64, darunter["value"].AsDouble);
         }
 
-        public List<IndicatorData> getIndicator(long startTimestamp, long endTimestamp, string indicatorName, string instrument)
+        public List<IndicatorData> getIndicators(long startTimestamp, long endTimestamp, string indicatorName, string instrument)
         {
             var collection = mongodb.getCollection(instrument + "_" + indicatorName);
             var docs = collection.Find(Query.And(Query.LT("timestamp", endTimestamp + 1L), Query.GT("timestamp", startTimestamp - 1L))).SetSortOrder(SortBy.Ascending("timestamp"));
@@ -123,16 +123,24 @@ namespace NinjaTrader_Client.Trader
 
         public void importData(string data)
         {
+            var options = new MongoInsertOptions() { Flags = InsertFlags.ContinueOnError };
+
             BsonDocument doc = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(data);
             foreach(string name in doc.Names)
             {
-                mongodb.getCollection(name).Insert(doc[name].AsBsonArray); //Untested
+                var result = mongodb.getCollection(name).InsertBatch(doc[name].AsBsonArray, options);
+                    //.Insert(doc[name].AsBsonArray); //Untested
             }
 
-            /*foreach(string name in doc.Names)
+            /*int errors = 0;
+            foreach(string name in doc.Names)
             {
                 foreach (BsonDocument entry in doc[name].AsBsonArray)
-                    mongodb.getCollection(name).Insert(entry);
+                    try
+                    {
+                        mongodb.getCollection(name).Insert(entry);
+                    }
+                    catch { errors++;  }
             }*/
         }
 

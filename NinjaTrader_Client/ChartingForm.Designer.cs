@@ -34,7 +34,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(473, 364);
+            this.ClientSize = new System.Drawing.Size(1334, 692);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "ChartingForm";
             this.Text = "ChartingForm";
             this.Load += new System.EventHandler(this.ChartingForm_Load);

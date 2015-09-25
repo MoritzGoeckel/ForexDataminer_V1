@@ -91,7 +91,7 @@ namespace NinjaTrader_Client
 
                 database.importData(content);
                 textBox_now.Text = database.getLastTimestamp().ToString();
-                MessageBox.Show("Import done");
+                MessageBox.Show("Import done.");
             }
             else
                 MessageBox.Show("Please select a file to import");

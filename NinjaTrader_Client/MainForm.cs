@@ -54,7 +54,7 @@ namespace NinjaTrader_Client
         private void button2_Click(object sender, EventArgs e)
         {
             ChartingForm cf = new ChartingForm(main.getDatabase());
-            cf.Show();
+            cf.ShowDialog();
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -66,7 +66,7 @@ namespace NinjaTrader_Client
         private void button4_Click(object sender, EventArgs e)
         {
             ExportImportForm eiForm = new ExportImportForm(main.getDatabase());
-            eiForm.Show();
+            eiForm.ShowDialog();
         }
     }
 }
