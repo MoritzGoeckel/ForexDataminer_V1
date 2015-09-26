@@ -44,6 +44,7 @@ namespace NinjaTrader_Client
             foreach(TradePosition p in list)
             {
                 result += p.getDifference();
+                listBox1.Items.Add("Change: " + Math.Round(p.getDifference(), 7) + "\t Total: " + Math.Round(result, 7));
             }
 
             //Output

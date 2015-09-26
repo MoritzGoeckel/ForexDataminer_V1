@@ -13,29 +13,53 @@ namespace NinjaTrader_Client.Trader.Strategies
             
         }
 
+        private long pauseTil = 0;
         public override void doTick()
         {
             double ssi = database.getIndicator(api.getNow(), "ssi-mt4", instrument).value;
-            if(ssi > 0.2d)
-            {
-                if (api.getShortPosition() == null)
-                    api.openShort();
-            }
 
-            if(ssi < -0.2d)
+            if (api.getNow() > pauseTil)
             {
-                if (api.getLongPosition() == null)
-                    api.openLong();
+                if (ssi > 0.2d)
+                {
+                    if (api.getShortPosition() == null)
+                        api.openShort();
+                }
+
+                if (ssi < -0.2d)
+                {
+                    if (api.getLongPosition() == null)
+                        api.openLong();
+                }
             }
 
             if (ssi > -0.15d && ssi < 0.15d)
                 api.closePositions();
 
-            if (api.getLongPosition() != null && api.getAsk() - api.getLongPosition().priceOpen >= 0.0005)
+            if (api.getLongPosition() != null && api.getAsk() - api.getLongPosition().priceOpen >= 0.003)
+            {
                 api.closePositions();
+                pauseTil = api.getNow() + 1000 * 60 * 10; 
+            }
 
-            if (api.getShortPosition() != null && api.getShortPosition().priceOpen - api.getBid() >= 0.0005)
+            if (api.getShortPosition() != null && api.getShortPosition().priceOpen - api.getBid() >= 0.003)
+            {
                 api.closePositions();
+                pauseTil = api.getNow() + 1000 * 60 * 10; 
+            }
+
+            //Verhindere starkes minus durch pausieren bei -5 pips
+            if (api.getLongPosition() != null && api.getAsk() - api.getLongPosition().priceOpen <= -0.003)
+            {
+                api.closePositions();
+                pauseTil = api.getNow() + 1000 * 60 * 60; 
+            }
+
+            if (api.getShortPosition() != null && api.getShortPosition().priceOpen - api.getBid() <= -0.003)
+            {
+                api.closePositions();
+                pauseTil = api.getNow() + 1000 * 60 * 60; 
+            }
         }
     }
 }
