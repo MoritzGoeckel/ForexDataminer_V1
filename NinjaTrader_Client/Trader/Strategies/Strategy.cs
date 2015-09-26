@@ -19,5 +19,6 @@ namespace NinjaTrader_Client.Trader
         }
 
         public abstract void doTick();
+        public abstract string getName();
     }
 }

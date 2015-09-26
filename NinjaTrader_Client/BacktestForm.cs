@@ -22,13 +22,16 @@ namespace NinjaTrader_Client
             this.database = database;
         }
 
+        int backtestHours = 48;
+        string pair = "EURUSD";
+
         private void BacktestForm_Load(object sender, EventArgs e)
         {
             long endTimestamp = database.getLastTimestamp();
-            long startTimestamp = endTimestamp - (48 * 60 * 60 * 1000);
+            long startTimestamp = endTimestamp - (backtestHours * 60 * 60 * 1000);
 
-            BacktestTradingAPI api = new BacktestTradingAPI(startTimestamp, database, "EURUSD");
-            Strategy strat = new SSI_Strategy(database, api, "EURUSD");
+            BacktestTradingAPI api = new BacktestTradingAPI(startTimestamp, database, pair);
+            Strategy strat = new SSI_Strategy(database, api, pair);
 
             long currentTimestamp = startTimestamp;
             while(currentTimestamp < endTimestamp)
@@ -40,18 +43,32 @@ namespace NinjaTrader_Client
             }
 
             var list = api.getHistory(); 
-            double result = 0;
+            double result = 0, drawdown = 99999999d;
             foreach(TradePosition p in list)
             {
                 result += p.getDifference();
-                listBox1.Items.Add("Change: " + Math.Round(p.getDifference(), 7) + "\t Total: " + Math.Round(result, 7));
+
+                if(result < drawdown)
+                    drawdown = result;
+
+                listBox1.Items.Add((p.type == TradePosition.PositionType.longPosition ? "L" : "S") + "   Change: " + Math.Round(p.getDifference(), 7) + "\t Total: " + Math.Round(result, 7));
             }
+
+            label_info.Text = "Gained Pips: \t" + result + Environment.NewLine +
+                "Positions: \t" + list.Count + Environment.NewLine +
+                "Positions / day: \t" + (double)list.Count / (double)backtestHours * 24 + Environment.NewLine +
+                "Pips / day: \t" + result / (double)backtestHours * 24d + Environment.NewLine +
+                "Drawdown: \t" + drawdown + Environment.NewLine
+                + Environment.NewLine +
+                "Pair: \t" + pair + Environment.NewLine +
+                "Period in h: \t" + backtestHours + Environment.NewLine + 
+                "Strategy: " + strat.getName();
 
             //Output
             //Grafisch aufbereiten
             //(Pricechart, in/out)
-
-            int i = 0;
+            ChartingForm chartingForm = new ChartingForm(database, api.getHistory());
+            chartingForm.Show();
         }
     }
 }
