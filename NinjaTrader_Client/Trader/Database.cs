@@ -216,7 +216,7 @@ namespace NinjaTrader_Client.Trader
                     collection.Remove(Query.LT("timestamp", 1442883104095));
             }*/
 
-            int i = 0;
+            //remove bid and ask == 0
         }
     }
 }

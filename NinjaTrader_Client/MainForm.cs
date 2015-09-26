@@ -68,5 +68,11 @@ namespace NinjaTrader_Client
             ExportImportForm eiForm = new ExportImportForm(main.getDatabase());
             eiForm.ShowDialog();
         }
+
+        private void backtest_btn_Click(object sender, EventArgs e)
+        {
+            BacktestForm backtestForm = new BacktestForm(main.getDatabase());
+            backtestForm.ShowDialog();
+        }
     }
 }
