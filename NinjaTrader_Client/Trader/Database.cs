@@ -128,7 +128,11 @@ namespace NinjaTrader_Client.Trader
             BsonDocument doc = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(data);
             foreach(string name in doc.Names)
             {
-                var result = mongodb.getCollection(name).InsertBatch(doc[name].AsBsonArray, options);
+                try
+                {
+                    var result = mongodb.getCollection(name).InsertBatch(doc[name].AsBsonArray, options);
+                }
+                catch { }
                     //.Insert(doc[name].AsBsonArray); //Untested
             }
 

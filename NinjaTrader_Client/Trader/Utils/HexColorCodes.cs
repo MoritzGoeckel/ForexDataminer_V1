@@ -17,7 +17,10 @@ namespace NinjaTrader_Client.Trader.Utils
         public static int strongGreen = 0x5dff4f;
         public static int violett = 0xff00ff;
         public static int pink = 0xf05ba2;
-        public static int grey = 0xe2e2e2;
+        public static int grey = 0xe0e0e1;
         public static int white = 0xffffff;
+
+        public static int lossRed = 0xf84525;
+        public static int winGreen = 0x12c20a;
     }
 }

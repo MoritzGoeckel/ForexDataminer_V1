@@ -18,17 +18,17 @@ namespace NinjaTrader_Client
     public partial class ChartingForm : Form
     {
         Database database;
-        public ChartingForm(Database database)
-        {
-            InitializeComponent();
-            this.database = database;
-        }
-
         private List<TradePosition> historicPositions;
-        public ChartingForm(Database database, List<TradePosition> historicPositions)
+
+        private long timestampStart, timestampEnd;
+
+        public ChartingForm(Database database, List<TradePosition> historicPositions, long timestampStart, long timestampEnd)
         {
             InitializeComponent();
             this.database = database;
+            this.historicPositions = historicPositions;
+            this.timestampEnd = timestampEnd;
+            this.timestampStart = timestampStart;
         }
 
         WinChartViewer upperChart;
@@ -46,7 +46,7 @@ namespace NinjaTrader_Client
             if (historicPositions != null)
                 sc.addHistoricPositions(historicPositions);
 
-            sc.drawPriceChartWithSSI(upperChart, this.Width, this.Height, "EURUSD", database.getLastTimestamp() - 1000 * 60 * 60 * 48, Timestamp.getNow());
+            sc.drawPriceChartWithSSI(upperChart, this.Width, this.Height, "EURUSD", timestampStart, timestampEnd);
         }
     }
 }

@@ -87,8 +87,6 @@
     <Compile Include="Trader\Model\TradePosition.cs" />
     <Compile Include="Trader\Strategies\Strategy.cs" />
     <Compile Include="Trader\Model\Config.cs" />
-    <Compile Include="Trader\Networking\Client.cs" />
-    <Compile Include="Trader\Networking\Server.cs" />
     <Compile Include="Trader\Main.cs" />
     <Compile Include="Trader\Model\IndicatorData.cs" />
     <Compile Include="Trader\Model\Tickdata.cs" />

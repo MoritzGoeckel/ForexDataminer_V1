@@ -69,7 +69,7 @@ namespace NinjaTrader_Client.Trader
             oszilator_layer.setUseYAxis2();
 
             price_layer.setLineWidth(1);
-            oszilator_layer.setLineWidth(2);
+            oszilator_layer.setLineWidth(1);
 
             oszilator_layer.setDataCombineMethod(Chart.Side);
 
@@ -100,12 +100,6 @@ namespace NinjaTrader_Client.Trader
                 index++;
             }
 
-            if(history != null)
-            {
-                //???
-                //Draw History on the price_layer
-            }
-
             // Add 3 data series to the line layer
             price_layer.addDataSet(asks, HexColorCodes.blue, "Ask");
             price_layer.addDataSet(bids, HexColorCodes.green, "Bid");
@@ -117,6 +111,22 @@ namespace NinjaTrader_Client.Trader
             // The x-coordinates for the line layer
             price_layer.setXData(timestamps);
             oszilator_layer.setXData(timestamps);
+
+            c.layoutAxes();
+
+            //Draw history if possible
+            if (history != null)
+            {
+                foreach (TradePosition position in history)
+                {
+                    int lineColor = (position.getDifference() > 0 ? HexColorCodes.winGreen : HexColorCodes.lossRed);
+
+                    Line l = c.addLine(c.getXCoor(position.timestampOpen), c.getYCoor(position.priceOpen),
+                        c.getXCoor(position.timestampClose), c.getYCoor(position.priceClose), lineColor, 4);
+
+                    l.setZOrder(99999);
+                }
+            }
 
             // Output the chart
             viewer.Chart = c;

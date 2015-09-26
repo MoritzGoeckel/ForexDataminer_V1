@@ -22,7 +22,7 @@ namespace NinjaTrader_Client
             this.database = database;
         }
 
-        int backtestHours = 48;
+        int backtestHours = 96;
         string pair = "EURUSD";
 
         private void BacktestForm_Load(object sender, EventArgs e)
@@ -54,11 +54,11 @@ namespace NinjaTrader_Client
                 listBox1.Items.Add((p.type == TradePosition.PositionType.longPosition ? "L" : "S") + "   Change: " + Math.Round(p.getDifference(), 7) + "\t Total: " + Math.Round(result, 7));
             }
 
-            label_info.Text = "Gained Pips: \t" + result + Environment.NewLine +
+            label_info.Text = "Gained Pips: \t" + Math.Round(result * 10000, 2) + Environment.NewLine +
                 "Positions: \t" + list.Count + Environment.NewLine +
-                "Positions / day: \t" + (double)list.Count / (double)backtestHours * 24 + Environment.NewLine +
-                "Pips / day: \t" + result / (double)backtestHours * 24d + Environment.NewLine +
-                "Drawdown: \t" + drawdown + Environment.NewLine
+                "Positions / day: \t" + Math.Round((double)list.Count / (double)backtestHours * 24d, 2) + Environment.NewLine +
+                "Pips / day: \t" + Math.Round(result * 10000 / (double)backtestHours * 24d, 2) + Environment.NewLine +
+                "Drawdown: \t" + Math.Round(drawdown * 10000, 2) + Environment.NewLine
                 + Environment.NewLine +
                 "Pair: \t" + pair + Environment.NewLine +
                 "Period in h: \t" + backtestHours + Environment.NewLine + 
@@ -67,7 +67,7 @@ namespace NinjaTrader_Client
             //Output
             //Grafisch aufbereiten
             //(Pricechart, in/out)
-            ChartingForm chartingForm = new ChartingForm(database, api.getHistory());
+            ChartingForm chartingForm = new ChartingForm(database, api.getHistory(), database.getLastTimestamp() - 1000 * 60 * 60 * backtestHours, database.getLastTimestamp());
             chartingForm.Show();
         }
     }
