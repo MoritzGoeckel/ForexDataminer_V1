@@ -52,23 +52,35 @@ namespace NinjaTrader_Client.Trader
 
         public override bool closePositions()
         {
+           return closeLong() || closeShort();
+        }
+
+        public override bool closeLong()
+        {
             if (lastLongPosition != null)
             {
                 lastLongPosition.timestampClose = now;
                 lastLongPosition.priceClose = database.getPrice(now, instrument).bid;
                 oldPositions.Add(lastLongPosition);
                 lastLongPosition = null;
+                return true;
             }
+            else
+                return false;
+        }
 
+        public override bool closeShort()
+        {
             if (lastShortPosition != null)
             {
                 lastShortPosition.timestampClose = now;
                 lastShortPosition.priceClose = database.getPrice(now, instrument).ask;
                 oldPositions.Add(lastShortPosition);
                 lastShortPosition = null;
+                return true;
             }
-
-            return true;
+            else
+                return false;
         }
 
         public override double getBid()

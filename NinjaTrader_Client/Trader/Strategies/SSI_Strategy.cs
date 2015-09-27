@@ -18,6 +18,11 @@ namespace NinjaTrader_Client.Trader.Strategies
             return "SSI-Strategy";
         }
 
+        public override string getCustomResults()
+        {
+            return "";
+        }
+
         private long pauseTil = 0;
         public override void doTick()
         {

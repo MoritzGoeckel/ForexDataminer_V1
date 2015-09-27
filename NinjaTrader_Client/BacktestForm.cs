@@ -31,7 +31,8 @@ namespace NinjaTrader_Client
             long startTimestamp = endTimestamp - (backtestHours * 60 * 60 * 1000);
 
             BacktestTradingAPI api = new BacktestTradingAPI(startTimestamp, database, pair);
-            Strategy strat = new SSI_Strategy(database, api, pair);
+            //Strategy strat = new SSI_Strategy(database, api, pair);
+            Strategy strat = new FastMovement_Strategy(database, api, pair);
 
             long currentTimestamp = startTimestamp;
             while(currentTimestamp < endTimestamp)
@@ -75,11 +76,13 @@ namespace NinjaTrader_Client
                 "Pips / Position:\t" + Math.Round(profit * 10000d / (double)positions.Count, 2) + Environment.NewLine +
                 "Win Positions:\t" + Math.Round((double)winPositions / (double)positions.Count, 2) + Environment.NewLine +
                 "Long Positions:\t" + Math.Round((double)longPositions / (double)positions.Count, 2) + Environment.NewLine +
-                "Drawdown:\t" + Math.Round(drawdown * 10000, 2) + Environment.NewLine
-                + Environment.NewLine +
+                "Drawdown:\t" + Math.Round(drawdown * 10000, 2) + Environment.NewLine +
+                Environment.NewLine +
                 "Pair:\t" + pair + Environment.NewLine +
                 "Time (h):\t" + backtestHours + Environment.NewLine + 
-                "Strategy:\t" + strat.getName();
+                "Strategy:\t" + strat.getName() + Environment.NewLine + 
+                Environment.NewLine +
+                strat.getCustomResults();
 
             //Output
             //Grafisch aufbereiten

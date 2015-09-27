@@ -11,7 +11,12 @@ namespace NinjaTrader_Client.Trader
     {
         public abstract bool openLong();
         public abstract bool openShort();
+
         public abstract bool closePositions();
+
+        public abstract bool closeShort();
+        public abstract bool closeLong();
+
         public abstract double getBid();
         public abstract double getAsk();
         public abstract long getNow();

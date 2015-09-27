@@ -47,8 +47,11 @@ namespace NinjaTrader_Client
 
         private void button1_Click(object sender, EventArgs e)
         {
-            button1.Enabled = false;
-            main.startDownloadingUpdates();
+            if(MessageBox.Show("Start updating?", "", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
+            {
+                button1.Enabled = false;
+                main.startDownloadingUpdates();
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
