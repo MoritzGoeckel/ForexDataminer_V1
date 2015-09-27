@@ -22,7 +22,7 @@ namespace NinjaTrader_Client
             this.database = database;
         }
 
-        int backtestHours = 96;
+        int backtestHours = 48;
         string pair = "EURUSD";
 
         private void BacktestForm_Load(object sender, EventArgs e)
@@ -41,28 +41,45 @@ namespace NinjaTrader_Client
 
                 currentTimestamp += 1000 * 20;
             }
+            api.closePositions();
 
-            var list = api.getHistory(); 
-            double result = 0, drawdown = 99999999d;
-            foreach(TradePosition p in list)
+            string tradesStr = "";
+            var positions = api.getHistory(); 
+            double profit = 0, drawdown = 99999999d;
+
+            int winPositions = 0;
+            int longPositions = 0;
+
+            foreach(TradePosition p in positions)
             {
-                result += p.getDifference();
+                profit += p.getDifference();
 
-                if(result < drawdown)
-                    drawdown = result;
+                if(profit < drawdown)
+                    drawdown = profit;
 
-                listBox1.Items.Add((p.type == TradePosition.PositionType.longPosition ? "L" : "S") + "   Change: " + Math.Round(p.getDifference(), 7) + "\t Total: " + Math.Round(result, 7));
+                if (p.type == TradePosition.PositionType.longPosition)
+                    longPositions++;
+
+                if (p.getDifference() > 0)
+                    winPositions++;
+
+                tradesStr += (p.type == TradePosition.PositionType.longPosition ? "L" : "S") + " d: " + Math.Round(p.getDifference(), 7) + "\t Total: " + Math.Round(profit, 7) + Environment.NewLine;
             }
 
-            label_info.Text = "Gained Pips: \t" + Math.Round(result * 10000, 2) + Environment.NewLine +
-                "Positions: \t" + list.Count + Environment.NewLine +
-                "Positions / day: \t" + Math.Round((double)list.Count / (double)backtestHours * 24d, 2) + Environment.NewLine +
-                "Pips / day: \t" + Math.Round(result * 10000 / (double)backtestHours * 24d, 2) + Environment.NewLine +
-                "Drawdown: \t" + Math.Round(drawdown * 10000, 2) + Environment.NewLine
+            label_trades.Text = tradesStr;
+
+            label_info.Text = "Gained Pips: \t" + Math.Round(profit * 10000, 2) + Environment.NewLine +
+                "Positions:\t" + positions.Count + Environment.NewLine +
+                "Positions / day:\t" + Math.Round((double)positions.Count / (double)backtestHours * 24d, 2) + Environment.NewLine +
+                "Pips / day:\t" + Math.Round(profit * 10000d / (double)backtestHours * 24d, 2) + Environment.NewLine +
+                "Pips / Position:\t" + Math.Round(profit * 10000d / (double)positions.Count, 2) + Environment.NewLine +
+                "Win Positions:\t" + Math.Round((double)winPositions / (double)positions.Count, 2) + Environment.NewLine +
+                "Long Positions:\t" + Math.Round((double)longPositions / (double)positions.Count, 2) + Environment.NewLine +
+                "Drawdown:\t" + Math.Round(drawdown * 10000, 2) + Environment.NewLine
                 + Environment.NewLine +
-                "Pair: \t" + pair + Environment.NewLine +
-                "Period in h: \t" + backtestHours + Environment.NewLine + 
-                "Strategy: " + strat.getName();
+                "Pair:\t" + pair + Environment.NewLine +
+                "Time (h):\t" + backtestHours + Environment.NewLine + 
+                "Strategy:\t" + strat.getName();
 
             //Output
             //Grafisch aufbereiten

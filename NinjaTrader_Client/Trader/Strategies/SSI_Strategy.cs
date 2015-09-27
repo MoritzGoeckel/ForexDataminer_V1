@@ -38,10 +38,13 @@ namespace NinjaTrader_Client.Trader.Strategies
                 }
             }
 
-            if (ssi > -0.15d && ssi < 0.15d)
+            if (api.getLongPosition() != null && ssi > 0.1d)
                 api.closePositions();
 
-            if (api.getLongPosition() != null && api.getAsk() - api.getLongPosition().priceOpen >= 0.003)
+            if (api.getShortPosition() != null && ssi < -0.1d)
+                api.closePositions();
+
+            /*if (api.getLongPosition() != null && api.getAsk() - api.getLongPosition().priceOpen >= 0.003)
             {
                 api.closePositions();
                 pauseTil = api.getNow() + 1000 * 60 * 10; 
@@ -51,16 +54,16 @@ namespace NinjaTrader_Client.Trader.Strategies
             {
                 api.closePositions();
                 pauseTil = api.getNow() + 1000 * 60 * 10; 
-            }
+            }*/
 
             //Verhindere starkes minus durch pausieren bei -5 pips
-            if (api.getLongPosition() != null && api.getAsk() - api.getLongPosition().priceOpen <= -0.003)
+            if (api.getLongPosition() != null && api.getAsk() - api.getLongPosition().priceOpen <= -0.005)
             {
                 api.closePositions();
                 pauseTil = api.getNow() + 1000 * 60 * 60; 
             }
 
-            if (api.getShortPosition() != null && api.getShortPosition().priceOpen - api.getBid() <= -0.003)
+            if (api.getShortPosition() != null && api.getShortPosition().priceOpen - api.getBid() <= -0.005)
             {
                 api.closePositions();
                 pauseTil = api.getNow() + 1000 * 60 * 60; 

@@ -78,7 +78,7 @@ namespace NinjaTrader_Client.Trader
             var collection = mongodb.getCollection(instrument + "_" + indicatorName);
 
             var docsDarunter = collection.Find(Query.LT("timestamp", timestamp + 1L)).SetSortOrder(SortBy.Descending("timestamp")).SetLimit(1);
-            BsonDocument darunter = docsDarunter.ToList<BsonDocument>()[0];
+            BsonDocument darunter = docsDarunter.ToList<BsonDocument>()[0]; //Will throw interrupt when the timestamp is to early in history. Should be handled ???
 
             return new IndicatorData(darunter["timestamp"].AsInt64, darunter["value"].AsDouble);
         }
@@ -163,7 +163,7 @@ namespace NinjaTrader_Client.Trader
             List<MongoCollection<BsonDocument>> list = mongodb.getCollections();
             foreach (MongoCollection<BsonDocument> collection in list)
             {
-                if (collection.Name.Contains("system.indexes") == false)
+                if (collection.Name.Contains("system.indexes") == false && collection.Name.Contains("_") == false)
                 {
                     var docs = collection.Find(Query.Exists("timestamp")).SetSortOrder(SortBy.Descending("timestamp")).SetLimit(1);
                     long currentTs = docs.ToList<BsonDocument>()[0]["timestamp"].AsInt64;

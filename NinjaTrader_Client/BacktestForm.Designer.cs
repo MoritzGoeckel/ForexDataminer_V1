@@ -28,17 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.listBox1 = new System.Windows.Forms.ListBox();
             this.label_info = new System.Windows.Forms.Label();
+            this.label_trades = new System.Windows.Forms.Label();
             this.SuspendLayout();
-            // 
-            // listBox1
-            // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(12, 12);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(215, 316);
-            this.listBox1.TabIndex = 0;
             // 
             // label_info
             // 
@@ -50,13 +42,22 @@
             this.label_info.TabIndex = 1;
             this.label_info.Text = "label1";
             // 
+            // label_trades
+            // 
+            this.label_trades.AutoSize = true;
+            this.label_trades.Location = new System.Drawing.Point(12, 12);
+            this.label_trades.Name = "label_trades";
+            this.label_trades.Size = new System.Drawing.Size(35, 13);
+            this.label_trades.TabIndex = 2;
+            this.label_trades.Text = "label1";
+            // 
             // BacktestForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(517, 345);
+            this.Controls.Add(this.label_trades);
             this.Controls.Add(this.label_info);
-            this.Controls.Add(this.listBox1);
             this.Name = "BacktestForm";
             this.Text = "BacktestForm";
             this.Load += new System.EventHandler(this.BacktestForm_Load);
@@ -67,7 +68,7 @@
 
         #endregion
 
-        private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.Label label_info;
+        private System.Windows.Forms.Label label_trades;
     }
 }
