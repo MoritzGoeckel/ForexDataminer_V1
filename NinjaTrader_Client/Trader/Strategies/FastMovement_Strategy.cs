@@ -9,11 +9,12 @@ namespace NinjaTrader_Client.Trader.Strategies
 {
     public class FastMovement_Strategy : Strategy
     {
-        public FastMovement_Strategy(Database database, TradingAPI api, string instrument, int preTime = 1000 * 60 * 5, int postTime = 1000 * 60 * 5, double threshold = 0.0005) : base(database, api, instrument)
+        public FastMovement_Strategy(Database database, TradingAPI api, string instrument, int preTime = 1000 * 60 * 10, int postTime = 1000 * 60 * 30, double threshold = 0.0020, double closeOnWin = 0.0010) : base(database, api, instrument)
         {
             this.threshold = threshold;
             this.postTime = postTime;
             this.preTime = preTime;
+            this.closeOnWin = closeOnWin;
         }
 
         public override string getName()
@@ -25,7 +26,8 @@ namespace NinjaTrader_Client.Trader.Strategies
         {
             return "postT: \t" + (double)postTime / 1000d / 60d + Environment.NewLine +
             "preT: \t" + (double)preTime / 1000d / 60d + Environment.NewLine +
-            "threshold: \t" + threshold;
+            "threshold: \t" + threshold + Environment.NewLine +
+            "closeOnWin: \t" + closeOnWin;
         }
 
         List<Tickdata> old_tickdata = new List<Tickdata>();   
@@ -33,6 +35,7 @@ namespace NinjaTrader_Client.Trader.Strategies
         private double threshold;
         private int preTime;
         private int postTime;
+        private double closeOnWin;
 
         public override void doTick()
         {
@@ -69,6 +72,16 @@ namespace NinjaTrader_Client.Trader.Strategies
             //Short
             if (api.getShortPosition() != null && api.getNow() - api.getShortPosition().timestampOpen > postTime)
                 api.closeShort();
+
+            //Close on win
+            if (closeOnWin != 0)
+            {
+                if (api.getLongPosition() != null && api.getBid() > api.getLongPosition().priceOpen + closeOnWin)
+                    api.closeLong();
+
+                if (api.getShortPosition() != null && api.getAsk() + closeOnWin < api.getShortPosition().priceOpen)
+                    api.closeShort();
+            }
 
             //add newest in front
             old_tickdata.Insert(0, nowTick);
