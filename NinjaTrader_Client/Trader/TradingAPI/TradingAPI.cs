@@ -23,5 +23,7 @@ namespace NinjaTrader_Client.Trader
         public abstract TradePosition getLongPosition();
         public abstract TradePosition getShortPosition();
         public abstract List<TradePosition> getHistory();
+
+        public abstract bool isUptodate();
     }
 }

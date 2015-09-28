@@ -31,7 +31,7 @@ namespace NinjaTrader_Client.Trader
             c.setColor(Chart.BackgroundColor, HexColorCodes.black);
 
             // Add a title box using grey (0x555555) 20pt Arial font
-            c.addTitle("Prices", "Arial", 20, HexColorCodes.white);
+            c.addTitle(instrument, "Arial", 20, HexColorCodes.white);
 
             // Set the plotarea at (70, 70) and of size 500 x 300 pixels, with transparent
             // background and border and light grey (0xcccccc) horizontal grid lines

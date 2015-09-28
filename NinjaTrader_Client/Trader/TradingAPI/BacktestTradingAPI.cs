@@ -24,12 +24,23 @@ namespace NinjaTrader_Client.Trader
             this.instrument = instrument;
         }
 
+        private bool uptodate = false;
         public void setNow(long now)
         {
             this.now = now;
             Tickdata data = database.getPrice(now, instrument);
             this.bid = data.bid;
             this.ask = data.ask;
+
+            if (now - data.timestamp > 1000 * 60 * 3) //Wenn daten älter als 3 minuten -> Nicht mehr uptodate
+                uptodate = false;
+            else
+                uptodate = true;
+        }
+
+        public override bool isUptodate()
+        {
+            return uptodate;
         }
 
         public override bool openLong()

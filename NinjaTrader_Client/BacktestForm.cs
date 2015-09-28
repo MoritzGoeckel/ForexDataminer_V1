@@ -22,7 +22,7 @@ namespace NinjaTrader_Client
             this.database = database;
         }
 
-        int backtestHours = 48;
+        int backtestHours = 48 * 3;
         string pair = "EURUSD";
 
         private void BacktestForm_Load(object sender, EventArgs e)
@@ -31,14 +31,16 @@ namespace NinjaTrader_Client
             long startTimestamp = endTimestamp - (backtestHours * 60 * 60 * 1000);
 
             BacktestTradingAPI api = new BacktestTradingAPI(startTimestamp, database, pair);
-            //Strategy strat = new SSI_Strategy(database, api, pair);
-            Strategy strat = new FastMovement_Strategy(database, api, pair);
+            Strategy strat = new SSI_Strategy(database, api, pair);
+            //Strategy strat = new FastMovement_Strategy(database, api, pair);
 
             long currentTimestamp = startTimestamp;
             while(currentTimestamp < endTimestamp)
             {
                 api.setNow(currentTimestamp);
-                strat.doTick();
+
+                if (api.isUptodate()) //Dataset not older than 3 minutes
+                    strat.doTick();
 
                 currentTimestamp += 1000 * 20;
             }
@@ -84,9 +86,6 @@ namespace NinjaTrader_Client
                 Environment.NewLine +
                 strat.getCustomResults();
 
-            //Output
-            //Grafisch aufbereiten
-            //(Pricechart, in/out)
             ChartingForm chartingForm = new ChartingForm(database, api.getHistory(), database.getLastTimestamp() - 1000 * 60 * 60 * backtestHours, database.getLastTimestamp());
             chartingForm.Show();
         }
