@@ -97,6 +97,7 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Trader\Backtest\Backtester.cs" />
     <Compile Include="Trader\Charting\SimpleChart.cs" />
     <Compile Include="Trader\Strategies\FastMovement_Strategy.cs" />
     <Compile Include="Trader\Strategies\SSI_Strategy.cs" />

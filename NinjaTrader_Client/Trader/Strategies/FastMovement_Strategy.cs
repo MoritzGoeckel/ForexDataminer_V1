@@ -9,12 +9,13 @@ namespace NinjaTrader_Client.Trader.Strategies
 {
     public class FastMovement_Strategy : Strategy
     {
-        public FastMovement_Strategy(Database database, TradingAPI api, string instrument, int preTime = 1000 * 60 * 10, int postTime = 1000 * 60 * 30, double threshold = 0.0020, double closeOnWin = 0.0010) : base(database, api, instrument)
+        public FastMovement_Strategy(Database database, TradingAPI api, string instrument, int preTime = 1000 * 60 * 7, int postTime = 1000 * 60 * 60, double threshold = 0.0017, double closeOnWin = 0.0000, double closeOnLoose = 0.0023) : base(database, api, instrument)
         {
             this.threshold = threshold;
             this.postTime = postTime;
             this.preTime = preTime;
             this.closeOnWin = closeOnWin;
+            this.closeOnLoose = closeOnLoose;
         }
 
         public override string getName()
@@ -24,18 +25,24 @@ namespace NinjaTrader_Client.Trader.Strategies
 
         public override string getCustomResults()
         {
-            return "postT: \t" + (double)postTime / 1000d / 60d + Environment.NewLine +
+            return "Parameters" + Environment.NewLine +
+            "postT: \t" + (double)postTime / 1000d / 60d + Environment.NewLine +
             "preT: \t" + (double)preTime / 1000d / 60d + Environment.NewLine +
             "threshold: \t" + threshold + Environment.NewLine +
-            "closeOnWin: \t" + closeOnWin;
+            "closeOnWin: \t" + closeOnWin + Environment.NewLine +
+            Environment.NewLine + "Result" + Environment.NewLine +
+            "hitSL: \t" + hitSL + Environment.NewLine +
+            "hitTK: \t" + hitTP + Environment.NewLine +
+            "hitTimeout: \t" + hitTO;
         }
 
         List<Tickdata> old_tickdata = new List<Tickdata>();   
 
         private double threshold;
-        private int preTime;
-        private int postTime;
-        private double closeOnWin;
+        private int preTime, postTime;
+        private double closeOnWin, closeOnLoose;
+
+        private int hitSL = 0, hitTP = 0, hitTO = 0;
 
         public override void doTick()
         {
@@ -67,20 +74,48 @@ namespace NinjaTrader_Client.Trader.Strategies
             //Close orders after postTime elapsed
             //Long
             if (api.getLongPosition() != null && api.getNow() - api.getLongPosition().timestampOpen > postTime)
+            {
                 api.closeLong();
+                hitTO++;
+            }
 
             //Short
             if (api.getShortPosition() != null && api.getNow() - api.getShortPosition().timestampOpen > postTime)
+            {
                 api.closeShort();
+                hitTO++;
+            }
 
             //Close on win
             if (closeOnWin != 0)
             {
                 if (api.getLongPosition() != null && api.getBid() > api.getLongPosition().priceOpen + closeOnWin)
+                {
                     api.closeLong();
+                    hitTP++;
+                }
 
                 if (api.getShortPosition() != null && api.getAsk() + closeOnWin < api.getShortPosition().priceOpen)
+                {
                     api.closeShort();
+                    hitTP++;
+                }
+            }
+
+            //Close on loose
+            if (closeOnLoose != 0)
+            {
+                if (api.getLongPosition() != null && api.getBid() + closeOnLoose < api.getLongPosition().priceOpen)
+                {
+                    api.closeLong();
+                    hitSL++;
+                }
+
+                if (api.getShortPosition() != null && api.getAsk() > api.getShortPosition().priceOpen + closeOnLoose)
+                {
+                    api.closeShort();
+                    hitSL++;
+                }
             }
 
             //add newest in front
