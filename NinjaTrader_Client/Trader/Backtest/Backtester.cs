@@ -48,9 +48,11 @@ namespace NinjaTrader_Client.Trader.Backtest
         public void startBacktest(Strategy strat, string pair)
         {
             BacktestTradingAPI api = new BacktestTradingAPI(startTimestamp, database, pair);
-            strat.setAPI(api);
 
-            Thread thread = new Thread(() => runBacktest(strat, api, pair));
+            Strategy dedicatedStrategy = strat.copy();
+            dedicatedStrategy.setAPI(api); //Todo: Nicht schön, nicht sicher
+
+            Thread thread = new Thread(() => runBacktest(dedicatedStrategy, api, pair));
             thread.Start();
 
             threads.Add(thread);

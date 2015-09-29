@@ -19,6 +19,11 @@ namespace NinjaTrader_Client.Trader.Strategies
             this.closeOnLoose = closeOnLoose;
         }
 
+        public override Strategy copy()
+        {
+            return new FastMovement_Strategy(database, preTime, postTime, threshold, closeOnWin, closeOnLoose);
+        }
+
         public override string getName()
         {
             return "FastMovement-Strategy";
@@ -40,14 +45,15 @@ namespace NinjaTrader_Client.Trader.Strategies
             return given;
         }
 
-        public override void resetStatistics()
+        public override void reset()
         {
             hitSL = 0;
             hitTO = 0;
             hitTP = 0;
+            old_tickdata = new List<Tickdata>();
         }
 
-        List<Tickdata> old_tickdata = new List<Tickdata>();   
+        private List<Tickdata> old_tickdata;   
 
         private double threshold;
         private int preTime, postTime;
@@ -59,7 +65,7 @@ namespace NinjaTrader_Client.Trader.Strategies
         {
             //Remove old ones in the back
             //Now the tick old_tickdata[old_tickdata.Count - 1] is 5 or less minutes old
-            while (old_tickdata.Count != 0 && api.getNow() - old_tickdata[old_tickdata.Count - 1].timestamp > preTime)
+            while (old_tickdata.Count != 0 && api.getNow() - old_tickdata[old_tickdata.Count - 1].timestamp > preTime) //Warum sollte old_tickdata[old_tickdata.Count - 1] == null sein?
                 old_tickdata.RemoveAt(old_tickdata.Count - 1);
 
             Tickdata nowTick = new Tickdata(api.getNow(), 0, api.getBid(), api.getAsk());

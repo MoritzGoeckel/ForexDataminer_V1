@@ -14,17 +14,20 @@ namespace NinjaTrader_Client.Trader
         public Strategy(Database database)
         {
             this.database = database;
+            this.reset();
         }
 
         public abstract void doTick();
 
         public abstract string getName();
         public abstract BacktestResult addCustomVariables(BacktestResult given);
-        public abstract void resetStatistics();
+        public abstract void reset();
 
         public void setAPI(TradingAPI api)
         {
             this.api = api;
         }
+
+        public abstract Strategy copy();
     }
 }

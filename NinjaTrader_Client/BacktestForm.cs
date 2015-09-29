@@ -34,9 +34,26 @@ namespace NinjaTrader_Client
 
             backtester = new Backtester(database, 20, startTimestamp, endTimestamp);
             backtester.backtestResultArrived += backtester_backtestResultArrived;
-            
+
+            List<string> instruments = new List<string>();
+            instruments.Add("EURUSD");
+            instruments.Add("GBPUSD");
+            instruments.Add("USDJPY");
+            instruments.Add("USDCHF");
+            instruments.Add("AUDUSD");
+            instruments.Add("NZDUSD");
+            instruments.Add("USDCAD");
+            instruments.Add("EURGBP");
+            instruments.Add("EURJPY");
+            instruments.Add("AUDCAD");
+            instruments.Add("CHFJPY");
+            instruments.Add("EURCHF");
+            instruments.Add("AUDJPY");
+            instruments.Add("GBPCHF");
+            instruments.Add("GBPJPY");
+
             //Do the backtest
-            backtester.startBacktest(new FastMovement_Strategy(database), "EURUSD");
+            backtester.startBacktest(new SSI_Strategy(database), instruments);
         }
 
         Dictionary<string, BacktestResult> results = new Dictionary<string, BacktestResult>();

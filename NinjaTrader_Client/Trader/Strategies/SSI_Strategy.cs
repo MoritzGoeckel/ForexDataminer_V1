@@ -14,6 +14,11 @@ namespace NinjaTrader_Client.Trader.Strategies
             
         }
 
+        public override Strategy copy()
+        {
+            return new SSI_Strategy(database);
+        }
+
         public override string getName()
         {
             return "SSI-Strategy";
@@ -25,7 +30,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             return given;
         }
 
-        public override void resetStatistics()
+        public override void reset()
         {
             
         }

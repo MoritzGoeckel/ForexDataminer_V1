@@ -37,7 +37,7 @@
             // label_parameters
             // 
             this.label_parameters.AutoSize = true;
-            this.label_parameters.Location = new System.Drawing.Point(153, 9);
+            this.label_parameters.Location = new System.Drawing.Point(211, 9);
             this.label_parameters.Name = "label_parameters";
             this.label_parameters.Size = new System.Drawing.Size(87, 13);
             this.label_parameters.TabIndex = 0;
@@ -46,7 +46,7 @@
             // label_trades
             // 
             this.label_trades.AutoSize = true;
-            this.label_trades.Location = new System.Drawing.Point(353, 9);
+            this.label_trades.Location = new System.Drawing.Point(411, 9);
             this.label_trades.Name = "label_trades";
             this.label_trades.Size = new System.Drawing.Size(64, 13);
             this.label_trades.TabIndex = 1;
@@ -55,7 +55,7 @@
             // label_result
             // 
             this.label_result.AutoSize = true;
-            this.label_result.Location = new System.Drawing.Point(548, 9);
+            this.label_result.Location = new System.Drawing.Point(515, 9);
             this.label_result.Name = "label_result";
             this.label_result.Size = new System.Drawing.Size(60, 13);
             this.label_result.TabIndex = 2;
@@ -66,7 +66,7 @@
             this.listBox_results.FormattingEnabled = true;
             this.listBox_results.Location = new System.Drawing.Point(12, 9);
             this.listBox_results.Name = "listBox_results";
-            this.listBox_results.Size = new System.Drawing.Size(120, 498);
+            this.listBox_results.Size = new System.Drawing.Size(193, 498);
             this.listBox_results.TabIndex = 3;
             this.listBox_results.SelectedIndexChanged += new System.EventHandler(this.listBox_results_SelectedIndexChanged);
             // 
