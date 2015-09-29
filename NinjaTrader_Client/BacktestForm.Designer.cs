@@ -66,9 +66,9 @@
             this.listBox_results.FormattingEnabled = true;
             this.listBox_results.Location = new System.Drawing.Point(12, 9);
             this.listBox_results.Name = "listBox_results";
-            this.listBox_results.Size = new System.Drawing.Size(193, 498);
+            this.listBox_results.Size = new System.Drawing.Size(176, 498);
             this.listBox_results.TabIndex = 3;
-            this.listBox_results.SelectedIndexChanged += new System.EventHandler(this.listBox_results_SelectedIndexChanged);
+            this.listBox_results.SelectedIndexChanged += new System.EventHandler(this.listBox_results_SelectedIndexChanged_1);
             // 
             // BacktestForm
             // 

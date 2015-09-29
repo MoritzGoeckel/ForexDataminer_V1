@@ -7,6 +7,7 @@ using NinjaTrader_Client.Trader.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,6 +23,8 @@ namespace NinjaTrader_Client.Trader
         }
 
         private Dictionary<string, Tickdata> chachedPrices = new Dictionary<string, Tickdata>();
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public Tickdata getPrice(long timestamp, string instrument)
         {
             if (chachedPrices.ContainsKey(timestamp + instrument)) //Simple Caching
@@ -83,6 +86,7 @@ namespace NinjaTrader_Client.Trader
             catch { errors++; }
         }
 
+        //cache it too?
         public IndicatorData getIndicator(long timestamp, string indicatorName, string instrument)
         {
             var collection = mongodb.getCollection(instrument + "_" + indicatorName);

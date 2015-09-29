@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -40,24 +41,23 @@ namespace NinjaTrader_Client
             instruments.Add("GBPUSD");
             instruments.Add("USDJPY");
             instruments.Add("USDCHF");
-            instruments.Add("AUDUSD");
-            instruments.Add("NZDUSD");
-            instruments.Add("USDCAD");
-            instruments.Add("EURGBP");
-            instruments.Add("EURJPY");
-            instruments.Add("AUDCAD");
-            instruments.Add("CHFJPY");
-            instruments.Add("EURCHF");
-            instruments.Add("AUDJPY");
-            instruments.Add("GBPCHF");
-            instruments.Add("GBPJPY");
 
-            //Do the backtest
-            backtester.startBacktest(new SSI_Strategy(database), instruments);
+            List<Strategy> stretegies = new List<Strategy>();
+            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 7, 1000 * 60 * 60 * 1, 0.0017, 0.000, 0.0023));
+            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 7, 1000 * 60 * 60 * 1, 0.0017, 0.000, 0.0025));
+            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 7, 1000 * 60 * 60 * 1, 0.0017, 0.000, 0.0027));
+            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 7, 1000 * 60 * 60 * 1, 0.0017, 0.000, 0.0030));
+            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 7, 1000 * 60 * 60 * 1, 0.0017, 0.000, 0.0020));
+            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 7, 1000 * 60 * 60 * 1, 0.0017, 0.000, 0.0015));
+
+            /* HERE IS THE PLAYGROUND FOR TESTING */
+
+            backtester.startBacktest(stretegies, "EURUSD");
         }
 
         Dictionary<string, BacktestResult> results = new Dictionary<string, BacktestResult>();
 
+        Random z = new Random();
         void backtester_backtestResultArrived(BacktestResult result)
         {
             if (InvokeRequired)
@@ -66,12 +66,20 @@ namespace NinjaTrader_Client
                 return;
             }
 
+            int i = 1;
             string name = result.parameter["Strategy"] + "_" + result.parameter["Pair"];
+
+            while (results.ContainsKey(name))
+            {
+                name = result.parameter["Strategy"] + "_" + result.parameter["Pair"] + "_" + i;
+                i++;
+            }
+
             results.Add(name, result);
             listBox_results.Items.Add(name);
         }
 
-        private void listBox_results_SelectedIndexChanged(object sender, EventArgs e)
+        private void listBox_results_SelectedIndexChanged_1(object sender, EventArgs e)
         {
             BacktestResult result = results[listBox_results.SelectedItem.ToString()];
 

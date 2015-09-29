@@ -4,7 +4,6 @@ E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\bin\Debug\NinjaTra
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\bin\Debug\MongoDB.Bson.dll
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\bin\Debug\MongoDB.Driver.dll
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\bin\Debug\NinjaTrader.Client.dll
-E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\Debug\NinjaTrader_Client.csprojResolveAssemblyReference.cache
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\Debug\NinjaTrader_Client.Properties.Resources.resources
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\Debug\NinjaTrader_Client.csproj.GenerateResource.Cache
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\Debug\NinjaTrader_Client.exe

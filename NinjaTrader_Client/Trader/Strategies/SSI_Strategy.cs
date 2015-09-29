@@ -74,7 +74,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             }*/
 
             //Verhindere starkes minus durch pausieren bei -5 pips
-            if (api.getLongPosition() != null && api.getAsk() - api.getLongPosition().priceOpen <= -0.005)
+            /*if (api.getLongPosition() != null && api.getAsk() - api.getLongPosition().priceOpen <= -0.005)
             {
                 api.closePositions();
                 pauseTil = api.getNow() + 1000 * 60 * 60; 
@@ -84,7 +84,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             {
                 api.closePositions();
                 pauseTil = api.getNow() + 1000 * 60 * 60; 
-            }
+            }*/
         }
     }
 }
