@@ -31,8 +31,8 @@ namespace NinjaTrader_Client
             long startTimestamp = endTimestamp - (backtestHours * 60 * 60 * 1000);
 
             BacktestTradingAPI api = new BacktestTradingAPI(startTimestamp, database, pair);
-            Strategy strat = new SSI_Strategy(database, api, pair);
-            //Strategy strat = new FastMovement_Strategy(database, api, pair);
+            //Strategy strat = new SSI_Strategy(database, api, pair);
+            Strategy strat = new FastMovement_Strategy(database, api, pair);
 
             long currentTimestamp = startTimestamp;
             while(currentTimestamp < endTimestamp)
