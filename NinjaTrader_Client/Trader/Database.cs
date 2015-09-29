@@ -21,16 +21,26 @@ namespace NinjaTrader_Client.Trader
             mongodb = mongoDbFacade;
         }
 
+        private Dictionary<string, Tickdata> chachedPrices = new Dictionary<string, Tickdata>();
         public Tickdata getPrice(long timestamp, string instrument)
         {
-            var collection = mongodb.getCollection(instrument);
+            if (chachedPrices.ContainsKey(timestamp + instrument)) //Simple Caching
+                return chachedPrices[timestamp + instrument];
+            else
+            {
+                var collection = mongodb.getCollection(instrument);
 
-            var docsDarunter = collection.Find(Query.LT("timestamp", timestamp + 1)).SetSortOrder(SortBy.Descending("timestamp")).SetLimit(1);
-            BsonDocument darunter = docsDarunter.ToList<BsonDocument>()[0];
+                var docsDarunter = collection.Find(Query.LT("timestamp", timestamp + 1)).SetSortOrder(SortBy.Descending("timestamp")).SetLimit(1);
+                BsonDocument darunter = docsDarunter.ToList<BsonDocument>()[0];
 
-            return new Tickdata(darunter["timestamp"].AsInt64, darunter["last"].AsDouble, darunter["bid"].AsDouble, darunter["ask"].AsDouble);
+                Tickdata data = new Tickdata(darunter["timestamp"].AsInt64, darunter["last"].AsDouble, darunter["bid"].AsDouble, darunter["ask"].AsDouble);
+                chachedPrices.Add(timestamp + instrument, data);
+
+                return data;
+            }
         }
 
+        //Chache too?
         public List<Tickdata> getPrices(long startTimestamp, long endTimestamp, string instrument)
         {
             var collection = mongodb.getCollection(instrument);
