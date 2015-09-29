@@ -1,4 +1,5 @@
 ﻿using NinjaTrader_Client.Model;
+using NinjaTrader_Client.Trader.Backtest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace NinjaTrader_Client.Trader.Strategies
 {
     public class FastMovement_Strategy : Strategy
     {
-        public FastMovement_Strategy(Database database, TradingAPI api, string instrument, int preTime = 1000 * 60 * 7, int postTime = 1000 * 60 * 60, double threshold = 0.0017, double closeOnWin = 0.0000, double closeOnLoose = 0.0023) : base(database, api, instrument)
+        public FastMovement_Strategy(Database database, int preTime = 1000 * 60 * 7, int postTime = 1000 * 60 * 60, double threshold = 0.0017, double closeOnWin = 0.0000, double closeOnLoose = 0.0023) : base(database)
         {
             this.threshold = threshold;
             this.postTime = postTime;
@@ -23,17 +24,27 @@ namespace NinjaTrader_Client.Trader.Strategies
             return "FastMovement-Strategy";
         }
 
-        public override string getCustomResults()
+        public override BacktestResult addCustomVariables(BacktestResult given)
         {
-            return "Parameters" + Environment.NewLine +
-            "postT: \t" + (double)postTime / 1000d / 60d + Environment.NewLine +
-            "preT: \t" + (double)preTime / 1000d / 60d + Environment.NewLine +
-            "threshold: \t" + threshold + Environment.NewLine +
-            "closeOnWin: \t" + closeOnWin + Environment.NewLine +
-            Environment.NewLine + "Result" + Environment.NewLine +
-            "hitSL: \t" + hitSL + Environment.NewLine +
-            "hitTK: \t" + hitTP + Environment.NewLine +
-            "hitTimeout: \t" + hitTO;
+            given.setParameter("PostT", ((double)postTime / 1000d / 60d).ToString());
+            given.setParameter("PostT", ((double)preTime / 1000d / 60d).ToString());
+            given.setParameter("Threshold", threshold.ToString());
+            given.setParameter("CloseOnWin", closeOnWin.ToString());
+            given.setParameter("CloseOnLoose", closeOnLoose.ToString());
+
+            //Real results
+            given.setResult("HitSL", hitSL.ToString());
+            given.setResult("HitTP", hitTP.ToString());
+            given.setResult("HitTO", hitTO.ToString());
+
+            return given;
+        }
+
+        public override void resetStatistics()
+        {
+            hitSL = 0;
+            hitTO = 0;
+            hitTP = 0;
         }
 
         List<Tickdata> old_tickdata = new List<Tickdata>();   

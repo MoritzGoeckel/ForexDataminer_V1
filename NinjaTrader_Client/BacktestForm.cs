@@ -1,4 +1,5 @@
 ﻿using NinjaTrader_Client.Trader;
+using NinjaTrader_Client.Trader.Backtest;
 using NinjaTrader_Client.Trader.Model;
 using NinjaTrader_Client.Trader.Strategies;
 using System;
@@ -22,72 +23,44 @@ namespace NinjaTrader_Client
             this.database = database;
         }
 
-        int backtestHours = 48 * 3;
-        string pair = "EURUSD";
+        Backtester backtester;
 
         private void BacktestForm_Load(object sender, EventArgs e)
         {
+            int backtestHours = 48 * 3;
+
             long endTimestamp = database.getLastTimestamp();
             long startTimestamp = endTimestamp - (backtestHours * 60 * 60 * 1000);
 
-            BacktestTradingAPI api = new BacktestTradingAPI(startTimestamp, database, pair);
-            //Strategy strat = new SSI_Strategy(database, api, pair);
-            Strategy strat = new FastMovement_Strategy(database, api, pair);
+            backtester = new Backtester(database, 20, startTimestamp, endTimestamp);
+            backtester.backtestResultArrived += backtester_backtestResultArrived;
+            
+            //Do the backtest
+            backtester.startBacktest(new FastMovement_Strategy(database), "EURUSD");
+        }
 
-            long currentTimestamp = startTimestamp;
-            while(currentTimestamp < endTimestamp)
+        Dictionary<string, BacktestResult> results = new Dictionary<string, BacktestResult>();
+
+        void backtester_backtestResultArrived(BacktestResult result)
+        {
+            if (InvokeRequired)
             {
-                api.setNow(currentTimestamp);
-
-                if (api.isUptodate()) //Dataset not older than 3 minutes
-                    strat.doTick();
-
-                currentTimestamp += 1000 * 20;
-            }
-            api.closePositions();
-
-            string tradesStr = "";
-            var positions = api.getHistory(); 
-            double profit = 0, drawdown = 99999999d;
-
-            int winPositions = 0;
-            int longPositions = 0;
-
-            foreach(TradePosition p in positions)
-            {
-                profit += p.getDifference();
-
-                if(profit < drawdown)
-                    drawdown = profit;
-
-                if (p.type == TradePosition.PositionType.longPosition)
-                    longPositions++;
-
-                if (p.getDifference() > 0)
-                    winPositions++;
-
-                tradesStr += (p.type == TradePosition.PositionType.longPosition ? "L" : "S") + " d: " + Math.Round(p.getDifference(), 7) + "\t Total: " + Math.Round(profit, 7) + Environment.NewLine;
+                this.Invoke(new Action(() => backtester_backtestResultArrived(result)));
+                return;
             }
 
-            label_trades.Text = tradesStr;
+            string name = result.parameter["Strategy"] + "_" + result.parameter["Pair"];
+            results.Add(name, result);
+            listBox_results.Items.Add(name);
+        }
 
-            label_info.Text = "Gained Pips: \t" + Math.Round(profit * 10000, 2) + Environment.NewLine +
-                "Positions:\t" + positions.Count + Environment.NewLine +
-                "Positions / day:\t" + Math.Round((double)positions.Count / (double)backtestHours * 24d, 2) + Environment.NewLine +
-                "Pips / day:\t" + Math.Round(profit * 10000d / (double)backtestHours * 24d, 2) + Environment.NewLine +
-                "Pips / Position:\t" + Math.Round(profit * 10000d / (double)positions.Count, 2) + Environment.NewLine +
-                "Win Positions:\t" + Math.Round((double)winPositions / (double)positions.Count, 2) + Environment.NewLine +
-                "Long Positions:\t" + Math.Round((double)longPositions / (double)positions.Count, 2) + Environment.NewLine +
-                "Drawdown:\t" + Math.Round(drawdown * 10000, 2) + Environment.NewLine +
-                Environment.NewLine +
-                "Pair:\t" + pair + Environment.NewLine +
-                "Time (h):\t" + backtestHours + Environment.NewLine + 
-                "Strategy:\t" + strat.getName() + Environment.NewLine + 
-                Environment.NewLine +
-                strat.getCustomResults();
+        private void listBox_results_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            BacktestResult result = results[listBox_results.SelectedItem.ToString()];
 
-            ChartingForm chartingForm = new ChartingForm(database, api.getHistory(), database.getLastTimestamp() - 1000 * 60 * 60 * backtestHours, database.getLastTimestamp());
-            chartingForm.Show();
+            label_trades.Text = result.getTradesText();
+            label_parameters.Text = result.getParameterText();
+            label_result.Text = result.getResultText();
         }
     }
 }

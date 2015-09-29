@@ -1,0 +1,2 @@
+﻿ChartingForm chartingForm = new ChartingForm(database, api.getHistory(), database.getLastTimestamp() - 1000 * 60 * 60 * backtestHours, database.getLastTimestamp());
+chartingForm.Show();

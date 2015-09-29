@@ -123,5 +123,10 @@ namespace NinjaTrader_Client.Trader
         {
             return oldPositions;
         }
+
+        public override string getInstrument()
+        {
+            return instrument;
+        }
     }
 }

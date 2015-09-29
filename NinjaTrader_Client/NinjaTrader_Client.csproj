@@ -98,6 +98,7 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Trader\Backtest\Backtester.cs" />
+    <Compile Include="Trader\Backtest\BacktestResult.cs" />
     <Compile Include="Trader\Charting\SimpleChart.cs" />
     <Compile Include="Trader\Strategies\FastMovement_Strategy.cs" />
     <Compile Include="Trader\Strategies\SSI_Strategy.cs" />
@@ -157,7 +158,8 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Todo.txt" />
+    <Content Include="Trader\Notes\deadCode.txt" />
+    <Content Include="Trader\Notes\Todo.txt" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

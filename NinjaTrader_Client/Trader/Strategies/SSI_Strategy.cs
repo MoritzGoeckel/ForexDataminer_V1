@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NinjaTrader_Client.Trader.Backtest;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace NinjaTrader_Client.Trader.Strategies
 {
     public class SSI_Strategy : Strategy
     {
-        public SSI_Strategy(Database database, TradingAPI api, string instrument) : base(database, api, instrument)
+        public SSI_Strategy(Database database) : base(database)
         {
             
         }
@@ -18,15 +19,21 @@ namespace NinjaTrader_Client.Trader.Strategies
             return "SSI-Strategy";
         }
 
-        public override string getCustomResults()
+        public override BacktestResult addCustomVariables(BacktestResult given)
         {
-            return "";
+            //Todo: !!
+            return given;
+        }
+
+        public override void resetStatistics()
+        {
+            
         }
 
         private long pauseTil = 0;
         public override void doTick()
         {
-            double ssi = database.getIndicator(api.getNow(), "ssi-mt4", instrument).value;
+            double ssi = database.getIndicator(api.getNow(), "ssi-mt4", api.getInstrument()).value;
 
             if (api.getNow() > pauseTil)
             {
