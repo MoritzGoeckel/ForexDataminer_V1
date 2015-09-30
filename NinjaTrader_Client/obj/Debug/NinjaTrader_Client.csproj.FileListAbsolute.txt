@@ -15,3 +15,4 @@ E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\Debug\NinjaTra
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\Debug\NinjaTrader_Client.MainForm.resources
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\Debug\NinjaTrader_Client.ExportImportForm.resources
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\Debug\NinjaTrader_Client.BacktestForm.resources
+E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\Debug\NinjaTrader_Client.csprojResolveAssemblyReference.cache

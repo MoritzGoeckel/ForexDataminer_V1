@@ -1,5 +1,5 @@
 ﻿Übertragung aus ferne
 Charting
+
 Indicator: MA
-Strategy
 Handel

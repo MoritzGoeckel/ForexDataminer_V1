@@ -32,7 +32,7 @@ namespace NinjaTrader_Client.Trader.Strategies
         public override BacktestResult addCustomVariables(BacktestResult given)
         {
             given.setParameter("PostT", ((double)postTime / 1000d / 60d).ToString());
-            given.setParameter("PostT", ((double)preTime / 1000d / 60d).ToString());
+            given.setParameter("PreT", ((double)preTime / 1000d / 60d).ToString());
             given.setParameter("Threshold", threshold.ToString());
             given.setParameter("CloseOnWin", closeOnWin.ToString());
             given.setParameter("CloseOnLoose", closeOnLoose.ToString());

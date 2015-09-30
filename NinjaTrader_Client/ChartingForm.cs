@@ -37,6 +37,7 @@ namespace NinjaTrader_Client
             upperChart = new WinChartViewer();
             upperChart.BackColor = Color.Black;
             upperChart.Dock = DockStyle.Fill;
+            upperChart.DoubleClick += upperChart_DoubleClick;
 
             this.Controls.Add(upperChart);
             
@@ -47,6 +48,14 @@ namespace NinjaTrader_Client
                 sc.addHistoricPositions(historicPositions);
 
             sc.drawPriceChartWithSSI(upperChart, this.Width, this.Height, "EURUSD", timestampStart, timestampEnd);
+        }
+
+        void upperChart_DoubleClick(object sender, EventArgs e)
+        {
+            SaveFileDialog fd = new SaveFileDialog();
+            fd.InitialDirectory = Application.StartupPath;
+            if(fd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                upperChart.Image.Save(fd.FileName);
         }
     }
 }

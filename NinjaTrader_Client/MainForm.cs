@@ -56,7 +56,7 @@ namespace NinjaTrader_Client
 
         private void button2_Click(object sender, EventArgs e)
         {
-            ChartingForm cf = new ChartingForm(main.getDatabase(), null, main.getDatabase().getLastTimestamp() - 1000 * 60 * 60 * 12, main.getDatabase().getLastTimestamp());
+            ChartingForm cf = new ChartingForm(main.getDatabase(), null, main.getDatabase().getLastTimestamp() - 1000 * 60 * 60 * 48, main.getDatabase().getLastTimestamp());
             cf.ShowDialog();
         }
 

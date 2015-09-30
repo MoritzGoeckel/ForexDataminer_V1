@@ -43,12 +43,19 @@ namespace NinjaTrader_Client
             instruments.Add("USDCHF");
 
             List<Strategy> stretegies = new List<Strategy>();
-            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 7, 1000 * 60 * 60 * 1, 0.0017, 0.000, 0.0023));
-            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 7, 1000 * 60 * 60 * 1, 0.0017, 0.000, 0.0025));
-            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 7, 1000 * 60 * 60 * 1, 0.0017, 0.000, 0.0027));
-            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 7, 1000 * 60 * 60 * 1, 0.0017, 0.000, 0.0030));
-            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 7, 1000 * 60 * 60 * 1, 0.0017, 0.000, 0.0020));
-            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 7, 1000 * 60 * 60 * 1, 0.0017, 0.000, 0.0015));
+
+            //Good strats:
+            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 7, 1000 * 60 * 60 * 1, 0.0017, 0.0000, 0.0023));
+            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 5, 1000 * 60 * 20, 0.0020, 0.0015, 0.0015));
+            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 3, 1000 * 60 * 20, 0.0012, 0.0012, 0.0015));
+            stretegies.Add(new FastMovement_Strategy(database, 1000 * 130, 1000 * 60 * 5, 0.0010, 0.0010, 0.0015));
+
+            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 2, 1000 * 60 * 10, 0.0010, 0.0005, 0.0015)); //Good
+            
+            stretegies.Add(new SSI_Strategy(database));
+
+            //New Strats here...
+
 
             /* HERE IS THE PLAYGROUND FOR TESTING */
 
