@@ -9,8 +9,10 @@ namespace NinjaTrader_Client.Trader.Backtest
 {
     public class BacktestResult
     {
-        public Dictionary<string, string> results = new Dictionary<string, string>();
         public Dictionary<string, string> parameter = new Dictionary<string, string>();
+        public Dictionary<string, Dictionary<string, BacktestResult>> pairResults = new Dictionary<string, Dictionary<string, BacktestResult>>();
+
+        public Dictionary<string, string> results = new Dictionary<string, string>();
 
         private List<TradePosition> trades = new List<TradePosition>();
 
@@ -36,14 +38,6 @@ namespace NinjaTrader_Client.Trader.Backtest
                 results[key] = value;
             else
                 results.Add(key, value);
-        }
-
-        public void setParameter(string key, string value)
-        {
-            if (parameter.ContainsKey(key))
-                parameter[key] = value;
-            else
-                parameter.Add(key, value);
         }
 
         public void addPositions(List<TradePosition> positions)
@@ -86,14 +80,6 @@ namespace NinjaTrader_Client.Trader.Backtest
             return output;
         }
 
-        public string getParameterText()
-        {
-            string output = "";
-            foreach (KeyValuePair<string, string> pair in parameter)
-                output += pair.Key + ": " + pair.Value + Environment.NewLine;
-            return output;
-        }
-
         public string getTradesText()
         {
             string output = "";
@@ -106,6 +92,22 @@ namespace NinjaTrader_Client.Trader.Backtest
         public List<TradePosition> getPositions()
         {
             return trades;
+        }
+
+        public void setParameter(string key, string value)
+        {
+            if (parameter.ContainsKey(key))
+                parameter[key] = value;
+            else
+                parameter.Add(key, value);
+        }
+
+        public string getParameterText()
+        {
+            string output = "";
+            foreach (KeyValuePair<string, string> pair in parameter)
+                output += pair.Key + ": " + pair.Value + Environment.NewLine;
+            return output;
         }
     }
 }

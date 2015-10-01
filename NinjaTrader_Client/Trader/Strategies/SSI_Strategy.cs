@@ -36,30 +36,33 @@ namespace NinjaTrader_Client.Trader.Strategies
         }
 
         private long pauseTil = 0;
-        public override void doTick()
+        public override void doTick(string instrument)
         {
-            double ssi = database.getIndicator(api.getNow(), "ssi-mt4", api.getInstrument()).value;
+            if (api.isUptodate(instrument) == false)
+                return;
+
+            double ssi = database.getIndicator(api.getNow(), "ssi-mt4", instrument).value;
 
             if (api.getNow() > pauseTil)
             {
                 if (ssi > 0.2d)
                 {
-                    if (api.getShortPosition() == null)
-                        api.openShort();
+                    if (api.getShortPosition(instrument) == null)
+                        api.openShort(instrument);
                 }
 
                 if (ssi < -0.2d)
                 {
-                    if (api.getLongPosition() == null)
-                        api.openLong();
+                    if (api.getLongPosition(instrument) == null)
+                        api.openLong(instrument);
                 }
             }
 
-            if (api.getLongPosition() != null && ssi > 0.1d)
-                api.closePositions();
+            if (api.getLongPosition(instrument) != null && ssi > 0.1d)
+                api.closePositions(instrument);
 
-            if (api.getShortPosition() != null && ssi < -0.1d)
-                api.closePositions();
+            if (api.getShortPosition(instrument) != null && ssi < -0.1d)
+                api.closePositions(instrument);
 
             /*if (api.getLongPosition() != null && api.getAsk() - api.getLongPosition().priceOpen >= 0.003)
             {

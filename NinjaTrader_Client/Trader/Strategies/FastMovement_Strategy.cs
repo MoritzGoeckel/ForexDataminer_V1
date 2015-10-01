@@ -63,14 +63,17 @@ namespace NinjaTrader_Client.Trader.Strategies
         private bool follow_trend;
         private int hitSL = 0, hitTP = 0, hitTO = 0;
 
-        public override void doTick()
+        public override void doTick(string instrument)
         {
+            if (api.isUptodate(instrument) == false)
+                return;
+
             //Remove old ones in the back
             //Now the tick old_tickdata[old_tickdata.Count - 1] is 5 or less minutes old
             while (old_tickdata.Count != 0 && api.getNow() - old_tickdata[old_tickdata.Count - 1].timestamp > preTime) //Warum sollte old_tickdata[old_tickdata.Count - 1] == null sein?
                 old_tickdata.RemoveAt(old_tickdata.Count - 1);
 
-            Tickdata nowTick = new Tickdata(api.getNow(), 0, api.getBid(), api.getAsk());
+            Tickdata nowTick = new Tickdata(api.getNow(), 0, api.getBid(instrument), api.getAsk(instrument));
 
             if (old_tickdata.Count != 0)
             {
@@ -78,51 +81,51 @@ namespace NinjaTrader_Client.Trader.Strategies
 
                 //New Orders if movement in preTime is > threshold
                 //Long
-                if (api.getLongPosition() == null && nowTick.bid - pastTick.ask > threshold)
+                if (api.getLongPosition(instrument) == null && nowTick.bid - pastTick.ask > threshold)
                 {
                     if (follow_trend)
-                        api.openLong();
+                        api.openLong(instrument);
                     else
-                        api.openShort();
+                        api.openShort(instrument);
                 }
 
                 //Short
-                if (api.getShortPosition() == null && pastTick.bid - nowTick.ask > threshold)
+                if (api.getShortPosition(instrument) == null && pastTick.bid - nowTick.ask > threshold)
                 {
                     if (follow_trend)
-                        api.openShort();
+                        api.openShort(instrument);
                     else
-                        api.openLong();
+                        api.openLong(instrument);
                 }
             }
 
             //Close orders after postTime elapsed
             //Long
-            if (api.getLongPosition() != null && api.getNow() - api.getLongPosition().timestampOpen > postTime)
+            if (api.getLongPosition(instrument) != null && api.getNow() - api.getLongPosition(instrument).timestampOpen > postTime)
             {
-                api.closeLong();
+                api.closeLong(instrument);
                 hitTO++;
             }
 
             //Short
-            if (api.getShortPosition() != null && api.getNow() - api.getShortPosition().timestampOpen > postTime)
+            if (api.getShortPosition(instrument) != null && api.getNow() - api.getShortPosition(instrument).timestampOpen > postTime)
             {
-                api.closeShort();
+                api.closeShort(instrument);
                 hitTO++;
             }
 
             //Close on win
             if (closeOnWin != 0)
             {
-                if (api.getLongPosition() != null && api.getBid() > api.getLongPosition().priceOpen + closeOnWin)
+                if (api.getLongPosition(instrument) != null && api.getBid(instrument) > api.getLongPosition(instrument).priceOpen + closeOnWin)
                 {
-                    api.closeLong();
+                    api.closeLong(instrument);
                     hitTP++;
                 }
 
-                if (api.getShortPosition() != null && api.getAsk() + closeOnWin < api.getShortPosition().priceOpen)
+                if (api.getShortPosition(instrument) != null && api.getAsk(instrument) + closeOnWin < api.getShortPosition(instrument).priceOpen)
                 {
-                    api.closeShort();
+                    api.closeShort(instrument);
                     hitTP++;
                 }
             }
@@ -130,15 +133,15 @@ namespace NinjaTrader_Client.Trader.Strategies
             //Close on loose
             if (closeOnLoose != 0)
             {
-                if (api.getLongPosition() != null && api.getBid() + closeOnLoose < api.getLongPosition().priceOpen)
+                if (api.getLongPosition(instrument) != null && api.getBid(instrument) + closeOnLoose < api.getLongPosition(instrument).priceOpen)
                 {
-                    api.closeLong();
+                    api.closeLong(instrument);
                     hitSL++;
                 }
 
-                if (api.getShortPosition() != null && api.getAsk() > api.getShortPosition().priceOpen + closeOnLoose)
+                if (api.getShortPosition(instrument) != null && api.getAsk(instrument) > api.getShortPosition(instrument).priceOpen + closeOnLoose)
                 {
-                    api.closeShort();
+                    api.closeShort(instrument);
                     hitSL++;
                 }
             }

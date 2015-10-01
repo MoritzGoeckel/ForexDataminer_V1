@@ -10,20 +10,20 @@ namespace NinjaTrader_Client.Trader
     public abstract class Strategy
     {
         protected Database database;
-        protected TradingAPI api;
+        protected ITradingAPI api;
         public Strategy(Database database)
         {
             this.database = database;
             this.reset();
         }
 
-        public abstract void doTick();
+        public abstract void doTick(string instrument);
 
         public abstract string getName();
         public abstract BacktestResult addCustomVariables(BacktestResult given);
         public abstract void reset();
 
-        public void setAPI(TradingAPI api)
+        public void setAPI(ITradingAPI api)
         {
             this.api = api;
         }

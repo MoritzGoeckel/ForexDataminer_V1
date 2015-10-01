@@ -102,7 +102,7 @@
     <Compile Include="Trader\Charting\SimpleChart.cs" />
     <Compile Include="Trader\Strategies\FastMovement_Strategy.cs" />
     <Compile Include="Trader\Strategies\SSI_Strategy.cs" />
-    <Compile Include="Trader\TradingAPI\BacktestTradingAPI.cs" />
+    <Compile Include="Trader\TradingAPIs\BacktestTradingAPI.cs" />
     <Compile Include="Trader\Model\TradePosition.cs" />
     <Compile Include="Trader\Strategies\Strategy.cs" />
     <Compile Include="Trader\Model\Config.cs" />
@@ -116,7 +116,9 @@
     <Compile Include="Trader\NinjaTraderAPI.cs" />
     <Compile Include="Trader\Database.cs" />
     <Compile Include="Trader\SSI_Downloader.cs" />
-    <Compile Include="Trader\TradingAPI\TradingAPI.cs" />
+    <Compile Include="Trader\TradingAPIs\NT_LiveTradingAPI.cs" />
+    <Compile Include="Trader\TradingAPIs\PairData.cs" />
+    <Compile Include="Trader\TradingAPIs\TradingAPI.cs" />
     <Compile Include="Trader\Utils\HexColorCodes.cs" />
     <Compile Include="Trader\Utils\StringCompressor.cs" />
     <Compile Include="Trader\Utils\Timestamp.cs" />
