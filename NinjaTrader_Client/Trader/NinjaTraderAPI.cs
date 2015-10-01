@@ -89,5 +89,36 @@ namespace NinjaTrader_Client.Trader
                     throw new Exception("Can't teardown dll!");
             }
         }
+
+        string account = "Sim101";
+        public bool submitOrder(string instrument, NinjaTrader_Client.Trader.Model.TradePosition.PositionType type, int size, double price)
+        {
+            if (type == Model.TradePosition.PositionType.longPosition)
+                return ntClient.Command("PLACE", account, instrument, "BUY", size, "LIMIT", price, 0, "DAY", "", "", "", "") == 0;
+            else
+                return ntClient.Command("PLACE", account, instrument, "SELL", size, "LIMIT", price, 0, "DAY", "", "", "", "") == 0;
+        }
+
+        public bool closePosition(string instrument)
+        {
+            return ntClient.Command("CLOSEPOSITION", account, instrument, "", 0, "", 0, 0, "", "", "", "", "") == 0;
+        }
+
+        public int getMarketPosition(string instrument)
+        {
+            return ntClient.MarketPosition(instrument, account);
+        }
+
+        public List<string> getOrders()
+        {
+            List<string> orders = new List<string>();
+            orders.AddRange(ntClient.Orders(account).Split("|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries));
+            return orders;
+        }
+
+        public string orderStatus(string id)
+        {
+            return ntClient.OrderStatus(id);
+        }
     }
 }
