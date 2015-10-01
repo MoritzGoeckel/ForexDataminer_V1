@@ -32,6 +32,7 @@
             this.label_trades = new System.Windows.Forms.Label();
             this.label_result = new System.Windows.Forms.Label();
             this.listBox_results = new System.Windows.Forms.ListBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label_parameters
@@ -70,11 +71,22 @@
             this.listBox_results.TabIndex = 3;
             this.listBox_results.SelectedIndexChanged += new System.EventHandler(this.listBox_results_SelectedIndexChanged_1);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(214, 486);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 4;
+            this.button1.Text = "Show Chart";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // BacktestForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(789, 521);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.listBox_results);
             this.Controls.Add(this.label_result);
             this.Controls.Add(this.label_trades);
@@ -93,6 +105,7 @@
         private System.Windows.Forms.Label label_trades;
         private System.Windows.Forms.Label label_result;
         private System.Windows.Forms.ListBox listBox_results;
+        private System.Windows.Forms.Button button1;
 
     }
 }

@@ -102,5 +102,10 @@ namespace NinjaTrader_Client.Trader.Backtest
 
             return output;
         }
+
+        public List<TradePosition> getPositions()
+        {
+            return trades;
+        }
     }
 }
