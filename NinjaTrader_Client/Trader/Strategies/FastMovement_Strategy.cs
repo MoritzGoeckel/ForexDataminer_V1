@@ -10,18 +10,19 @@ namespace NinjaTrader_Client.Trader.Strategies
 {
     public class FastMovement_Strategy : Strategy
     {
-        public FastMovement_Strategy(Database database, int preTime = 1000 * 60 * 7, int postTime = 1000 * 60 * 60, double threshold = 0.0017, double closeOnWin = 0.0000, double closeOnLoose = 0.0023) : base(database)
+        public FastMovement_Strategy(Database database, int preTime = 1000 * 60 * 7, int postTime = 1000 * 60 * 60, double threshold = 0.0017, double closeOnWin = 0.0000, double closeOnLoose = 0.0023, bool follow_trend = true) : base(database)
         {
             this.threshold = threshold;
             this.postTime = postTime;
             this.preTime = preTime;
             this.closeOnWin = closeOnWin;
             this.closeOnLoose = closeOnLoose;
+            this.follow_trend = follow_trend;
         }
 
         public override Strategy copy()
         {
-            return new FastMovement_Strategy(database, preTime, postTime, threshold, closeOnWin, closeOnLoose);
+            return new FastMovement_Strategy(database, preTime, postTime, threshold, closeOnWin, closeOnLoose, follow_trend);
         }
 
         public override string getName()
@@ -36,6 +37,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             given.setParameter("Threshold", threshold.ToString());
             given.setParameter("CloseOnWin", closeOnWin.ToString());
             given.setParameter("CloseOnLoose", closeOnLoose.ToString());
+            given.setParameter("FollowTrend", follow_trend.ToString());
 
             //Real results
             given.setResult("HitSL", hitSL.ToString());
@@ -58,7 +60,7 @@ namespace NinjaTrader_Client.Trader.Strategies
         private double threshold;
         private int preTime, postTime;
         private double closeOnWin, closeOnLoose;
-
+        private bool follow_trend;
         private int hitSL = 0, hitTP = 0, hitTO = 0;
 
         public override void doTick()
@@ -78,13 +80,19 @@ namespace NinjaTrader_Client.Trader.Strategies
                 //Long
                 if (api.getLongPosition() == null && nowTick.bid - pastTick.ask > threshold)
                 {
-                    api.openLong();
+                    if (follow_trend)
+                        api.openLong();
+                    else
+                        api.openShort();
                 }
 
                 //Short
                 if (api.getShortPosition() == null && pastTick.bid - nowTick.ask > threshold)
                 {
-                    api.openShort();
+                    if (follow_trend)
+                        api.openShort();
+                    else
+                        api.openLong();
                 }
             }
 
