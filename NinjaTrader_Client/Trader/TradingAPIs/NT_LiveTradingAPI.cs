@@ -12,7 +12,7 @@ namespace NinjaTrader_Client.Trader.TradingAPI
     {
         private NinjaTraderAPI api;
 
-        public NT_LiveTradingAPI(NinjaTraderAPI api, List<string> tradable)
+        public NT_LiveTradingAPI(NinjaTraderAPI api)
         {
             this.api = api;
             api.tickdataArrived += api_tickdataArrived;

@@ -55,11 +55,22 @@ namespace NinjaTrader_Client.Trader
             return priceDatabase;
         }
 
+        public NinjaTraderAPI getAPI()
+        {
+            return api;
+        }
+
         public void startDownloadingUpdates()
         {
             ssi.sourceDataArrived += ssi_sourceDataArrived;
             ssi.start();
             api.tickdataArrived += api_tickdataArrived;
+        }
+
+        Strategy strat;
+        public void startTradingLive(Strategy strat)
+        {
+            this.strat = strat;
         }
 
         void ssi_sourceDataArrived(double value, long timestamp, string sourceName, string instrument)
@@ -71,6 +82,9 @@ namespace NinjaTrader_Client.Trader
         private void api_tickdataArrived(Tickdata data, string instrument)
         {
             priceDatabase.setPrice(data, instrument);
+
+            if (strat != null && instrument == "EURUSD") //Unschön, andere Pairs?
+                strat.doTick(instrument);
 
             UIData uiData = new UIData();
             uiData.dbErrors = priceDatabase.errors;

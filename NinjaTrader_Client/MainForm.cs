@@ -11,6 +11,8 @@ using System.Windows.Forms;
 using NinjaTrader.Client;
 using NinjaTrader_Client.Trader;
 using NinjaTrader_Client.Trader.Model;
+using NinjaTrader_Client.Trader.Strategies;
+using NinjaTrader_Client.Trader.TradingAPI;
 
 namespace NinjaTrader_Client
 {
@@ -76,6 +78,16 @@ namespace NinjaTrader_Client
         {
             BacktestForm backtestForm = new BacktestForm(main.getDatabase());
             backtestForm.ShowDialog();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Wirklich traden?", "", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
+            {
+                Strategy strat = new FastMovement_Strategy(main.getDatabase(), 1000 * 60 * 2, 1000 * 60 * 13, 0.0008, 0.0013, 0.0013, false);
+                strat.setAPI(new NT_LiveTradingAPI(main.getAPI()));
+                main.startTradingLive(strat);
+            }
         }
     }
 }
