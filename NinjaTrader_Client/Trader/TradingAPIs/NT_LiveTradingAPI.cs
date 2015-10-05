@@ -1,12 +1,13 @@
-﻿using NinjaTrader_Client.Model;
+﻿using NinjaTrader_Client.Trader.Model;
 using NinjaTrader_Client.Trader.TradingAPIs;
+using NinjaTrader_Client.Trader.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NinjaTrader_Client.Trader.TradingAPI
+namespace NinjaTrader_Client.Trader.TradingAPIs
 {
     public class NT_LiveTradingAPI : ITradingAPI
     {
@@ -21,7 +22,7 @@ namespace NinjaTrader_Client.Trader.TradingAPI
 
         private Dictionary<string, PairData> pairData = new Dictionary<string,PairData>();
 
-        void api_tickdataArrived(NinjaTrader_Client.Model.Tickdata data, string instrument)
+        void api_tickdataArrived(Tickdata data, string instrument)
         {
             if (pairData.ContainsKey(instrument) == false)
                 pairData.Add(instrument, new PairData());

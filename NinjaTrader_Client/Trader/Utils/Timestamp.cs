@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NinjaTrader_Client.Trader
+namespace NinjaTrader_Client.Trader.Utils
 {
     public class Timestamp
     {

@@ -12,7 +12,7 @@ using NinjaTrader.Client;
 using NinjaTrader_Client.Trader;
 using NinjaTrader_Client.Trader.Model;
 using NinjaTrader_Client.Trader.Strategies;
-using NinjaTrader_Client.Trader.TradingAPI;
+using NinjaTrader_Client.Trader.TradingAPIs;
 
 namespace NinjaTrader_Client
 {

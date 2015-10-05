@@ -1,4 +1,4 @@
-﻿using NinjaTrader_Client.Trader.TradingAPI;
+﻿using NinjaTrader_Client.Trader.TradingAPIs;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

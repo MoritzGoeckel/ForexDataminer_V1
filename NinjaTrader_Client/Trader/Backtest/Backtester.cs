@@ -1,4 +1,6 @@
 ﻿using NinjaTrader_Client.Trader.Model;
+using NinjaTrader_Client.Trader.Strategies;
+using NinjaTrader_Client.Trader.TradingAPIs;
 using System;
 using System.Collections.Generic;
 using System.Linq;

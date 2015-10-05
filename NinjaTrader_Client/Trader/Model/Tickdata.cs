@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NinjaTrader_Client.Model
+namespace NinjaTrader_Client.Trader.Model
 {
     public class Tickdata
     {

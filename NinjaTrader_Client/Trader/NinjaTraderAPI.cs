@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using NinjaTrader.Client;
 using System.Threading;
-using NinjaTrader_Client.Model;
+using NinjaTrader_Client.Trader.Model;
+using NinjaTrader_Client.Trader.Utils;
 
 namespace NinjaTrader_Client.Trader
 {

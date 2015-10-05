@@ -1,5 +1,4 @@
 ﻿using ChartDirector;
-using NinjaTrader_Client.Model;
 using NinjaTrader_Client.Trader.Model;
 using NinjaTrader_Client.Trader.Utils;
 using System;
@@ -8,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NinjaTrader_Client.Trader
+namespace NinjaTrader_Client.Trader.Charting
 {
     class SimpleChart
     {

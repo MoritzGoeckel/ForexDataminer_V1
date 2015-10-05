@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NinjaTrader_Client
+namespace NinjaTrader_Client.Trader
 {
     public class MongoFacade
     {

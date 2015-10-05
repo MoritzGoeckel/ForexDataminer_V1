@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
-using NinjaTrader_Client.Model;
 using NinjaTrader_Client.Trader.Model;
+using NinjaTrader_Client.Trader.Strategies;
 using System;
 using System.Collections.Generic;
 using System.IO;

@@ -1,11 +1,12 @@
 ﻿using NinjaTrader_Client.Trader.Backtest;
+using NinjaTrader_Client.Trader.TradingAPIs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NinjaTrader_Client.Trader
+namespace NinjaTrader_Client.Trader.Strategies
 {
     public abstract class Strategy
     {

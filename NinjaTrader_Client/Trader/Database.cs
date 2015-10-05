@@ -2,8 +2,8 @@
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using Newtonsoft.Json.Linq;
-using NinjaTrader_Client.Model;
 using NinjaTrader_Client.Trader.Model;
+using NinjaTrader_Client.Trader.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;

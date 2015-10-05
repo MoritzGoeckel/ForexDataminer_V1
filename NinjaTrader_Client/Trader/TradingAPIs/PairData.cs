@@ -1,5 +1,4 @@
-﻿using NinjaTrader_Client.Model;
-using NinjaTrader_Client.Trader.Model;
+﻿using NinjaTrader_Client.Trader.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
