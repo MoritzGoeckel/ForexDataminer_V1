@@ -11,6 +11,7 @@ namespace NinjaTrader_Client.Trader.TradingAPI
     public class NT_LiveTradingAPI : ITradingAPI
     {
         private NinjaTraderAPI api;
+        private int orderSize = 100;
 
         public NT_LiveTradingAPI(NinjaTraderAPI api)
         {
@@ -30,7 +31,7 @@ namespace NinjaTrader_Client.Trader.TradingAPI
 
         public override bool openLong(string instrument)
         {
-            if (api.submitOrder(instrument, Model.TradePosition.PositionType.longPosition, 1, pairData[instrument].lastTickData.ask))
+            if (api.submitOrder(instrument, Model.TradePosition.PositionType.longPosition, orderSize, pairData[instrument].lastTickData.ask))
             {
                 pairData[instrument].lastLongPosition = new Model.TradePosition(getNow(), pairData[instrument].lastTickData.ask, Model.TradePosition.PositionType.longPosition, instrument);
                 return true;
@@ -40,7 +41,7 @@ namespace NinjaTrader_Client.Trader.TradingAPI
 
         public override bool openShort(string instrument)
         {
-            if (api.submitOrder(instrument, Model.TradePosition.PositionType.shortPosition, 1, pairData[instrument].lastTickData.bid))
+            if (api.submitOrder(instrument, Model.TradePosition.PositionType.shortPosition, orderSize, pairData[instrument].lastTickData.bid))
             {
                 pairData[instrument].lastShortPosition = new Model.TradePosition(getNow(), pairData[instrument].lastTickData.bid, Model.TradePosition.PositionType.shortPosition, instrument);
                 return true;
@@ -51,7 +52,14 @@ namespace NinjaTrader_Client.Trader.TradingAPI
 
         public override bool closePositions(string instrument)
         {
-            return api.closePosition(instrument);
+            if (api.closePositions(instrument))
+            {
+                pairData[instrument].lastLongPosition = null;
+                pairData[instrument].lastShortPosition = null;
+                return true;
+            }
+            else
+                return false;
         }
 
         public override bool closeShort(string instrument)

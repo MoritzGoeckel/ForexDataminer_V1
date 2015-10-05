@@ -44,6 +44,8 @@ namespace NinjaTrader_Client.Trader
                 updateDataThread = new Thread(updateData);
                 updateDataThread.Start();
                 connected = true;
+
+                ntClient.ConfirmOrders(0);
             }
             else
             {
@@ -94,12 +96,12 @@ namespace NinjaTrader_Client.Trader
         public bool submitOrder(string instrument, NinjaTrader_Client.Trader.Model.TradePosition.PositionType type, int size, double price)
         {
             if (type == Model.TradePosition.PositionType.longPosition)
-                return ntClient.Command("PLACE", account, instrument, "BUY", size, "LIMIT", price, 0, "DAY", "", "", "", "") == 0;
+                return ntClient.Command("PLACE", account, instrument, "BUY", size, "MARKET", price, 0, "DAY", "", "", "", "") == 0;
             else
-                return ntClient.Command("PLACE", account, instrument, "SELL", size, "LIMIT", price, 0, "DAY", "", "", "", "") == 0;
+                return ntClient.Command("PLACE", account, instrument, "SELL", size, "MARKET", price, 0, "DAY", "", "", "", "") == 0;
         }
 
-        public bool closePosition(string instrument)
+        public bool closePositions(string instrument)
         {
             return ntClient.Command("CLOSEPOSITION", account, instrument, "", 0, "", 0, 0, "", "", "", "", "") == 0;
         }
