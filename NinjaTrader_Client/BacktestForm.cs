@@ -18,22 +18,23 @@ namespace NinjaTrader_Client
     public partial class BacktestForm : Form
     {
         Database database;
-        public BacktestForm(Database database)
+        public BacktestForm(Database database, int backtestHours = 48 * 3)
         {
             InitializeComponent();
             this.database = database;
+            this.backtestHours = backtestHours;
+
+            endTimestamp = database.getLastTimestamp();
+            startTimestamp = endTimestamp - (backtestHours * 60 * 60 * 1000);
         }
 
-        Backtester backtester;
+        private Backtester backtester;
 
-        int backtestHours = 48 * 3;
-        long endTimestamp, startTimestamp;
+        private int backtestHours;
+        private long endTimestamp, startTimestamp;
 
         private void BacktestForm_Load(object sender, EventArgs e)
         {
-            endTimestamp = database.getLastTimestamp();
-            startTimestamp = endTimestamp - (backtestHours * 60 * 60 * 1000);
-
             List<string> instruments = new List<string>();
             instruments.Add("EURUSD");
             //instruments.Add("GBPUSD");
@@ -43,19 +44,24 @@ namespace NinjaTrader_Client
             backtester = new Backtester(database, 1, startTimestamp, endTimestamp, instruments);
             backtester.backtestResultArrived += backtester_backtestResultArrived;
 
-            List<Strategy> stretegies = new List<Strategy>();
+            List<Strategy> strategies = new List<Strategy>();
 
             //Ergebnis:
-            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 2, 1000 * 60 * 13, 0.0008, 0.0015, 0.0015, false)); //Gut
-            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 1, 1000 * 60 * 13, 0.0012, 0.0015, 0.0015, false));
-            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 1, 1000 * 60 * 13, 0.0010, 0.0015, 0.0015, false)); //Gut
-            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 1, 1000 * 60 * 13, 0.0010, 0.0010, 0.0010, false));
-            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 1, 1000 * 60 * 13, 0.0012, 0.0010, 0.0010, false));
-            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 1, 1000 * 60 * 13, 0.0012, 0.0013, 0.0013, false));
-            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 1, 1000 * 60 * 13, 0.0010, 0.0013, 0.0013, false));
-            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 2, 1000 * 60 * 13, 0.0008, 0.0013, 0.0013, false)); //Sehr gut, drawdown und profit gut
-            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 3, 1000 * 60 * 13, 0.0008, 0.0015, 0.0015, false)); //Heigh risk
-            stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 3, 1000 * 60 * 13, 0.0008, 0.0013, 0.0013, false)); //Heigh Frequency
+            strategies.Add(new FastMovement_Strategy(database, 1000 * 60 * 2, 1000 * 60 * 13, 0.0008, 0.0015, 0.0015, false)); //Gut
+            strategies.Add(new FastMovement_Strategy(database, 1000 * 60 * 1, 1000 * 60 * 13, 0.0012, 0.0015, 0.0015, false));
+            strategies.Add(new FastMovement_Strategy(database, 1000 * 60 * 1, 1000 * 60 * 13, 0.0010, 0.0015, 0.0015, false)); //Gut
+            strategies.Add(new FastMovement_Strategy(database, 1000 * 60 * 1, 1000 * 60 * 13, 0.0010, 0.0010, 0.0010, false));
+            strategies.Add(new FastMovement_Strategy(database, 1000 * 60 * 1, 1000 * 60 * 13, 0.0012, 0.0010, 0.0010, false));
+            strategies.Add(new FastMovement_Strategy(database, 1000 * 60 * 1, 1000 * 60 * 13, 0.0012, 0.0013, 0.0013, false));
+            strategies.Add(new FastMovement_Strategy(database, 1000 * 60 * 1, 1000 * 60 * 13, 0.0010, 0.0013, 0.0013, false));
+            strategies.Add(new FastMovement_Strategy(database, 1000 * 60 * 3, 1000 * 60 * 13, 0.0008, 0.0015, 0.0015, false)); //Heigh risk
+            strategies.Add(new FastMovement_Strategy(database, 1000 * 60 * 2, 1000 * 60 * 13, 0.0008, 0.0013, 0.0013, false)); //Sehr gut, drawdown und profit gut
+
+            strategies.Add(new FastMovement_Strategy(database, 1000 * 60 * 3, 1000 * 60 * 13, 0.0008, 0.0013, 0.0013, false)); //Heigh Frequency
+
+            strategies.Add(new SSI_Strategy(database));
+
+
 
             //stretegies.Add(new SSI_Strategy(database));
 
@@ -64,7 +70,7 @@ namespace NinjaTrader_Client
 
             /* HERE IS THE PLAYGROUND FOR TESTING */
 
-            backtester.startBacktest(stretegies, "EURUSD");
+            backtester.startBacktest(strategies, "EURUSD");
         }
 
         Dictionary<string, Dictionary<string, BacktestResult>> results = new Dictionary<string, Dictionary<string, BacktestResult>>();

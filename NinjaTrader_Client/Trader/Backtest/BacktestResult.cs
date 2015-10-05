@@ -48,9 +48,12 @@ namespace NinjaTrader_Client.Trader.Backtest
             double drawdown = 999999999;
             int longPositions = 0, winPositions = 0;
 
+            long holdTime = 0;
+
             foreach(TradePosition position in trades)
             {
                 profit += position.getDifference();
+                holdTime += position.timestampClose - position.timestampOpen;
 
                 if (profit < drawdown)
                     drawdown = profit;
@@ -70,6 +73,7 @@ namespace NinjaTrader_Client.Trader.Backtest
             setResult("Pips/Position", (profit / (double)trades.Count).ToString());
             setResult("Pips/Day", (profit / (double)hours * 24d).ToString());
             setResult("Positions/Day", ((double)positions.Count / (double)hours * 24d).ToString());
+            setResult("Holdtime/Positions", (holdTime / positions.Count / 1000 / 60).ToString());
         }
 
         public string getResultText()

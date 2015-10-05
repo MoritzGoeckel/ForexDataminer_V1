@@ -76,7 +76,7 @@ namespace NinjaTrader_Client
 
         private void backtest_btn_Click(object sender, EventArgs e)
         {
-            BacktestForm backtestForm = new BacktestForm(main.getDatabase());
+            BacktestForm backtestForm = new BacktestForm(main.getDatabase(), 24 * 8);
             backtestForm.ShowDialog();
         }
 
@@ -86,7 +86,7 @@ namespace NinjaTrader_Client
             {
                 List<string> tradablePairs = new List<string>();
                 tradablePairs.Add("EURUSD");
-                Strategy strat = new FastMovement_Strategy(main.getDatabase(), 1000 * 60 * 2, 1000 * 60 * 13, 0.0008, 0.0013, 0.0013, false);
+                Strategy strat = new FastMovement_Strategy(main.getDatabase(), 1000 * 60 * 3, 1000 * 60 * 13, 0.0008, 0.0013, 0.0013, false);
                 strat.setAPI(new NT_LiveTradingAPI(main.getAPI()));
                 main.startTradingLive(strat, tradablePairs);
             }
