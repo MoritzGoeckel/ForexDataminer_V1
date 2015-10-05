@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace NinjaTrader_Client.Trader.TradingAPI
 {
-    class NT_LiveTradingAPI : ITradingAPI
+    public class NT_LiveTradingAPI : ITradingAPI
     {
         private NinjaTraderAPI api;
 

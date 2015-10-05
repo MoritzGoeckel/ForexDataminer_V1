@@ -36,6 +36,7 @@
             this.button4 = new System.Windows.Forms.Button();
             this.backtest_btn = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
+            this.button6 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -116,11 +117,22 @@
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(158, 130);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(114, 23);
+            this.button6.TabIndex = 8;
+            this.button6.Text = "Open Trade Form";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
+            this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.backtest_btn);
             this.Controls.Add(this.button4);
@@ -148,6 +160,7 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button backtest_btn;
         private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button button6;
     }
 }
 

@@ -83,7 +83,7 @@ namespace NinjaTrader_Client.Trader
         {
             priceDatabase.setPrice(data, instrument);
 
-            if (strat != null && instrument == "EURUSD") //Unschön, andere Pairs?
+            if (strat != null && instrument == "EURUSD") //Unschön, andere Pairs????
                 strat.doTick(instrument);
 
             UIData uiData = new UIData();
