@@ -6,6 +6,7 @@ using NinjaTrader_Client.Model;
 using NinjaTrader_Client.Trader.Model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -111,26 +112,41 @@ namespace NinjaTrader_Client.Trader
             return output;
         }
 
-        public BsonDocument getExportData(long startTime)
+        public void exportData(long startTimestamp, string basePath)
         {
-            BsonDocument exportData = new BsonDocument();
+            if (Directory.Exists(basePath + "/export") == false)
+                Directory.CreateDirectory(basePath + "/export");
 
-            List<MongoCollection<BsonDocument>> list = mongodb.getCollections();
-            foreach (MongoCollection<BsonDocument> collection in list)
+            string now = Timestamp.getNow().ToString();
+            string nowReadable = DateTime.Now.ToString("yyyy-MM-dd");
+
+            int i = 0;
+            foreach(MongoCollection<BsonDocument> collection in mongodb.getCollections())
             {
                 if (collection.Name.Contains("system.indexes") == false)
                 {
-                    var docs = collection.Find(Query.GT("timestamp", startTime - 1L)).SetSortOrder(SortBy.Ascending("timestamp"));
+                    string export_str = getExportData(startTimestamp, collection).ToString();
+                    export_str = StringCompressor.CompressString(export_str);
 
-                    var array = new BsonArray();
-                    foreach (var item in docs)
-                    {
-                        array.Add(item);
-                    }
-
-                    exportData[collection.Name] = array;
+                    File.WriteAllText(basePath + "/export/database_" + nowReadable + "_" + startTimestamp + "_" + now + "_PART-" + i + ".json", export_str); //1443611923418
+                    i++;
                 }
             }
+        }
+
+        private BsonDocument getExportData(long startTime, MongoCollection<BsonDocument> collection)
+        {
+            BsonDocument exportData = new BsonDocument();
+            
+            var docs = collection.Find(Query.GT("timestamp", startTime - 1L)).SetSortOrder(SortBy.Ascending("timestamp"));
+
+            var array = new BsonArray();
+            foreach (var item in docs)
+            {
+                array.Add(item);
+            }
+
+            exportData[collection.Name] = array;
 
             return exportData;
         }
@@ -146,7 +162,7 @@ namespace NinjaTrader_Client.Trader
                 {
                     var result = mongodb.getCollection(name).InsertBatch(doc[name].AsBsonArray, options);
                 }
-                catch { }
+                catch { errors++; }
                     //.Insert(doc[name].AsBsonArray); //Untested
             }
 

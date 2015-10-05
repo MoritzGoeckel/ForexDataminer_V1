@@ -61,16 +61,7 @@ namespace NinjaTrader_Client
         {
             try
             {
-                BsonDocument export = database.getExportData(Convert.ToInt64(textBox_from.Text));
-
-                if (Directory.Exists(Application.StartupPath + "/export") == false)
-                    Directory.CreateDirectory(Application.StartupPath + "/export");
-
-                string export_str = export.ToString();
-                export_str = StringCompressor.CompressString(export_str);
-
-                File.WriteAllText(Application.StartupPath + "/export/database_" + DateTime.Now.ToString("yyyy-MM-dd") + "_" + textBox_from.Text + "_" + Timestamp.getNow().ToString() + ".json", export_str);
-
+                database.exportData(Convert.ToInt64(textBox_from.Text), Application.StartupPath);
                 reportResult("Export successful");
             }
             catch (Exception ex)
@@ -86,10 +77,18 @@ namespace NinjaTrader_Client
 
             if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                string content = File.ReadAllText(fileDialog.FileName);
-                content = StringCompressor.DecompressString(content);
+                string path = fileDialog.FileName.Substring(0, fileDialog.FileName.LastIndexOf('\\'));
+                string file = fileDialog.FileName.Substring(fileDialog.FileName.LastIndexOf('\\') + 1);
 
-                database.importData(content);
+                DirectoryInfo dir = new DirectoryInfo(path);
+                foreach(FileInfo fileinfo in dir.GetFiles(file.Substring(0, file.LastIndexOf("PART")) + "*"))
+                {
+                    string content = File.ReadAllText(fileinfo.FullName);
+                    content = StringCompressor.DecompressString(content);
+
+                    database.importData(content);
+                }
+
                 textBox_now.Text = database.getLastTimestamp().ToString();
                 MessageBox.Show("Import done.");
             }
