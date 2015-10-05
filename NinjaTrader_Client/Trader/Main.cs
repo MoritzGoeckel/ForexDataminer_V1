@@ -12,11 +12,11 @@ namespace NinjaTrader_Client.Trader
 {
     public class Main
     {
-        MongoFacade mongodb;
-        Database priceDatabase;
-        NinjaTraderAPI api;
-        SSI_Downloader ssi;
-        Config config;
+        private MongoFacade mongodb;
+        private Database priceDatabase;
+        private NinjaTraderAPI api;
+        private SSI_Downloader ssi;
+        private Config config;
 
         public delegate void UIDataChangedHandler(UIData uiData);
         public event UIDataChangedHandler uiDataChanged;
@@ -41,8 +41,6 @@ namespace NinjaTrader_Client.Trader
             instruments.Add("GBPJPY");
 
             config = new Config(startupPath);
-
-            //mongodb = new MongoFacade(@"E:\Programmieren\C# Neu\NinjaTrader_Client\Output\Database\mongo\mongod.exe", @"E:\Programmieren\C# Neu\NinjaTrader_Client\Output\Database\data", "nt_trader");
             mongodb = new MongoFacade(config.mongodbExePath, config.mongodbDataPath, "nt_trader");
             
             priceDatabase = new Database(mongodb);
@@ -60,20 +58,30 @@ namespace NinjaTrader_Client.Trader
             return api;
         }
 
+        private bool isDownloadingUpdates = false;
         public void startDownloadingUpdates()
         {
-            ssi.sourceDataArrived += ssi_sourceDataArrived;
-            ssi.start();
-            api.tickdataArrived += api_tickdataArrived;
+            if (isDownloadingUpdates == false)
+            {
+                ssi.sourceDataArrived += ssi_sourceDataArrived;
+                ssi.start();
+                api.tickdataArrived += api_tickdataArrived;
+                isDownloadingUpdates = true;
+            }
         }
 
-        Strategy strat;
-        public void startTradingLive(Strategy strat)
+        private Strategy strat;
+        private List<string> tradablePairs;
+        public void startTradingLive(Strategy strat, List<string> tradablePairs)
         {
             this.strat = strat;
+            this.tradablePairs = tradablePairs;
+
+            if (isDownloadingUpdates == false)
+                startDownloadingUpdates();
         }
 
-        void ssi_sourceDataArrived(double value, long timestamp, string sourceName, string instrument)
+        private void ssi_sourceDataArrived(double value, long timestamp, string sourceName, string instrument)
         {
             priceDatabase.setIndicator(new IndicatorData(timestamp, value), sourceName, instrument);
         }
@@ -83,7 +91,7 @@ namespace NinjaTrader_Client.Trader
         {
             priceDatabase.setPrice(data, instrument);
 
-            if (strat != null && instrument == "EURUSD") //Unschön, andere Pairs????
+            if (strat != null && tradablePairs.Contains(instrument))
                 strat.doTick(instrument);
 
             UIData uiData = new UIData();

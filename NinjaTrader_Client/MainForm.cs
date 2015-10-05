@@ -82,12 +82,13 @@ namespace NinjaTrader_Client
 
         private void button5_Click(object sender, EventArgs e)
         {
-            //LiveTrading API testen???
             if (MessageBox.Show("Wirklich traden?", "", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
             {
+                List<string> tradablePairs = new List<string>();
+                tradablePairs.Add("EURUSD");
                 Strategy strat = new FastMovement_Strategy(main.getDatabase(), 1000 * 60 * 2, 1000 * 60 * 13, 0.0008, 0.0013, 0.0013, false);
                 strat.setAPI(new NT_LiveTradingAPI(main.getAPI()));
-                main.startTradingLive(strat);
+                main.startTradingLive(strat, tradablePairs);
             }
         }
 
