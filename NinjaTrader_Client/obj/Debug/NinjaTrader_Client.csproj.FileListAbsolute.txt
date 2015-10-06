@@ -17,3 +17,5 @@ E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\Debug\NinjaTra
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\Debug\NinjaTrader_Client.BacktestForm.resources
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\Debug\NinjaTrader_Client.LiveTradingForm.resources
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\Debug\NinjaTrader_Client.csprojResolveAssemblyReference.cache
+E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\bin\Debug\NinjaTrader_Client.exe.CodeAnalysisLog.xml
+E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\bin\Debug\NinjaTrader_Client.exe.lastcodeanalysissucceeded
