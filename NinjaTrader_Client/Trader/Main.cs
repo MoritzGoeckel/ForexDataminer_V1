@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NinjaTrader_Client.Trader
@@ -72,6 +73,10 @@ namespace NinjaTrader_Client.Trader
 
         private Strategy strat;
         private List<string> tradablePairs;
+        private Thread autoTradingTimerThread;
+        private bool continueLiveTradingThread = false;
+        private int tradingTick = 0;
+
         public void startTradingLive(Strategy strat, List<string> tradablePairs)
         {
             this.strat = strat;
@@ -79,6 +84,24 @@ namespace NinjaTrader_Client.Trader
 
             if (isDownloadingUpdates == false)
                 startDownloadingUpdates();
+
+            continueLiveTradingThread = true;
+            autoTradingTimerThread = new Thread(delegate()
+            {
+                while (continueLiveTradingThread)
+                {
+                    tradingTick++;
+                    if (tradingTick > 1000)
+                        tradingTick = 0;
+
+                    if(strat != null)
+                        foreach (string instrument in tradablePairs)
+                            strat.doTick(instrument);
+
+                    Thread.Sleep(500); //Alle 1/2 sekunden
+                }
+            });
+            autoTradingTimerThread.Start();
         }
 
         private void ssi_sourceDataArrived(double value, long timestamp, string sourceName, string instrument)
@@ -91,19 +114,23 @@ namespace NinjaTrader_Client.Trader
         {
             priceDatabase.setPrice(data, instrument);
 
-            if (strat != null && tradablePairs.Contains(instrument))
-                strat.doTick(instrument);
-
             UIData uiData = new UIData();
             uiData.dbErrors = priceDatabase.errors;
             uiData.dataSets = insertedSets++;
-            
+            uiData.tradingTick = tradingTick;
+
             if (uiDataChanged != null)
                 uiDataChanged(uiData);
         }
 
         public void stop()
         {
+            if (continueLiveTradingThread)
+                continueLiveTradingThread = false;
+
+            if (autoTradingTimerThread != null)
+                autoTradingTimerThread.Abort();
+
             ssi.stop();
             api.stop();
             mongodb.shutdown();

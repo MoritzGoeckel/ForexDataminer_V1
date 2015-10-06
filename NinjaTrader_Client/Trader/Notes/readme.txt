@@ -1,0 +1,1 @@
+﻿Tools -> Options -> Confirm order Placement = false

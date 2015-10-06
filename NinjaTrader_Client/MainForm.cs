@@ -45,6 +45,7 @@ namespace NinjaTrader_Client
 
             label1.Text = "Errors: " + data.dbErrors;
             label2.Text = "Datasets: " + data.dataSets;
+            label3.Text = "Tradingtick: " + data.tradingTick;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -87,14 +88,14 @@ namespace NinjaTrader_Client
                 List<string> tradablePairs = new List<string>();
                 tradablePairs.Add("EURUSD");
                 Strategy strat = new FastMovement_Strategy(main.getDatabase(), 1000 * 60 * 3, 1000 * 60 * 13, 0.0008, 0.0013, 0.0013, false);
-                strat.setAPI(new NT_LiveTradingAPI(main.getAPI()));
+                strat.setAPI(new NT_LiveTradingAPI(main.getAPI(), 100));
                 main.startTradingLive(strat, tradablePairs);
             }
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            NT_LiveTradingAPI api = new NT_LiveTradingAPI(main.getAPI());
+            NT_LiveTradingAPI api = new NT_LiveTradingAPI(main.getAPI(), 100);
             LiveTradingForm form = new LiveTradingForm(api);
             form.ShowDialog();
         }

@@ -10,5 +10,7 @@ namespace NinjaTrader_Client.Trader.Model
     {
         public int dbErrors = 0;
         public long dataSets = 0;
+
+        public int tradingTick = 0;
     }
 }

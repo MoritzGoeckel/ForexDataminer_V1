@@ -171,6 +171,7 @@
   <ItemGroup>
     <Content Include="Trader\Notes\deadCode.txt" />
     <Content Include="Trader\Notes\Todo.txt" />
+    <Content Include="Trader\Notes\readme.txt" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

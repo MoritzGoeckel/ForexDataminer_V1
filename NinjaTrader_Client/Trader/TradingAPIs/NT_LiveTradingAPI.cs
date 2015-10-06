@@ -12,11 +12,12 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
     public class NT_LiveTradingAPI : ITradingAPI
     {
         private NinjaTraderAPI api;
-        private int orderSize = 100;
+        private int positionSize = 100;
 
-        public NT_LiveTradingAPI(NinjaTraderAPI api)
+        public NT_LiveTradingAPI(NinjaTraderAPI api, int positionSize)
         {
             this.api = api;
+            this.positionSize = positionSize;
             api.tickdataArrived += api_tickdataArrived;
         }
 
@@ -32,7 +33,7 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
 
         public override bool openLong(string instrument)
         {
-            if (api.submitOrder(instrument, Model.TradePosition.PositionType.longPosition, orderSize, pairData[instrument].lastTickData.ask))
+            if (api.submitOrder(instrument, Model.TradePosition.PositionType.longPosition, positionSize, pairData[instrument].lastTickData.ask))
             {
                 pairData[instrument].lastLongPosition = new Model.TradePosition(getNow(), pairData[instrument].lastTickData.ask, Model.TradePosition.PositionType.longPosition, instrument);
                 return true;
@@ -42,7 +43,7 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
 
         public override bool openShort(string instrument)
         {
-            if (api.submitOrder(instrument, Model.TradePosition.PositionType.shortPosition, orderSize, pairData[instrument].lastTickData.bid))
+            if (api.submitOrder(instrument, Model.TradePosition.PositionType.shortPosition, positionSize, pairData[instrument].lastTickData.bid))
             {
                 pairData[instrument].lastShortPosition = new Model.TradePosition(getNow(), pairData[instrument].lastTickData.bid, Model.TradePosition.PositionType.shortPosition, instrument);
                 return true;
