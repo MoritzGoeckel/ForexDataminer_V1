@@ -28,7 +28,7 @@ namespace NinjaTrader_Client.Trader
         [MethodImpl(MethodImplOptions.Synchronized)]
         public Tickdata getPrice(long timestamp, string instrument)
         {
-            if (chachedPrices.ContainsKey(timestamp + instrument)) //Simple Caching
+            if (chachedPrices.ContainsKey(timestamp + instrument)) //Simple Caching with leak
                 return chachedPrices[timestamp + instrument];
             else
             {

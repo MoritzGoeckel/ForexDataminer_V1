@@ -12,7 +12,7 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
     public class NT_LiveTradingAPI : ITradingAPI
     {
         private NinjaTraderAPI api;
-        private int positionSize = 100;
+        private int positionSize = 1000;
 
         public NT_LiveTradingAPI(NinjaTraderAPI api, int positionSize)
         {
@@ -36,6 +36,11 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
 
                 if (pos > 0 && pairData[instrument].lastLongPosition == null)
                     pairData[instrument].lastLongPosition = new TradePosition(0, data.ask, TradePosition.PositionType.longPosition, instrument);
+            }
+            else // 0 = flat
+            {
+                pairData[instrument].lastShortPosition = null;
+                pairData[instrument].lastLongPosition = null;
             }
 
             pairData[instrument].lastTickData = data;
