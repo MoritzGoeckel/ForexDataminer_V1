@@ -124,7 +124,7 @@
     <Compile Include="Trader\SSI_Downloader.cs" />
     <Compile Include="Trader\TradingAPIs\NT_LiveTradingAPI.cs" />
     <Compile Include="Trader\TradingAPIs\PairData.cs" />
-    <Compile Include="Trader\TradingAPIs\TradingAPI.cs" />
+    <Compile Include="Trader\TradingAPIs\ITradingAPI.cs" />
     <Compile Include="Trader\Utils\HexColorCodes.cs" />
     <Compile Include="Trader\Utils\StringCompressor.cs" />
     <Compile Include="Trader\Utils\Timestamp.cs" />
