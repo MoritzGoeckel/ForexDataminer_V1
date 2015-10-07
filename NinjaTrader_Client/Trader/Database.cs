@@ -23,7 +23,7 @@ namespace NinjaTrader_Client.Trader
             mongodb = mongoDbFacade;
         }
 
-        private Dictionary<string, Tickdata> chachedPrices = new Dictionary<string, Tickdata>();
+        private Dictionary<string, Tickdata> chachedPrices = new Dictionary<string, Tickdata>(); //LEAK
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         public Tickdata getPrice(long timestamp, string instrument)

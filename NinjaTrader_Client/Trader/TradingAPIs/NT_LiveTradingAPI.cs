@@ -28,6 +28,16 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
             if (pairData.ContainsKey(instrument) == false)
                 pairData.Add(instrument, new PairData());
 
+            int pos = api.getMarketPosition(instrument);
+            if (pos != 0)
+            {
+                if (pos < 0 && pairData[instrument].lastShortPosition == null)
+                    pairData[instrument].lastShortPosition = new TradePosition(0, data.bid, TradePosition.PositionType.shortPosition, instrument);
+
+                if (pos > 0 && pairData[instrument].lastLongPosition == null)
+                    pairData[instrument].lastLongPosition = new TradePosition(0, data.ask, TradePosition.PositionType.longPosition, instrument);
+            }
+
             pairData[instrument].lastTickData = data;
         }
 

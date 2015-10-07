@@ -78,71 +78,71 @@ namespace NinjaTrader_Client.Trader.Strategies
             if (old_tickdata.Count != 0)
             {
                 Tickdata pastTick = old_tickdata[old_tickdata.Count - 1]; //The tick in preTime
+                bool longSignal = nowTick.bid - pastTick.ask > threshold;
+                bool shortSignal = pastTick.bid - nowTick.ask > threshold;
+
+                if (follow_trend == false)
+                {
+                    bool oldLong = longSignal;
+
+                    longSignal = shortSignal;
+                    shortSignal = oldLong;
+                }
 
                 //New Orders if movement in preTime is > threshold
                 //Long
-                if (api.getLongPosition(instrument) == null && nowTick.bid - pastTick.ask > threshold)
+                if (api.getLongPosition(instrument) == null && longSignal)
+                    api.openLong(instrument);
+
+                //Short
+                if (api.getShortPosition(instrument) == null && shortSignal)
+                    api.openShort(instrument);
+
+                //Close orders after postTime elapsed
+                //Long
+                if (api.getLongPosition(instrument) != null && api.getNow() - api.getLongPosition(instrument).timestampOpen > postTime && longSignal == false)
                 {
-                    if (follow_trend)
-                        api.openLong(instrument);
-                    else
-                        api.openShort(instrument);
+                    api.closeLong(instrument);
+                    hitTO++;
                 }
 
                 //Short
-                if (api.getShortPosition(instrument) == null && pastTick.bid - nowTick.ask > threshold)
-                {
-                    if (follow_trend)
-                        api.openShort(instrument);
-                    else
-                        api.openLong(instrument);
-                }
-            }
-
-            //Close orders after postTime elapsed
-            //Long
-            if (api.getLongPosition(instrument) != null && api.getNow() - api.getLongPosition(instrument).timestampOpen > postTime)
-            {
-                api.closeLong(instrument);
-                hitTO++;
-            }
-
-            //Short
-            if (api.getShortPosition(instrument) != null && api.getNow() - api.getShortPosition(instrument).timestampOpen > postTime)
-            {
-                api.closeShort(instrument);
-                hitTO++;
-            }
-
-            //Close on win
-            if (closeOnWin != 0)
-            {
-                if (api.getLongPosition(instrument) != null && api.getBid(instrument) > api.getLongPosition(instrument).priceOpen + closeOnWin)
-                {
-                    api.closeLong(instrument);
-                    hitTP++;
-                }
-
-                if (api.getShortPosition(instrument) != null && api.getAsk(instrument) + closeOnWin < api.getShortPosition(instrument).priceOpen)
+                if (api.getShortPosition(instrument) != null && api.getNow() - api.getShortPosition(instrument).timestampOpen > postTime && shortSignal == false)
                 {
                     api.closeShort(instrument);
-                    hitTP++;
-                }
-            }
-
-            //Close on loose
-            if (closeOnLoose != 0)
-            {
-                if (api.getLongPosition(instrument) != null && api.getBid(instrument) + closeOnLoose < api.getLongPosition(instrument).priceOpen)
-                {
-                    api.closeLong(instrument);
-                    hitSL++;
+                    hitTO++;
                 }
 
-                if (api.getShortPosition(instrument) != null && api.getAsk(instrument) > api.getShortPosition(instrument).priceOpen + closeOnLoose)
+                //Close on win
+                if (closeOnWin != 0)
                 {
-                    api.closeShort(instrument);
-                    hitSL++;
+                    if (api.getLongPosition(instrument) != null && api.getBid(instrument) > api.getLongPosition(instrument).priceOpen + closeOnWin && longSignal == false)
+                    {
+                        api.closeLong(instrument);
+                        hitTP++;
+                    }
+
+                    if (api.getShortPosition(instrument) != null && api.getAsk(instrument) + closeOnWin < api.getShortPosition(instrument).priceOpen && shortSignal == false)
+                    {
+                        api.closeShort(instrument);
+                        hitTP++;
+                    }
+                }
+
+                //Close on loose
+                if (closeOnLoose != 0)
+                {
+                    if (api.getLongPosition(instrument) != null && api.getBid(instrument) + closeOnLoose < api.getLongPosition(instrument).priceOpen && longSignal == false)
+                    {
+                        api.closeLong(instrument);
+                        hitSL++;
+                    }
+
+                    if (api.getShortPosition(instrument) != null && api.getAsk(instrument) > api.getShortPosition(instrument).priceOpen + closeOnLoose && shortSignal == false)
+                    {
+                        api.closeShort(instrument);
+                        hitSL++;
+                    }
                 }
             }
 
