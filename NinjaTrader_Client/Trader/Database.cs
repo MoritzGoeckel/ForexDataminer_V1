@@ -23,19 +23,28 @@ namespace NinjaTrader_Client.Trader
             mongodb = mongoDbFacade;
         }
 
+        private Dictionary<string, Tickdata> chachedPrices = new Dictionary<string, Tickdata>();
+
         [MethodImpl(MethodImplOptions.Synchronized)]
         public Tickdata getPrice(long timestamp, string instrument)
         {
-            var collection = mongodb.getCollection(instrument);
+            if (chachedPrices.ContainsKey(timestamp + instrument)) //Simple Caching
+                return chachedPrices[timestamp + instrument];
+            else
+            {
+                var collection = mongodb.getCollection(instrument);
 
-            var docsDarunter = collection.Find(Query.LT("timestamp", timestamp + 1)).SetSortOrder(SortBy.Descending("timestamp")).SetLimit(1);
-            BsonDocument darunter = docsDarunter.ToList<BsonDocument>()[0];
+                var docsDarunter = collection.Find(Query.LT("timestamp", timestamp + 1)).SetSortOrder(SortBy.Descending("timestamp")).SetLimit(1);
+                BsonDocument darunter = docsDarunter.ToList<BsonDocument>()[0];
 
-            Tickdata data = new Tickdata(darunter["timestamp"].AsInt64, darunter["last"].AsDouble, darunter["bid"].AsDouble, darunter["ask"].AsDouble);
+                Tickdata data = new Tickdata(darunter["timestamp"].AsInt64, darunter["last"].AsDouble, darunter["bid"].AsDouble, darunter["ask"].AsDouble);
+                chachedPrices.Add(timestamp + instrument, data);
 
-            return data;
+                return data;
+            }
         }
 
+        //Chache too?
         public List<Tickdata> getPrices(long startTimestamp, long endTimestamp, string instrument)
         {
             var collection = mongodb.getCollection(instrument);
@@ -78,6 +87,7 @@ namespace NinjaTrader_Client.Trader
             catch { errors++; }
         }
 
+        //cache it too?
         public IndicatorData getIndicator(long timestamp, string indicatorName, string instrument)
         {
             var collection = mongodb.getCollection(instrument + "_" + indicatorName);
@@ -118,7 +128,7 @@ namespace NinjaTrader_Client.Trader
                     string export_str = getExportData(startTimestamp, collection).ToString();
                     export_str = StringCompressor.CompressString(export_str);
 
-                    File.WriteAllText(basePath + "/export/database_" + nowReadable + "_" + startTimestamp + "_" + now + "_PART-" + i + ".json", export_str);
+                    File.WriteAllText(basePath + "/export/database_" + nowReadable + "_" + startTimestamp + "_" + now + "_PART-" + i + ".json", export_str); //1443611923418
                     i++;
                 }
             }
