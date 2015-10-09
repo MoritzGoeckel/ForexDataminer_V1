@@ -59,7 +59,7 @@ namespace NinjaTrader_Client
 
         private void button2_Click(object sender, EventArgs e)
         {
-            ChartingForm cf = new ChartingForm(main.getDatabase(), null, main.getDatabase().getLastTimestamp() - 1000 * 60 * 60 * 48, main.getDatabase().getLastTimestamp());
+            ChartingForm cf = new ChartingForm(main.getDatabase(), null, main.getDatabase().getLastTimestamp() - 1000 * 60 * 60 * 300, main.getDatabase().getLastTimestamp());
             cf.ShowDialog();
         }
 
@@ -88,14 +88,14 @@ namespace NinjaTrader_Client
                 List<string> tradablePairs = new List<string>();
                 tradablePairs.Add("EURUSD");
                 Strategy strat = new FastMovement_Strategy(main.getDatabase(), 1000 * 60 * 3, 1000 * 60 * 13, 0.0008, 0.0013, 0.0013, false);
-                strat.setAPI(new NT_LiveTradingAPI(main.getAPI(), 100));
+                strat.setAPI(new NTLiveTradingAPI(main.getAPI(), 100));
                 main.startTradingLive(strat, tradablePairs);
             }
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            NT_LiveTradingAPI api = new NT_LiveTradingAPI(main.getAPI(), 100);
+            NTLiveTradingAPI api = new NTLiveTradingAPI(main.getAPI(), 100);
             LiveTradingForm form = new LiveTradingForm(api);
             form.ShowDialog();
         }

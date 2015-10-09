@@ -23,13 +23,20 @@ namespace NinjaTrader_Client.Trader
             mongodb = mongoDbFacade;
         }
 
-        private Dictionary<string, Tickdata> chachedPrices = new Dictionary<string, Tickdata>(); //LEAK
+        private Dictionary<string, Tickdata> cachedPrices = new Dictionary<string, Tickdata>();
+        private long chacheLastClearedTimestamp = 0;
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         public Tickdata getPrice(long timestamp, string instrument)
         {
-            if (chachedPrices.ContainsKey(timestamp + instrument)) //Simple Caching with leak
-                return chachedPrices[timestamp + instrument];
+            if (Timestamp.getNow() - chacheLastClearedTimestamp > 1000 * 60 * 60 * 1) //Nach einer Stunde, verhindert überlaufen
+            {
+                chacheLastClearedTimestamp = Timestamp.getNow();
+                cachedPrices.Clear();
+            }
+
+            if (cachedPrices.ContainsKey(timestamp + instrument)) //Simple Caching
+                return cachedPrices[timestamp + instrument];
             else
             {
                 var collection = mongodb.getCollection(instrument);
@@ -38,7 +45,7 @@ namespace NinjaTrader_Client.Trader
                 BsonDocument darunter = docsDarunter.ToList<BsonDocument>()[0];
 
                 Tickdata data = new Tickdata(darunter["timestamp"].AsInt64, darunter["last"].AsDouble, darunter["bid"].AsDouble, darunter["ask"].AsDouble);
-                chachedPrices.Add(timestamp + instrument, data);
+                cachedPrices.Add(timestamp + instrument, data);
 
                 return data;
             }

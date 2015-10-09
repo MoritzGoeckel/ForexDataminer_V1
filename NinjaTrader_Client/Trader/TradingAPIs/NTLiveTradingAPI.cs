@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace NinjaTrader_Client.Trader.TradingAPIs
 {
-    public class NT_LiveTradingAPI : ITradingAPI
+    public class NTLiveTradingAPI : ITradingAPI
     {
         private NinjaTraderAPI api;
         private int positionSize = 1000;
 
-        public NT_LiveTradingAPI(NinjaTraderAPI api, int positionSize)
+        public NTLiveTradingAPI(NinjaTraderAPI api, int positionSize)
         {
             this.api = api;
             this.positionSize = positionSize;
