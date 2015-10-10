@@ -109,7 +109,8 @@
     <Compile Include="Trader\Indicators\Indicator.cs" />
     <Compile Include="Trader\Indicators\StochIndicator.cs" />
     <Compile Include="Trader\Strategies\FastMovement_Strategy.cs" />
-    <Compile Include="Trader\Strategies\SSI_Strategy.cs" />
+    <Compile Include="Trader\Strategies\SSIStochStrategy.cs" />
+    <Compile Include="Trader\Strategies\SSIStrategy.cs" />
     <Compile Include="Trader\TradingAPIs\BacktestTradingAPI.cs" />
     <Compile Include="Trader\Model\TradePosition.cs" />
     <Compile Include="Trader\Strategies\Strategy.cs" />

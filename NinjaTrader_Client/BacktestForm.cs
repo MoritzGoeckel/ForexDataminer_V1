@@ -59,7 +59,7 @@ namespace NinjaTrader_Client
 
             strategies.Add(new FastMovement_Strategy(database, 1000 * 60 * 3, 1000 * 60 * 13, 0.0008, 0.0013, 0.0013, false)); //Heigh Frequency
 
-            strategies.Add(new SSI_Strategy(database));
+            strategies.Add(new SSIStrategy(database));
 
 
 

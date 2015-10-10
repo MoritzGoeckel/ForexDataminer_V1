@@ -7,21 +7,21 @@ using System.Threading.Tasks;
 
 namespace NinjaTrader_Client.Trader.Strategies
 {
-    public class SSI_Strategy : Strategy
+    public class SSIStrategy : Strategy
     {
-        public SSI_Strategy(Database database) : base(database)
+        public SSIStrategy(Database database) : base(database)
         {
             
         }
 
         public override Strategy copy()
         {
-            return new SSI_Strategy(database);
+            return new SSIStrategy(database);
         }
 
         public override string getName()
         {
-            return "SSI-Strategy";
+            return "SSIStrategy";
         }
 
         public override BacktestResult addCustomVariables(BacktestResult given)

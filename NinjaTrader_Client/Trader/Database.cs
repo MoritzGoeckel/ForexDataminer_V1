@@ -35,7 +35,7 @@ namespace NinjaTrader_Client.Trader
                 cachedPrices.Clear();
             }
 
-            if (cachedPrices.ContainsKey(timestamp + instrument)) //Simple Caching
+            if (cachedPrices.ContainsKey(timestamp + instrument)) //Simple Caching (Nicht schön... oder?)
                 return cachedPrices[timestamp + instrument];
             else
             {
