@@ -41,7 +41,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             if (api.isUptodate(instrument) == false)
                 return;
 
-            double ssi = database.getIndicator(api.getNow(), "ssi-mt4", instrument).value;
+            double ssi = database.getData(api.getNow(), "ssi-mt4", instrument).value;
 
             if (api.getNow() > pauseTil)
             {

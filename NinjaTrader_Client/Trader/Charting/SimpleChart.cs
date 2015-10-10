@@ -93,7 +93,7 @@ namespace NinjaTrader_Client.Trader.Charting
                 timestamps[index] = tick.timestamp;
 
                 //ssi_win[index] = database.getIndicator(tick.timestamp, "ssi-win-mt4", instrument).value;
-                ssi[index] = database.getIndicator(tick.timestamp, "ssi-mt4", instrument).value;
+                ssi[index] = database.getData(tick.timestamp, "ssi-mt4", instrument).value;
                 zero[index] = 0;
 
                 index++;

@@ -14,7 +14,7 @@ namespace NinjaTrader_Client.Trader
     public class Main
     {
         private MongoFacade mongodb;
-        private Database priceDatabase;
+        private Database database;
         private NinjaTraderAPI api;
         private SSI_Downloader ssi;
         private Config config;
@@ -44,14 +44,14 @@ namespace NinjaTrader_Client.Trader
             config = new Config(startupPath);
             mongodb = new MongoFacade(config.mongodbExePath, config.mongodbDataPath, "nt_trader");
             
-            priceDatabase = new Database(mongodb);
+            database = new Database(mongodb);
             api = new NinjaTraderAPI(instruments);
             ssi = new SSI_Downloader(instruments);
         }
 
         public Database getDatabase()
         {
-            return priceDatabase;
+            return database;
         }
 
         public NinjaTraderAPI getAPI()
@@ -106,16 +106,16 @@ namespace NinjaTrader_Client.Trader
 
         private void ssi_sourceDataArrived(double value, long timestamp, string sourceName, string instrument)
         {
-            priceDatabase.setIndicator(new IndicatorData(timestamp, value), sourceName, instrument);
+            database.setData(new TimeValueData(timestamp, value), sourceName, instrument);
         }
 
         int insertedSets = 0;
         private void api_tickdataArrived(Tickdata data, string instrument)
         {
-            priceDatabase.setPrice(data, instrument);
+            database.setPrice(data, instrument);
 
             UIData uiData = new UIData();
-            uiData.dbErrors = priceDatabase.errors;
+            uiData.dbErrors = database.errors;
             uiData.dataSets = insertedSets++;
             uiData.tradingTick = tradingTick;
 

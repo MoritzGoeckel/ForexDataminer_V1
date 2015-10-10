@@ -81,7 +81,7 @@ namespace NinjaTrader_Client.Trader
             catch { errors++; }
         }
 
-        public void setIndicator(IndicatorData data, string indicatorName, string instrument) 
+        public void setData(TimeValueData data, string dataName, string instrument) 
         {
             try
             {
@@ -89,31 +89,31 @@ namespace NinjaTrader_Client.Trader
                 input.SetElement(new BsonElement("timestamp", data.timestamp));
                 input.SetElement(new BsonElement("value", data.value));
 
-                mongodb.getCollection(instrument + "_" + indicatorName).Insert(input);
+                mongodb.getCollection(instrument + "_" + dataName).Insert(input);
             }
             catch { errors++; }
         }
 
         //cache it too?
-        public IndicatorData getIndicator(long timestamp, string indicatorName, string instrument)
+        public TimeValueData getData(long timestamp, string dataName, string instrument)
         {
-            var collection = mongodb.getCollection(instrument + "_" + indicatorName);
+            var collection = mongodb.getCollection(instrument + "_" + dataName);
 
             var docsDarunter = collection.Find(Query.LT("timestamp", timestamp + 1L)).SetSortOrder(SortBy.Descending("timestamp")).SetLimit(1);
             BsonDocument darunter = docsDarunter.ToList<BsonDocument>()[0]; //Will throw interrupt when the timestamp is to early in history. Should be handled ???
 
-            return new IndicatorData(darunter["timestamp"].AsInt64, darunter["value"].AsDouble);
+            return new TimeValueData(darunter["timestamp"].AsInt64, darunter["value"].AsDouble);
         }
 
-        public List<IndicatorData> getIndicators(long startTimestamp, long endTimestamp, string indicatorName, string instrument)
+        public List<TimeValueData> getDataInRange(long startTimestamp, long endTimestamp, string dataName, string instrument)
         {
-            var collection = mongodb.getCollection(instrument + "_" + indicatorName);
+            var collection = mongodb.getCollection(instrument + "_" + dataName);
             var docs = collection.Find(Query.And(Query.LT("timestamp", endTimestamp + 1L), Query.GT("timestamp", startTimestamp - 1L))).SetSortOrder(SortBy.Ascending("timestamp"));
 
-            List<IndicatorData> output = new List<IndicatorData>();
+            List<TimeValueData> output = new List<TimeValueData>();
             foreach (BsonDocument doc in docs)
             {
-                output.Add(new IndicatorData(doc["timestamp"].AsInt64, doc["value"].AsDouble));
+                output.Add(new TimeValueData(doc["timestamp"].AsInt64, doc["value"].AsDouble));
             }
 
             return output;

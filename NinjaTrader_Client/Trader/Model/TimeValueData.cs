@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace NinjaTrader_Client.Trader.Model
 {
-    public class IndicatorData
+    public class TimeValueData
     {
-        public IndicatorData(long timestamp, double value)
+        public TimeValueData(long timestamp, double value)
         {
             this.timestamp = timestamp;
             this.value = value;

@@ -13,6 +13,7 @@ using NinjaTrader_Client.Trader;
 using NinjaTrader_Client.Trader.Model;
 using NinjaTrader_Client.Trader.Strategies;
 using NinjaTrader_Client.Trader.TradingAPIs;
+using NinjaTrader_Client.Trader.Indicators;
 
 namespace NinjaTrader_Client
 {
@@ -28,6 +29,9 @@ namespace NinjaTrader_Client
         {
             main = new Main(Application.StartupPath);
             main.uiDataChanged += updateUI;
+
+            StochIndicator ind = new StochIndicator(main.getDatabase());
+            MessageBox.Show(ind.getIndicator(main.getDatabase().getLastTimestamp() - 1000 * 60, "EURUSD").value + "");
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)

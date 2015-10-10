@@ -106,6 +106,8 @@
     <Compile Include="Trader\Backtest\Backtester.cs" />
     <Compile Include="Trader\Backtest\BacktestResult.cs" />
     <Compile Include="Trader\Charting\SimpleChart.cs" />
+    <Compile Include="Trader\Indicators\Indicator.cs" />
+    <Compile Include="Trader\Indicators\StochIndicator.cs" />
     <Compile Include="Trader\Strategies\FastMovement_Strategy.cs" />
     <Compile Include="Trader\Strategies\SSI_Strategy.cs" />
     <Compile Include="Trader\TradingAPIs\BacktestTradingAPI.cs" />
@@ -113,7 +115,7 @@
     <Compile Include="Trader\Strategies\Strategy.cs" />
     <Compile Include="Trader\Model\Config.cs" />
     <Compile Include="Trader\Main.cs" />
-    <Compile Include="Trader\Model\IndicatorData.cs" />
+    <Compile Include="Trader\Model\TimeValueData.cs" />
     <Compile Include="Trader\Model\Tickdata.cs" />
     <Compile Include="Trader\Model\UIData.cs" />
     <Compile Include="Trader\MongoFacade.cs" />
@@ -123,7 +125,7 @@
     <Compile Include="Trader\Database.cs" />
     <Compile Include="Trader\SSI_Downloader.cs" />
     <Compile Include="Trader\TradingAPIs\ITradingAPI.cs" />
-    <Compile Include="Trader\TradingAPIs\NT_LiveTradingAPI.cs" />
+    <Compile Include="Trader\TradingAPIs\NTLiveTradingAPI.cs" />
     <Compile Include="Trader\TradingAPIs\PairData.cs" />
     <Compile Include="Trader\Utils\HexColorCodes.cs" />
     <Compile Include="Trader\Utils\StringCompressor.cs" />
