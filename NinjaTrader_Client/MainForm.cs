@@ -78,7 +78,7 @@ namespace NinjaTrader_Client
 
         private void backtest_btn_Click(object sender, EventArgs e)
         {
-            BacktestForm backtestForm = new BacktestForm(main.getDatabase(), 24 * 16);
+            BacktestForm backtestForm = new BacktestForm(main.getDatabase(), 24 * 8);
             backtestForm.ShowDialog();
         }
 
@@ -90,7 +90,7 @@ namespace NinjaTrader_Client
                 tradablePairs.Add("EURUSD");
                 
                 //Strategy strat = new FastMovement_Strategy(main.getDatabase(), 1000 * 60 * 3, 1000 * 60 * 13, 0.0008, 0.0013, 0.0013, false);
-                Strategy strat = new SSIStochStrategy(main.getDatabase(), 0.003, 0.2, 1000 * 60 * 20, 1000 * 60 * 60 * 6);
+                Strategy strat = new SSIStochStrategy(main.getDatabase(), 0, 0.2, 1000 * 60 * 20, 1000 * 60 * 60 * 6); //tp 0.003
                 
                 strat.setAPI(new NTLiveTradingAPI(main.getAPI(), 100));
                 main.startTradingLive(strat, tradablePairs);

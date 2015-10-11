@@ -103,10 +103,10 @@ namespace NinjaTrader_Client.Trader.Backtest
                 result = strat.addCustomVariables(result);
 
                 results.Add(pair, result);
-
-                if (backtestResultArrived != null)
-                    backtestResultArrived(results);
             }
+
+            if (backtestResultArrived != null)
+                backtestResultArrived(results);
         }
     }
 }
