@@ -3,6 +3,7 @@ using NinjaTrader_Client.Trader.Strategies;
 using NinjaTrader_Client.Trader.TradingAPIs;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -63,13 +64,31 @@ namespace NinjaTrader_Client.Trader.Backtest
 
         private void runBacktest(Strategy strat, List<string> pairs, BacktestTradingAPI api)
         {
+            Stopwatch watch = new Stopwatch();
+            long usedTime = 0;
+            long doneTicks = 0;
+            
             long currentTimestamp = startTimestamp;
             while (currentTimestamp < endTimestamp)
             {
                 api.setNow(currentTimestamp);
 
-                foreach(string pair in pairs)
+                foreach (string pair in pairs)
+                {
+                    watch.Reset();
+                    watch.Start();
                     strat.doTick(pair);
+                    watch.Stop();
+                    usedTime += watch.ElapsedMilliseconds;
+                    doneTicks++;
+                }
+
+                //Send these to the UI
+                double timePerTick = (double)usedTime / (double)doneTicks;
+                double done = (double)(currentTimestamp - startTimestamp) / (double)(endTimestamp - startTimestamp);
+                double todo = (double)usedTime * (1d - done) / 1000d / 60d;
+
+                string msg = timePerTick + " " + done + " " + todo;
 
                 currentTimestamp += 1000 * resolutionInSeconds;
             }

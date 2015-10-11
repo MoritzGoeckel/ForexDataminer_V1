@@ -39,8 +39,8 @@ namespace NinjaTrader_Client.Trader.Strategies
         {
             given.setParameter("takeprofit", takeprofit.ToString());
             given.setParameter("threshold", threshold.ToString());
-            given.setParameter("timeout", timeout.ToString());
-            given.setParameter("stochTimeframe", stochTimeframe.ToString());
+            given.setParameter("timeout", (timeout / 1000d / 60d).ToString());
+            given.setParameter("stochTimeframe", (stochTimeframe / 1000d / 60d).ToString());
 
             return given;
         }
@@ -55,10 +55,20 @@ namespace NinjaTrader_Client.Trader.Strategies
             if (api.isUptodate(instrument) == false)
                 return;
 
-            stochs.Add(stochIndicator.getIndicator(api.getNow(), "ssi-mt4", instrument));
+            TimeValueData newestTick = stochIndicator.getIndicator(api.getNow(), "ssi-mt4", instrument);
+            
+            if (newestTick == null)
+                return;
 
-            while (api.getNow() - stochs[0].timestamp > 1000 * 60 * 3) //Liste 3 Minuten in die Vergangenheit
+            stochs.Add(newestTick);
+
+            while (api.getNow() - stochs[0].timestamp > 1000 * 60 * 3)
+            {//Liste 3 Minuten in die Vergangenheit
                 stochs.RemoveAt(0);
+
+                if (stochs.Count == 0)
+                    return;
+            }
 
             double stochNow = stochs[0].value;
             double min = double.MaxValue;

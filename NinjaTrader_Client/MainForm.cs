@@ -29,9 +29,6 @@ namespace NinjaTrader_Client
         {
             main = new Main(Application.StartupPath);
             main.uiDataChanged += updateUI;
-
-            StochIndicator ind = new StochIndicator(main.getDatabase());
-            MessageBox.Show(ind.getIndicator(main.getDatabase().getLastTimestamp() - 1000 * 60, "EURUSD").value + "");
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -81,7 +78,7 @@ namespace NinjaTrader_Client
 
         private void backtest_btn_Click(object sender, EventArgs e)
         {
-            BacktestForm backtestForm = new BacktestForm(main.getDatabase(), 24 * 8);
+            BacktestForm backtestForm = new BacktestForm(main.getDatabase(), 24 * 16);
             backtestForm.ShowDialog();
         }
 
@@ -91,7 +88,10 @@ namespace NinjaTrader_Client
             {
                 List<string> tradablePairs = new List<string>();
                 tradablePairs.Add("EURUSD");
-                Strategy strat = new FastMovement_Strategy(main.getDatabase(), 1000 * 60 * 3, 1000 * 60 * 13, 0.0008, 0.0013, 0.0013, false);
+                
+                //Strategy strat = new FastMovement_Strategy(main.getDatabase(), 1000 * 60 * 3, 1000 * 60 * 13, 0.0008, 0.0013, 0.0013, false);
+                Strategy strat = new SSIStochStrategy(main.getDatabase(), 0.003, 0.2, 1000 * 60 * 20, 1000 * 60 * 60 * 6);
+                
                 strat.setAPI(new NTLiveTradingAPI(main.getAPI(), 100));
                 main.startTradingLive(strat, tradablePairs);
             }

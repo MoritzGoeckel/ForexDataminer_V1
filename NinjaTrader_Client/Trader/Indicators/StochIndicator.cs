@@ -22,7 +22,10 @@ namespace NinjaTrader_Client.Trader.Indicators
         public override TimeValueData getIndicator(long timestamp, string instrument)
         {
             List<Tickdata> data = database.getPrices(timestamp - timeframe, timestamp, instrument);
-            
+
+            if (data.Count == 0)
+                return null;
+
             double min = double.MaxValue;
             double max = double.MinValue;
 
@@ -45,6 +48,9 @@ namespace NinjaTrader_Client.Trader.Indicators
         public override TimeValueData getIndicator(long timestamp, string dataName, string instrument)
         {
             List<TimeValueData> data = database.getDataInRange(timestamp - timeframe, timestamp, dataName, instrument);
+
+            if (data.Count == 0)
+                return null;
 
             double min = double.MaxValue;
             double max = double.MinValue;

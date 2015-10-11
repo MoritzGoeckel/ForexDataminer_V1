@@ -18,7 +18,7 @@ namespace NinjaTrader_Client
     public partial class BacktestForm : Form
     {
         Database database;
-        public BacktestForm(Database database, int backtestHours = 48 * 3)
+        public BacktestForm(Database database, int backtestHours)
         {
             InitializeComponent();
             this.database = database;
@@ -41,13 +41,13 @@ namespace NinjaTrader_Client
             //instruments.Add("USDJPY");
             //instruments.Add("USDCHF");
 
-            backtester = new Backtester(database, 1, startTimestamp, endTimestamp, instruments);
+            backtester = new Backtester(database, 60, startTimestamp, endTimestamp, instruments);
             backtester.backtestResultArrived += backtester_backtestResultArrived;
 
             List<Strategy> strategies = new List<Strategy>();
 
             //Ergebnis:
-            strategies.Add(new FastMovement_Strategy(database, 1000 * 60 * 2, 1000 * 60 * 13, 0.0008, 0.0015, 0.0015, false)); //Gut
+            /*strategies.Add(new FastMovement_Strategy(database, 1000 * 60 * 2, 1000 * 60 * 13, 0.0008, 0.0015, 0.0015, false)); //Gut
             strategies.Add(new FastMovement_Strategy(database, 1000 * 60 * 1, 1000 * 60 * 13, 0.0012, 0.0015, 0.0015, false));
             strategies.Add(new FastMovement_Strategy(database, 1000 * 60 * 1, 1000 * 60 * 13, 0.0010, 0.0015, 0.0015, false)); //Gut
             strategies.Add(new FastMovement_Strategy(database, 1000 * 60 * 1, 1000 * 60 * 13, 0.0010, 0.0010, 0.0010, false));
@@ -59,8 +59,15 @@ namespace NinjaTrader_Client
 
             strategies.Add(new FastMovement_Strategy(database, 1000 * 60 * 3, 1000 * 60 * 13, 0.0008, 0.0013, 0.0013, false)); //Heigh Frequency
 
-            strategies.Add(new SSIStrategy(database));
+            strategies.Add(new SSIStrategy(database));*/
 
+            strategies.Add(new SSIStochStrategy(database, 0.002, 0.2, 1000 * 60 * 30, 1000 * 60 * 60 * 6));
+            strategies.Add(new SSIStochStrategy(database, 0.003, 0.2, 1000 * 60 * 20, 1000 * 60 * 60 * 6)); //Gut
+            strategies.Add(new SSIStochStrategy(database, 0.001, 0.2, 1000 * 60 * 30, 1000 * 60 * 60 * 6));
+            strategies.Add(new SSIStochStrategy(database, 0.005, 0.2, 1000 * 60 * 40, 1000 * 60 * 60 * 6));
+            strategies.Add(new SSIStochStrategy(database, 0.004, 0.2, 1000 * 60 * 20, 1000 * 60 * 60 * 6));
+            strategies.Add(new SSIStochStrategy(database, 0.005, 0.2, 1000 * 60 * 20, 1000 * 60 * 60 * 6));
+            strategies.Add(new SSIStochStrategy(database, 0.004, 0.2, 1000 * 60 * 40, 1000 * 60 * 60 * 6));
 
 
             //stretegies.Add(new SSI_Strategy(database));
@@ -75,7 +82,6 @@ namespace NinjaTrader_Client
 
         Dictionary<string, Dictionary<string, BacktestResult>> results = new Dictionary<string, Dictionary<string, BacktestResult>>();
 
-        Random z = new Random();
         void backtester_backtestResultArrived(Dictionary<string, BacktestResult> resultPerPair)
         {
             if (InvokeRequired)
