@@ -80,6 +80,7 @@ namespace NinjaTrader_Client
 
             /* HERE IS THE PLAYGROUND FOR TESTING */
             backtester.startBacktest(new SSIStochStrategy(database, 0.0, 0.2, 1000 * 60 * 20, 1000 * 60 * 60 * 6), instruments);
+//            backtester.startBacktest(new SSIStrategy(database), instruments);
             
             //backtester.startBacktest(new SSIStochStrategy(database, 0.002, 0.2, 1000 * 60 * 60 * 3, 1000 * 60 * 60 * 5), instruments); //Allgemeiner
         }

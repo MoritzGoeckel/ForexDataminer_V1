@@ -78,7 +78,7 @@ namespace NinjaTrader_Client
 
         private void backtest_btn_Click(object sender, EventArgs e)
         {
-            BacktestForm backtestForm = new BacktestForm(main.getDatabase(), 24 * 8);
+            BacktestForm backtestForm = new BacktestForm(main.getDatabase(), 24 * 16);
             backtestForm.ShowDialog();
         }
 

@@ -76,7 +76,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             {//Liste 3 Minuten in die Vergangenheit
                 stochs[instrument].RemoveAt(0);
 
-                if (stochs.Count == 0)
+                if (stochs[instrument].Count == 0)
                     return;
             }
 
