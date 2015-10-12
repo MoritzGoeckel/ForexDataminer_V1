@@ -14,7 +14,21 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
         private NinjaTraderAPI api;
         private int positionSize = 1000;
 
-        public NTLiveTradingAPI(NinjaTraderAPI api, int positionSize)
+        private static NTLiveTradingAPI theInstace;
+        public static void createInstace(NinjaTraderAPI api, int positionSize)
+        {
+            if (theInstace == null)
+                theInstace = new NTLiveTradingAPI(api, positionSize);
+            else
+                throw new Exception();
+        }
+
+        public static NTLiveTradingAPI getTheInstace()
+        {
+            return theInstace;
+        }
+
+        private NTLiveTradingAPI(NinjaTraderAPI api, int positionSize)
         {
             this.api = api;
             this.positionSize = positionSize;

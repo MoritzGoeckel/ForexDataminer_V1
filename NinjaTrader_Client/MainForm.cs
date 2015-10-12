@@ -29,6 +29,7 @@ namespace NinjaTrader_Client
         {
             main = new Main(Application.StartupPath);
             main.uiDataChanged += updateUI;
+            NTLiveTradingAPI.createInstace(main.getAPI(), 1000);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -91,16 +92,15 @@ namespace NinjaTrader_Client
                 
                 //Strategy strat = new FastMovement_Strategy(main.getDatabase(), 1000 * 60 * 3, 1000 * 60 * 13, 0.0008, 0.0013, 0.0013, false);
                 Strategy strat = new SSIStochStrategy(main.getDatabase(), 0, 0.2, 1000 * 60 * 20, 1000 * 60 * 60 * 6); //tp 0.003
-                
-                strat.setAPI(new NTLiveTradingAPI(main.getAPI(), 100));
+
+                strat.setAPI(NTLiveTradingAPI.getTheInstace());
                 main.startTradingLive(strat, tradablePairs);
             }
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            NTLiveTradingAPI api = new NTLiveTradingAPI(main.getAPI(), 100);
-            LiveTradingForm form = new LiveTradingForm(api);
+            LiveTradingForm form = new LiveTradingForm(NTLiveTradingAPI.getTheInstace());
             form.ShowDialog();
         }
     }

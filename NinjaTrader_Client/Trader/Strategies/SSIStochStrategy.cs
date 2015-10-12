@@ -113,8 +113,14 @@ namespace NinjaTrader_Client.Trader.Strategies
                     api.closePositions(instrument);
                     hitTp++;
                 }
-                else if (api.getNow() - api.getLongPosition(instrument).timestampOpen > timeout)
+
+                if (api.getNow() - api.getLongPosition(instrument).timestampOpen > timeout)
                 {
+                    long now = api.getNow();
+                    long pos = api.getLongPosition(instrument).timestampOpen;
+                    long t = api.getNow() - api.getLongPosition(instrument).timestampOpen;
+                    string s = t + "" + now + pos;
+
                     api.closePositions(instrument);
                     hitTimeout++;
                 }
@@ -127,7 +133,8 @@ namespace NinjaTrader_Client.Trader.Strategies
                     api.closePositions(instrument);
                     hitTp++;
                 }
-                else if (api.getNow() - api.getShortPosition(instrument).timestampOpen > timeout)
+
+                if (api.getNow() - api.getShortPosition(instrument).timestampOpen > timeout)
                 {
                     api.closePositions(instrument);
                     hitTimeout++;
