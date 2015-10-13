@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace NinjaTrader_Client.Trader.Charting
 {
-    class SimpleChart
+    class SimpleChart_Stepline
     {
         Database database;
-        public SimpleChart(Database database)
+        public SimpleChart_Stepline(Database database)
         {
             this.database = database;
         }

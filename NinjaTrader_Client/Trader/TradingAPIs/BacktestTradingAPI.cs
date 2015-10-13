@@ -104,12 +104,18 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
 
         public override TradePosition getLongPosition(string instrument)
         {
-            return pairData[instrument].lastLongPosition; //Better copy
+            if (pairData.ContainsKey(instrument))
+                return pairData[instrument].lastLongPosition; //Better copy
+            else
+                return null;
         }
 
         public override TradePosition getShortPosition(string instrument)
         {
-            return pairData[instrument].lastShortPosition; //Better copy
+            if (pairData.ContainsKey(instrument))
+                return pairData[instrument].lastShortPosition; //Better copy
+            else
+                return null;
         }
 
         public override List<TradePosition> getHistory(string instrument)

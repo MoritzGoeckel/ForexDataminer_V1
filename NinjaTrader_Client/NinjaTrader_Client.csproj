@@ -105,7 +105,8 @@
     </Compile>
     <Compile Include="Trader\Backtest\Backtester.cs" />
     <Compile Include="Trader\Backtest\BacktestResult.cs" />
-    <Compile Include="Trader\Charting\SimpleChart.cs" />
+    <Compile Include="Trader\Charting\SimpleChart_Stepline.cs" />
+    <Compile Include="Trader\Charting\SimpleChart_Scatter.cs" />
     <Compile Include="Trader\Indicators\Indicator.cs" />
     <Compile Include="Trader\Indicators\StochIndicator.cs" />
     <Compile Include="Trader\Strategies\FastMovement_Strategy.cs" />

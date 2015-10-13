@@ -42,7 +42,7 @@ namespace NinjaTrader_Client
             this.Controls.Add(upperChart);
             
             //Create the chart
-            SimpleChart sc = new SimpleChart(database);
+            SimpleChart_Scatter sc = new SimpleChart_Scatter(database);
 
             if (historicPositions != null)
                 sc.addHistoricPositions(historicPositions);
