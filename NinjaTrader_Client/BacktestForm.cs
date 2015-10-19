@@ -42,7 +42,7 @@ namespace NinjaTrader_Client
             //instruments.Add("USDJPY");
             //instruments.Add("USDCHF");
 
-            backtester = new Backtester(database, 60, startTimestamp, endTimestamp, instruments);
+            backtester = new Backtester(database, 30, startTimestamp, endTimestamp, instruments);
             backtester.backtestResultArrived += backtester_backtestResultArrived;
 
             List<Strategy> strategies = new List<Strategy>();
@@ -79,7 +79,18 @@ namespace NinjaTrader_Client
 
 
             /* HERE IS THE PLAYGROUND FOR TESTING */
-            backtester.startBacktest(new SSIStochStrategy(database, 0.000, 0.2, 1000 * 60 * 20, 1000 * 60 * 60 * 6), instruments);
+
+            //strategies.Add(new SSIStochStrategy(database, 0.0003, 0.2, 1000 * 60 * 30, 1000 * 60 * 60 * 6));
+            //strategies.Add(new SSIStochStrategy(database, 0.0003, 0.2, 1000 * 60 * 60, 1000 * 60 * 60 * 5));
+
+            strategies.Add(new SSIStochStrategy(database, 0.0003, 0.2, 1000 * 60 * 60, 1000 * 60 * 60 * 6));
+            strategies.Add(new SSIStochStrategy(database, 0.0004, 0.2, 1000 * 60 * 60, 1000 * 60 * 60 * 6));
+            strategies.Add(new SSIStochStrategy(database, 0.0005, 0.2, 1000 * 60 * 60, 1000 * 60 * 60 * 6));
+            strategies.Add(new SSIStochStrategy(database, 0.0006, 0.2, 1000 * 60 * 60, 1000 * 60 * 60 * 6));
+
+            //strategies.Add(new SSIStochStrategy(database, 0, 0.2, 1000 * 60 * 20, 1000 * 60 * 60 * 6));
+
+            backtester.startBacktest(strategies, "EURUSD");
 
 //            backtester.startBacktest(new SSIStrategy(database), instruments);
             
