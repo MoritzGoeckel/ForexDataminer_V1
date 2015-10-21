@@ -213,6 +213,25 @@ namespace NinjaTrader_Client.Trader
             return lastTimestamp;
         }
 
+        public long getFirstTimestamp()
+        {
+            long firstTimestamp = long.MaxValue;
+            List<MongoCollection<BsonDocument>> list = mongodb.getCollections();
+            foreach (MongoCollection<BsonDocument> collection in list)
+            {
+                if (collection.Name.Contains("system.indexes") == false && collection.Name.Contains("_") == false)
+                {
+                    var docs = collection.Find(Query.Exists("timestamp")).SetSortOrder(SortBy.Ascending("timestamp")).SetLimit(1);
+                    long currentTs = docs.ToList<BsonDocument>()[0]["timestamp"].AsInt64;
+
+                    if (currentTs < firstTimestamp)
+                        firstTimestamp = currentTs;
+                }
+            }
+
+            return firstTimestamp;
+        }
+
         public void megrate()
         {
             //Implement migrations ???

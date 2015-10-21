@@ -103,6 +103,12 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Trader\Analysis\DataDensityFrom.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Trader\Analysis\DataDensityFrom.Designer.cs">
+      <DependentUpon>DataDensityFrom.cs</DependentUpon>
+    </Compile>
     <Compile Include="Trader\Backtest\Backtester.cs" />
     <Compile Include="Trader\Backtest\BacktestResult.cs" />
     <Compile Include="Trader\Charting\SimpleChart_Stepline.cs" />
@@ -156,6 +162,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Trader\Analysis\DataDensityFrom.resx">
+      <DependentUpon>DataDensityFrom.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

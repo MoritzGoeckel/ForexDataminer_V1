@@ -14,6 +14,7 @@ using NinjaTrader_Client.Trader.Model;
 using NinjaTrader_Client.Trader.Strategies;
 using NinjaTrader_Client.Trader.TradingAPIs;
 using NinjaTrader_Client.Trader.Indicators;
+using NinjaTrader_Client.Trader.Analysis;
 
 namespace NinjaTrader_Client
 {
@@ -103,6 +104,12 @@ namespace NinjaTrader_Client
         {
             LiveTradingForm form = new LiveTradingForm(NTLiveTradingAPI.getTheInstace());
             form.ShowDialog();
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            DataDensityFrom ddForm = new DataDensityFrom(main.getDatabase());
+            ddForm.ShowDialog();
         }
     }
 }
