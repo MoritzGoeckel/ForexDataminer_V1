@@ -19,6 +19,12 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
 
         public abstract double getBid(string instrument);
         public abstract double getAsk(string instrument);
+
+        public double getAvgPrice(string instrument)
+        {
+            return (getBid(instrument) + getAsk(instrument)) / 2d;
+        }
+
         public abstract long getNow();
         public abstract TradePosition getLongPosition(string instrument);
         public abstract TradePosition getShortPosition(string instrument);

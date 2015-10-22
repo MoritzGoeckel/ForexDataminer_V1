@@ -9,14 +9,17 @@ namespace NinjaTrader_Client.Trader.Strategies
 {
     public class SSIStrategy : Strategy
     {
-        public SSIStrategy(Database database) : base(database)
+        double thresholdOpen, thresholdClose;
+        public SSIStrategy(Database database, double thresholdOpen, double thresholdClose)
+            : base(database)
         {
-            
+            this.thresholdOpen = thresholdOpen;
+            this.thresholdClose = thresholdClose;
         }
 
         public override Strategy copy()
         {
-            return new SSIStrategy(database);
+            return new SSIStrategy(database, thresholdOpen, thresholdClose);
         }
 
         public override string getName()
@@ -26,7 +29,8 @@ namespace NinjaTrader_Client.Trader.Strategies
 
         public override BacktestResult addCustomVariables(BacktestResult given)
         {
-            //Todo: !!
+            given.setParameter("Threshold Open", thresholdOpen.ToString());
+            given.setParameter("Threshold Close", thresholdClose.ToString());
             return given;
         }
 
@@ -35,7 +39,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             
         }
 
-        private long pauseTil = 0;
+        //private long pauseTil = 0;
         public override void doTick(string instrument)
         {
             if (api.isUptodate(instrument) == false)
@@ -43,25 +47,25 @@ namespace NinjaTrader_Client.Trader.Strategies
 
             double ssi = database.getData(api.getNow(), "ssi-mt4", instrument).value;
 
-            if (api.getNow() > pauseTil)
+            //if (api.getNow() > pauseTil)
+            //{
+            if (ssi > thresholdOpen)
             {
-                if (ssi > 0.2d)
-                {
-                    if (api.getShortPosition(instrument) == null)
-                        api.openShort(instrument);
-                }
-
-                if (ssi < -0.2d)
-                {
-                    if (api.getLongPosition(instrument) == null)
-                        api.openLong(instrument);
-                }
+                if (api.getShortPosition(instrument) == null)
+                    api.openShort(instrument);
             }
 
-            if (api.getLongPosition(instrument) != null && ssi > 0.1d)
+            if (ssi < -thresholdOpen)
+            {
+                if (api.getLongPosition(instrument) == null)
+                    api.openLong(instrument);
+            }
+            //}
+
+            if (api.getLongPosition(instrument) != null && ssi > thresholdClose)
                 api.closePositions(instrument);
 
-            if (api.getShortPosition(instrument) != null && ssi < -0.1d)
+            if (api.getShortPosition(instrument) != null && ssi < -thresholdClose)
                 api.closePositions(instrument);
 
             /*if (api.getLongPosition() != null && api.getAsk() - api.getLongPosition().priceOpen >= 0.003)

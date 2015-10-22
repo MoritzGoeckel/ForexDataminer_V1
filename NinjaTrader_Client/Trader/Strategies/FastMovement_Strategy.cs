@@ -10,19 +10,20 @@ namespace NinjaTrader_Client.Trader.Strategies
 {
     public class FastMovement_Strategy : Strategy
     {
-        public FastMovement_Strategy(Database database, int preTime = 1000 * 60 * 7, int postTime = 1000 * 60 * 60, double threshold = 0.0017, double closeOnWin = 0.0000, double closeOnLoose = 0.0023, bool follow_trend = true) : base(database)
+        public FastMovement_Strategy(Database database, int preTime = 1000 * 60 * 7, int postTime = 1000 * 60 * 60, double thresholdPercent = 0.0017, double closeOnWinPercent = 0.0000, double closeOnLoosePercent = 0.0023, bool follow_trend = true)
+            : base(database)
         {
-            this.threshold = threshold;
+            this.thresholdPercent = thresholdPercent;
             this.postTime = postTime;
             this.preTime = preTime;
-            this.closeOnWin = closeOnWin;
-            this.closeOnLoose = closeOnLoose;
+            this.closeOnWinPercent = closeOnWinPercent;
+            this.closeOnLoosePercent = closeOnLoosePercent;
             this.follow_trend = follow_trend;
         }
 
         public override Strategy copy()
         {
-            return new FastMovement_Strategy(database, preTime, postTime, threshold, closeOnWin, closeOnLoose, follow_trend);
+            return new FastMovement_Strategy(database, preTime, postTime, thresholdPercent, closeOnWinPercent, closeOnLoosePercent, follow_trend);
         }
 
         public override string getName()
@@ -34,9 +35,9 @@ namespace NinjaTrader_Client.Trader.Strategies
         {
             given.setParameter("PostT", ((double)postTime / 1000d / 60d).ToString());
             given.setParameter("PreT", ((double)preTime / 1000d / 60d).ToString());
-            given.setParameter("Threshold", threshold.ToString());
-            given.setParameter("CloseOnWin", closeOnWin.ToString());
-            given.setParameter("CloseOnLoose", closeOnLoose.ToString());
+            given.setParameter("Threshold", thresholdPercent.ToString());
+            given.setParameter("CloseOnWin", closeOnWinPercent.ToString());
+            given.setParameter("CloseOnLoose", closeOnLoosePercent.ToString());
             given.setParameter("FollowTrend", follow_trend.ToString());
 
             //Real results
@@ -55,11 +56,11 @@ namespace NinjaTrader_Client.Trader.Strategies
             old_tickdata = new List<Tickdata>();
         }
 
-        private List<Tickdata> old_tickdata;   
+        private List<Tickdata> old_tickdata;
 
-        private double threshold;
+        private double thresholdPercent;
         private int preTime, postTime;
-        private double closeOnWin, closeOnLoose;
+        private double closeOnWinPercent, closeOnLoosePercent;
         private bool follow_trend;
         private int hitSL = 0, hitTP = 0, hitTO = 0;
 
@@ -67,6 +68,10 @@ namespace NinjaTrader_Client.Trader.Strategies
         {
             if (api.isUptodate(instrument) == false)
                 return;
+
+            double threshold = api.getAvgPrice(instrument) * thresholdPercent / 100d;
+            double closeOnWin = api.getAvgPrice(instrument) * closeOnWinPercent / 100d;
+            double closeOnLoose = api.getAvgPrice(instrument) * closeOnLoosePercent / 100d;
 
             //Remove old ones in the back
             //Now the tick old_tickdata[old_tickdata.Count - 1] is 5 or less minutes old
