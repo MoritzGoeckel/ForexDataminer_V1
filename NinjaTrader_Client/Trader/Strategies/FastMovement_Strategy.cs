@@ -10,20 +10,20 @@ namespace NinjaTrader_Client.Trader.Strategies
 {
     public class FastMovement_Strategy : Strategy
     {
-        public FastMovement_Strategy(Database database, int preTime = 1000 * 60 * 7, int postTime = 1000 * 60 * 60, double thresholdPercent = 0.0017, double closeOnWinPercent = 0.0000, double closeOnLoosePercent = 0.0023, bool follow_trend = true)
+        public FastMovement_Strategy(Database database, int preTime = 1000 * 60 * 7, int postTime = 1000 * 60 * 60, double thresholdPercent = 0.07, double takeprofitPercent = 0.04, double stoplossPercent = 0.02, bool follow_trend = true)
             : base(database)
         {
             this.thresholdPercent = thresholdPercent;
             this.postTime = postTime;
             this.preTime = preTime;
-            this.closeOnWinPercent = closeOnWinPercent;
-            this.closeOnLoosePercent = closeOnLoosePercent;
+            this.takeprofitPercent = takeprofitPercent;
+            this.stoplossPercent = stoplossPercent;
             this.follow_trend = follow_trend;
         }
 
         public override Strategy copy()
         {
-            return new FastMovement_Strategy(database, preTime, postTime, thresholdPercent, closeOnWinPercent, closeOnLoosePercent, follow_trend);
+            return new FastMovement_Strategy(database, preTime, postTime, thresholdPercent, takeprofitPercent, stoplossPercent, follow_trend);
         }
 
         public override string getName()
@@ -36,8 +36,8 @@ namespace NinjaTrader_Client.Trader.Strategies
             given.setParameter("PostT", ((double)postTime / 1000d / 60d).ToString());
             given.setParameter("PreT", ((double)preTime / 1000d / 60d).ToString());
             given.setParameter("Threshold", thresholdPercent.ToString());
-            given.setParameter("CloseOnWin", closeOnWinPercent.ToString());
-            given.setParameter("CloseOnLoose", closeOnLoosePercent.ToString());
+            given.setParameter("takeprofit", takeprofitPercent.ToString());
+            given.setParameter("stoploss", stoplossPercent.ToString());
             given.setParameter("FollowTrend", follow_trend.ToString());
 
             //Real results
@@ -60,7 +60,7 @@ namespace NinjaTrader_Client.Trader.Strategies
 
         private double thresholdPercent;
         private int preTime, postTime;
-        private double closeOnWinPercent, closeOnLoosePercent;
+        private double takeprofitPercent, stoplossPercent;
         private bool follow_trend;
         private int hitSL = 0, hitTP = 0, hitTO = 0;
 
@@ -70,8 +70,8 @@ namespace NinjaTrader_Client.Trader.Strategies
                 return;
 
             double threshold = api.getAvgPrice(instrument) * thresholdPercent / 100d;
-            double closeOnWin = api.getAvgPrice(instrument) * closeOnWinPercent / 100d;
-            double closeOnLoose = api.getAvgPrice(instrument) * closeOnLoosePercent / 100d;
+            double takeprofit = api.getAvgPrice(instrument) * takeprofitPercent / 100d;
+            double stoploss = api.getAvgPrice(instrument) * stoplossPercent / 100d;
 
             //Remove old ones in the back
             //Now the tick old_tickdata[old_tickdata.Count - 1] is 5 or less minutes old
@@ -119,15 +119,15 @@ namespace NinjaTrader_Client.Trader.Strategies
                 }
 
                 //Close on win
-                if (closeOnWin != 0)
+                if (takeprofit != 0)
                 {
-                    if (api.getLongPosition(instrument) != null && api.getBid(instrument) > api.getLongPosition(instrument).priceOpen + closeOnWin && longSignal == false)
+                    if (api.getLongPosition(instrument) != null && api.getBid(instrument) > api.getLongPosition(instrument).priceOpen + takeprofit && longSignal == false)
                     {
                         api.closeLong(instrument);
                         hitTP++;
                     }
 
-                    if (api.getShortPosition(instrument) != null && api.getAsk(instrument) + closeOnWin < api.getShortPosition(instrument).priceOpen && shortSignal == false)
+                    if (api.getShortPosition(instrument) != null && api.getAsk(instrument) + takeprofit < api.getShortPosition(instrument).priceOpen && shortSignal == false)
                     {
                         api.closeShort(instrument);
                         hitTP++;
@@ -135,15 +135,15 @@ namespace NinjaTrader_Client.Trader.Strategies
                 }
 
                 //Close on loose
-                if (closeOnLoose != 0)
+                if (stoploss != 0)
                 {
-                    if (api.getLongPosition(instrument) != null && api.getBid(instrument) + closeOnLoose < api.getLongPosition(instrument).priceOpen && longSignal == false)
+                    if (api.getLongPosition(instrument) != null && api.getBid(instrument) + stoploss < api.getLongPosition(instrument).priceOpen && longSignal == false)
                     {
                         api.closeLong(instrument);
                         hitSL++;
                     }
 
-                    if (api.getShortPosition(instrument) != null && api.getAsk(instrument) > api.getShortPosition(instrument).priceOpen + closeOnLoose && shortSignal == false)
+                    if (api.getShortPosition(instrument) != null && api.getAsk(instrument) > api.getShortPosition(instrument).priceOpen + stoploss && shortSignal == false)
                     {
                         api.closeShort(instrument);
                         hitSL++;

@@ -13,12 +13,12 @@ namespace NinjaTrader_Client.Trader.Strategies
     {
         StochIndicator stochIndicator;
         private Dictionary<string, List<TimeValueData>> stochs = new Dictionary<string, List<TimeValueData>>();
-        private double takeprofitPercent, threshold;
+        private double takeprofitPercent, threshold, stoplossPercent;
         private int stochTimeframe, timeout;
 
-        private int hitTimeout = 0, hitTp = 0;
+        private int hitTimeout = 0, hitTp = 0, hitSl = 0;
 
-        public SSIStochStrategy(Database database, double takeprofitPercent = 0.001, double threshold = 0.2, int timeout = 1000 * 60 * 30, int stochTimeframe = 1000 * 60 * 60)
+        public SSIStochStrategy(Database database, double takeprofitPercent = 0.01, double stoplossPercent = 0.05, double threshold = 0.2, int timeout = 1000 * 60 * 60, int stochTimeframe = 1000 * 60 * 60 * 6)
             : base(database)
         {
             stochIndicator = new StochIndicator(database, stochTimeframe);
@@ -26,11 +26,12 @@ namespace NinjaTrader_Client.Trader.Strategies
             this.threshold = threshold;
             this.timeout = timeout;
             this.stochTimeframe = stochTimeframe;
+            this.stoplossPercent = stoplossPercent;
         }
 
         public override Strategy copy()
         {
-            return new SSIStochStrategy(database, takeprofitPercent, threshold, timeout, stochTimeframe);
+            return new SSIStochStrategy(database, takeprofitPercent, stoplossPercent, threshold, timeout, stochTimeframe);
         }
 
         public override string getName()
@@ -44,9 +45,11 @@ namespace NinjaTrader_Client.Trader.Strategies
             given.setParameter("threshold", threshold.ToString());
             given.setParameter("timeout", (timeout / 1000d / 60d).ToString());
             given.setParameter("stochTimeframe", (stochTimeframe / 1000d / 60d).ToString());
+            given.setParameter("stoploss", stoplossPercent.ToString());
 
             given.setResult("hitTimeout", hitTimeout.ToString());
             given.setResult("hitTp", hitTp.ToString());
+            given.setResult("hitSl", hitSl.ToString());
 
             return given;
         }
@@ -56,11 +59,13 @@ namespace NinjaTrader_Client.Trader.Strategies
             //Reset stats
             hitTimeout = 0;
             hitTp = 0;
+            hitSl = 0;
         }
 
         public override void doTick(string instrument)
         {
             double takeprofit = api.getAvgPrice(instrument) * takeprofitPercent / 100d;
+            double stoploss = api.getAvgPrice(instrument) * stoplossPercent / 100d;
 
             if (api.isUptodate(instrument) == false)
                 return;
@@ -76,7 +81,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             stochs[instrument].Add(newestTick);
 
             while (api.getNow() - stochs[instrument][0].timestamp > 1000 * 60 * 3)
-            {//Liste 3 Minuten in die Vergangenheit
+            {//Liste 3 Minuten in die Vergangenheit ???
                 stochs[instrument].RemoveAt(0);
 
                 if (stochs[instrument].Count == 0)
@@ -108,7 +113,6 @@ namespace NinjaTrader_Client.Trader.Strategies
                 }
             }
 
-            //collect stats and give them to the result
             if (api.getLongPosition(instrument) != null)
             {
                 if (takeprofit != 0 && api.getBid(instrument) - api.getLongPosition(instrument).priceOpen > takeprofit)
@@ -120,6 +124,11 @@ namespace NinjaTrader_Client.Trader.Strategies
                 {
                     api.closePositions(instrument);
                     hitTimeout++;
+                }
+                else if(stoploss != 0 && api.getBid(instrument) - api.getLongPosition(instrument).priceOpen < -stoploss)
+                {
+                    api.closePositions(instrument);
+                    hitSl++;
                 }
             }
 
@@ -135,9 +144,12 @@ namespace NinjaTrader_Client.Trader.Strategies
                     api.closePositions(instrument);
                     hitTimeout++;
                 }
+                else if (stoploss != 0 && api.getShortPosition(instrument).priceOpen - api.getAsk(instrument) < -stoploss)
+                {
+                    api.closePositions(instrument);
+                    hitSl++;
+                }
             }
-
-            //??? Stoploss
         }
     }
 }

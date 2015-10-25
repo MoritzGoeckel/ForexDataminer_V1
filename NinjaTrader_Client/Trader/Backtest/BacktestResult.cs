@@ -73,7 +73,9 @@ namespace NinjaTrader_Client.Trader.Backtest
             setResult("Pips/Position", (profit / (double)trades.Count).ToString());
             setResult("Pips/Day", (profit / (double)hours * 24d).ToString());
             setResult("Positions/Day", ((double)positions.Count / (double)hours * 24d).ToString());
-            setResult("Holdtime/Positions", (holdTime / positions.Count / 1000 / 60).ToString());
+
+            if (positions.Count != 0)
+                setResult("Holdtime/Positions", (holdTime / positions.Count / 1000 / 60).ToString());
         }
 
         public string getResultText()
