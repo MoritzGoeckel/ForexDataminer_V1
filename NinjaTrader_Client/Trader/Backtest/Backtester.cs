@@ -21,15 +21,13 @@ namespace NinjaTrader_Client.Trader.Backtest
         public event BacktestResultArrivedHandler backtestResultArrived;
 
         private List<Thread> threads = new List<Thread>();
-        private List<string> tradablePairs = new List<string>();
 
-        public Backtester(Database database, int resolutionInSeconds, long startTimestamp, long endTimestamp, List<string> tradablePairs)
+        public Backtester(Database database, int resolutionInSeconds, long startTimestamp, long endTimestamp)
         {
             this.database = database;
             this.resolutionInSeconds = resolutionInSeconds;
             this.startTimestamp = startTimestamp;
             this.endTimestamp = endTimestamp;
-            this.tradablePairs.AddRange(tradablePairs);
         }
 
         public void startBacktest(Strategy strat, string pair)
@@ -51,7 +49,7 @@ namespace NinjaTrader_Client.Trader.Backtest
 
         public void startBacktest(Strategy strat, List<string> pairs)
         {
-            BacktestTradingAPI dedicatedAPI = new BacktestTradingAPI(startTimestamp, database, tradablePairs);
+            BacktestTradingAPI dedicatedAPI = new BacktestTradingAPI(startTimestamp, database, pairs);
 
             Strategy dedicatedStrategy = strat.copy();
             dedicatedStrategy.setAPI(dedicatedAPI); //Todo: Nicht schön, nicht sicher

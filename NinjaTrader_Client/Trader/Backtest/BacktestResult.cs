@@ -34,6 +34,7 @@ namespace NinjaTrader_Client.Trader.Backtest
 
         public void setResult(string key, string value)
         {
+            key = key.ToLower();
             if (results.ContainsKey(key))
                 results[key] = value;
             else
@@ -76,6 +77,35 @@ namespace NinjaTrader_Client.Trader.Backtest
 
             if (positions.Count != 0)
                 setResult("Holdtime/Positions", (holdTime / positions.Count / 1000 / 60).ToString());
+        }
+
+        public string getResult(string key)
+        {
+            return results[key.ToLower()];
+        }
+
+        public string getCSVHeader()
+        {
+            string output = "";
+            foreach (KeyValuePair<string, string> pair in parameter)
+                output += pair.Key + ";";
+
+            foreach (KeyValuePair<string, string> pair in results)
+                output += pair.Key + ";";
+
+            return output;
+        }
+
+        public string getCSV()
+        {
+            string output = "";
+            foreach (KeyValuePair<string, string> pair in parameter)
+                output += pair.Value + ";";
+
+            foreach (KeyValuePair<string, string> pair in results)
+                output += pair.Value + ";";
+
+            return output;
         }
 
         public string getResultText()

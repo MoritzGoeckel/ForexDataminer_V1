@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -65,14 +66,31 @@ namespace NinjaTrader_Client
 
             instruments.Add("EURUSD");
 
-            //List<Strategy> strategies = new List<Strategy>();
-
-            backtester = new Backtester(database, 60, startTimestamp, endTimestamp, instruments);
+            backtester = new Backtester(database, 60, startTimestamp, endTimestamp);
             backtester.backtestResultArrived += backtester_backtestResultArrived;
+            backtester.backtestResultArrived += startNewBacktests;
+
+            List<Strategy> strats = new List<Strategy>();
+            //strats.Add(new SSIStochStrategy(database, 0.15, 0.15, 0.2, 1000 * 60 * 60 * 2, 1000 * 60 * 60 * 4));
+
+            //strats.Add(new SSIStochStrategy(database, 0.10, 0.10, 0.15, 1000 * 60 * 60 * 2, 1000 * 60 * 60 * 5));
+            //strats.Add(new SSIStochStrategy(database, 0.10, 0.10, 0.2, 1000 * 60 * 60 * 2, 1000 * 60 * 60 * 5));
+
+            strats.Add(new SSIStochStrategy(database, 0.05, 0.10, 0.15, 1000 * 60 * 60, 1000 * 60 * 60 * 5));
+            strats.Add(new SSIStochStrategy(database, 0.05, 0.10, 0.2, 1000 * 60 * 60, 1000 * 60 * 60 * 5));
+
+            strats.Add(new SSIStochStrategy(database, 0.07, 0.10, 0.15, 1000 * 60 * 60, 1000 * 60 * 60 * 5));
+            strats.Add(new SSIStochStrategy(database, 0.07, 0.10, 0.2, 1000 * 60 * 60, 1000 * 60 * 60 * 5));
+
+            /*strats.Add(new SSIStochStrategy(database, 0.02, 0.10, 0.2, 1000 * 60 * 60, 1000 * 60 * 60 * 3));
+            strats.Add(new SSIStochStrategy(database, 0.02, 0.10, 0.2, 1000 * 60 * 60, 1000 * 60 * 60 * 4));
+            strats.Add(new SSIStochStrategy(database, 0.02, 0.10, 0.2, 1000 * 60 * 60, 1000 * 60 * 60 * 5));
+            strats.Add(new SSIStochStrategy(database, 0.02, 0.10, 0.2, 1000 * 60 * 60, 1000 * 60 * 60 * 6));
+            strats.Add(new SSIStochStrategy(database, 0.02, 0.10, 0.2, 1000 * 60 * 60, 1000 * 60 * 60 * 7));*/
+
+            backtester.startBacktest(strats, instruments[0]);
 
             //backtester.startBacktest(new FastMovement_Strategy(database, 1000 * 60 * 3, 1000 * 60 * 15, 0.60, 0.01, 0.02, true), instruments);
-
-            backtester.startBacktest(new SSIStochStrategy(database, 0.02, 0.10, 0.2, 1000 * 60 * 60, 1000 * 60 * 60 * 4), instruments);
 
             /*
             strategies.Add(new FastMovement_Strategy(database, 1000 * 60 * 2, 1000 * 60 * 13, 0.08, 0.15, 0.15, false)); //Gut
@@ -118,6 +136,30 @@ namespace NinjaTrader_Client
             //backtester.startBacktest(new SSIStochStrategy(database, 0.2, 0.2, 1000 * 60 * 60 * 3, 1000 * 60 * 60 * 5), instruments); //Allgemeiner
         }
 
+        Random z = new Random();
+        int tested = 0;
+
+        void startNewBacktests(Dictionary<string, BacktestResult> resultPerPair)
+        {
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action(() => startNewBacktests(resultPerPair)));
+                return;
+            }
+
+            BacktestResult result = resultPerPair["EURUSD"];
+            double score = Convert.ToDouble(result.getResult("Profit")) - Convert.ToDouble(result.getResult("Positions")) * 0.0001d;
+
+            string path = Application.StartupPath + "/backtestResults.csv";
+
+            if (File.Exists(path) == false)
+                File.WriteAllText(path, "Score;" + result.getCSVHeader() + Environment.NewLine);
+            File.AppendAllText(path, score + ";" + result.getCSV() + Environment.NewLine);
+
+            backtester.startBacktest(new SSIStochStrategy(database, Math.Round(z.NextDouble() * 0.5, 2) + 0.01, Math.Round(z.NextDouble() * 0.5, 2) + 0.01, Math.Round(z.NextDouble() * 0.15, 2) + 0.07, 1000 * 60 * 30 * z.Next(1, 8), 1000 * 60 * 60 * z.Next(1, 20)), "EURUSD");
+            this.Text = tested++.ToString();
+        }
+
         Dictionary<string, BacktestResult> results = new Dictionary<string, BacktestResult>();
 
         void backtester_backtestResultArrived(Dictionary<string, BacktestResult> resultPerPair)
@@ -132,11 +174,13 @@ namespace NinjaTrader_Client
             {
                 BacktestResult theResult = resultPerPair[instrument];
 
+                double score = Convert.ToDouble(theResult.getResult("Profit")) - Convert.ToDouble(theResult.getResult("Positions")) * 0.0001d;
+
                 int i = 1;
-                string name = theResult.parameter["Strategy"] + "_" + theResult.parameter["Pair"];
+                string name = Math.Round(score, 4) + theResult.parameter["Strategy"] + "_" + theResult.parameter["Pair"];
                 while (results.ContainsKey(name))
                 {
-                    name = theResult.parameter["Strategy"] + "_" + theResult.parameter["Pair"] + "_" + i;
+                    name = Math.Round(score, 4) + " " + theResult.parameter["Strategy"] + "_" + theResult.parameter["Pair"] + "_" + i;
                     i++;
                 }
 

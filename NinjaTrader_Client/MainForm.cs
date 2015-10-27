@@ -80,7 +80,7 @@ namespace NinjaTrader_Client
 
         private void backtest_btn_Click(object sender, EventArgs e)
         {
-            BacktestForm backtestForm = new BacktestForm(main.getDatabase(), 24 * 16);
+            BacktestForm backtestForm = new BacktestForm(main.getDatabase(), 24 * 7);
             backtestForm.ShowDialog();
         }
 
@@ -93,7 +93,7 @@ namespace NinjaTrader_Client
                 
                 //Strategy strat = new FastMovement_Strategy(main.getDatabase(), 1000 * 60 * 3, 1000 * 60 * 13, 0.0008, 0.0013, 0.0013, false);
                 //Strategy strat = new SSIStochStrategy(main.getDatabase(), 0, 0.2, 1000 * 60 * 20, 1000 * 60 * 60 * 6); //tp 0.003
-                Strategy strat = new SSIStochStrategy(main.getDatabase(), 0.05, 0.2, 1000 * 60 * 60, 1000 * 60 * 60 * 6);
+                Strategy strat = new SSIStochStrategy(main.getDatabase(), 0.29, 0.49, 0.16, 1000 * 60 * 150, 1000 * 60 * 1080);
 
                 strat.setAPI(NTLiveTradingAPI.getTheInstace());
                 main.startTradingLive(strat, tradablePairs);
