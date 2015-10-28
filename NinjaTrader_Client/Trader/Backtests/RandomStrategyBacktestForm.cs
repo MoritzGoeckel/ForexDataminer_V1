@@ -15,7 +15,7 @@ namespace NinjaTrader_Client.Trader.Backtests
 
         protected override string getPairToTest()
         {
-            return "EURUSD";
+            return "USDJPY";
         }
 
         private Random z = new Random();

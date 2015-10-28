@@ -129,33 +129,5 @@ namespace NinjaTrader_Client
             ChartingForm chartingForm = new ChartingForm(database, result.getPositions(), startTimestamp, endTimestamp);
             chartingForm.Show(); //caching!
         }
-
-        /*private List<string> generatePairLists()
-        {
-            List<string> majors = new List<string>();
-            majors.Add("EURUSD");
-            majors.Add("GBPUSD");
-            majors.Add("USDJPY");
-            majors.Add("USDCHF");
-
-            List<string> minors = new List<string>();
-            minors.Add("AUDCAD");
-            minors.Add("AUDJPY");
-            minors.Add("AUDUSD");
-            minors.Add("CHFJPY");
-            minors.Add("EURCHF");
-            minors.Add("EURGBP");
-            minors.Add("EURJPY");
-            minors.Add("GBPCHF");
-            minors.Add("GBPJPY");
-            minors.Add("NZDUSD");
-            minors.Add("USDCAD");
-
-            List<string> all = new List<string>();
-            all.AddRange(majors);
-            all.AddRange(minors);
-          
-            return all;
-        }*/
     }
 }
