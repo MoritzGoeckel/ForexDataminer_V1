@@ -73,10 +73,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BacktestForm.cs">
+    <Compile Include="Trader\BacktestBase\BacktestForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BacktestForm.Designer.cs">
+    <Compile Include="Trader\BacktestBase\BacktestForm.Designer.cs">
       <DependentUpon>BacktestForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ChartingForm.cs">
@@ -109,8 +109,14 @@
     <Compile Include="Trader\Analysis\DataDensityFrom.Designer.cs">
       <DependentUpon>DataDensityFrom.cs</DependentUpon>
     </Compile>
-    <Compile Include="Trader\Backtest\Backtester.cs" />
-    <Compile Include="Trader\Backtest\BacktestResult.cs" />
+    <Compile Include="Trader\BacktestBase\Backtester.cs" />
+    <Compile Include="Trader\BacktestBase\BacktestResult.cs" />
+    <Compile Include="Trader\Backtests\RandomStrategyBacktestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Trader\Backtests\DedicatedStrategyBacktestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Trader\Charting\SimpleChart_Stepline.cs" />
     <Compile Include="Trader\Charting\SimpleChart_Scatter.cs" />
     <Compile Include="Trader\Indicators\Indicator.cs" />
@@ -138,7 +144,7 @@
     <Compile Include="Trader\Utils\HexColorCodes.cs" />
     <Compile Include="Trader\Utils\StringCompressor.cs" />
     <Compile Include="Trader\Utils\Timestamp.cs" />
-    <EmbeddedResource Include="BacktestForm.resx">
+    <EmbeddedResource Include="Trader\BacktestBase\BacktestForm.resx">
       <DependentUpon>BacktestForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ChartingForm.resx">

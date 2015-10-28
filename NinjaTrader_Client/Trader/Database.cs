@@ -29,7 +29,7 @@ namespace NinjaTrader_Client.Trader
         [MethodImpl(MethodImplOptions.Synchronized)]
         public Tickdata getPrice(long timestamp, string instrument)
         {
-            if (Timestamp.getNow() - chacheLastClearedTimestamp > 1000 * 60 * 60 * 1) //Nach einer Stunde, verhindert überlaufen
+            if (Timestamp.getNow() - chacheLastClearedTimestamp > 1000 * 60 * 60 * 5) //Nach einer Stunde, verhindert überlaufen
             {
                 chacheLastClearedTimestamp = Timestamp.getNow();
                 cachedPrices.Clear();

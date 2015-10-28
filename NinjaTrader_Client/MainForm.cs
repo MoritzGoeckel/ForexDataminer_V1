@@ -15,6 +15,7 @@ using NinjaTrader_Client.Trader.Strategies;
 using NinjaTrader_Client.Trader.TradingAPIs;
 using NinjaTrader_Client.Trader.Indicators;
 using NinjaTrader_Client.Trader.Analysis;
+using NinjaTrader_Client.Trader.Backtests;
 
 namespace NinjaTrader_Client
 {
@@ -80,7 +81,7 @@ namespace NinjaTrader_Client
 
         private void backtest_btn_Click(object sender, EventArgs e)
         {
-            BacktestForm backtestForm = new BacktestForm(main.getDatabase(), 24 * 7, true);
+            DedicatedStrategyBacktestForm backtestForm = new DedicatedStrategyBacktestForm(main.getDatabase());
             backtestForm.ShowDialog();
         }
 
@@ -112,6 +113,12 @@ namespace NinjaTrader_Client
         {
             DataDensityFrom ddForm = new DataDensityFrom(main.getDatabase());
             ddForm.ShowDialog();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            RandomStrategyBacktestForm backtestForm = new RandomStrategyBacktestForm(main.getDatabase());
+            backtestForm.ShowDialog();
         }
     }
 }
