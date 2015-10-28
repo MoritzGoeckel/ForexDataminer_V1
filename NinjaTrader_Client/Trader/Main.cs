@@ -71,22 +71,16 @@ namespace NinjaTrader_Client.Trader
             }
         }
 
-        private Strategy strat;
-        private List<string> tradablePairs;
-        private Thread autoTradingTimerThread;
         private bool continueLiveTradingThread = false;
         private int tradingTick = 0;
 
         public void startTradingLive(Strategy strat, List<string> tradablePairs)
         {
-            this.strat = strat;
-            this.tradablePairs = tradablePairs;
-
             if (isDownloadingUpdates == false)
                 startDownloadingUpdates();
 
             continueLiveTradingThread = true;
-            autoTradingTimerThread = new Thread(delegate()
+            Thread autoTradingTimerThread = new Thread(delegate()
             {
                 while (continueLiveTradingThread)
                 {
@@ -94,9 +88,8 @@ namespace NinjaTrader_Client.Trader
                     if (tradingTick > 1000)
                         tradingTick = 0;
 
-                    if(strat != null)
-                        foreach (string instrument in tradablePairs)
-                            strat.doTick(instrument);
+                    foreach (string instrument in tradablePairs)
+                        strat.doTick(instrument);
 
                     Thread.Sleep(500); //Alle 1/2 sekunden
                 }
@@ -127,9 +120,6 @@ namespace NinjaTrader_Client.Trader
         {
             if (continueLiveTradingThread)
                 continueLiveTradingThread = false;
-
-            if (autoTradingTimerThread != null)
-                autoTradingTimerThread.Abort();
 
             ssi.stop();
             api.stop();

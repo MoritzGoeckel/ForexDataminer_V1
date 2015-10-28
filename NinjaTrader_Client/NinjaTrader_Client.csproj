@@ -189,6 +189,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Trader\Notes\deadCode.txt" />
+    <Content Include="Trader\Notes\pairs.txt" />
     <Content Include="Trader\Notes\Todo.txt" />
     <Content Include="Trader\Notes\readme.txt" />
   </ItemGroup>
