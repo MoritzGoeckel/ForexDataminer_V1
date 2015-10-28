@@ -31,7 +31,7 @@ namespace NinjaTrader_Client
         {
             main = new Main(Application.StartupPath);
             main.uiDataChanged += updateUI;
-            NTLiveTradingAPI.createInstace(main.getAPI(), 1000);
+            NTLiveTradingAPI.createInstace(main.getAPI(), 500); //500 per position * 2 strategies = 1000 investement
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -88,19 +88,19 @@ namespace NinjaTrader_Client
         private void button5_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("Wirklich traden?", "", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
-            {
-                List<string> tradablePairs = new List<string>();
-                tradablePairs.Add("EURUSD");
-                
-                //Strategy strat = new FastMovement_Strategy(main.getDatabase(), 1000 * 60 * 3, 1000 * 60 * 13, 0.0008, 0.0013, 0.0013, false);
-                //Strategy strat = new SSIStochStrategy(main.getDatabase(), 0, 0.2, 1000 * 60 * 20, 1000 * 60 * 60 * 6); //tp 0.003
+            {                
+                //Strategy strat = new SSIStochStrategy(main.getDatabase(), 0.29, 0.49, 0.16, 1000 * 60 * 150, 1000 * 60 * 1080); #1 EURUSD
 
                 //EURUSD
-                Strategy strat = new SSIStochStrategy(main.getDatabase(), 0.35, 0.3, 0.16, 1000 * 60 * 159, 1000 * 60 * 1032); //#Avg
-                //Strategy strat = new SSIStochStrategy(main.getDatabase(), 0.29, 0.49, 0.16, 1000 * 60 * 150, 1000 * 60 * 1080); #1
+                Strategy usdStrat = new SSIStochStrategy(main.getDatabase(), 0.35, 0.3, 0.16, 1000 * 60 * 159, 1000 * 60 * 1032); //Avg
+                usdStrat.setAPI(NTLiveTradingAPI.getTheInstace());
+                main.startTradingLive(usdStrat, "EURUSD");
+                
+                //JPYUSD
+                Strategy jpyStrat = new SSIStochStrategy(main.getDatabase(), 0.2, 0.11, 0.08, 120 * 60 * 1000, 60 * 60 * 1000); //#1
+                jpyStrat.setAPI(NTLiveTradingAPI.getTheInstace());
+                main.startTradingLive(jpyStrat, "JPYUSD");
 
-                strat.setAPI(NTLiveTradingAPI.getTheInstace());
-                main.startTradingLive(strat, tradablePairs);
             }
         }
 

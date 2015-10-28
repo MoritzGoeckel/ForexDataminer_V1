@@ -1,4 +1,8 @@
-﻿//Good strats für 20er auflösung:
+﻿                //Strategy strat = new FastMovement_Strategy(main.getDatabase(), 1000 * 60 * 3, 1000 * 60 * 13, 0.0008, 0.0013, 0.0013, false);
+                //Strategy strat = new SSIStochStrategy(main.getDatabase(), 0, 0.2, 1000 * 60 * 20, 1000 * 60 * 60 * 6); //tp 0.003
+
+
+//Good strats für 20er auflösung:
             /*stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 7, 1000 * 60 * 60 * 1, 0.0017, 0.0000, 0.0023));
             stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 5, 1000 * 60 * 20, 0.0020, 0.0015, 0.0015));
             stretegies.Add(new FastMovement_Strategy(database, 1000 * 60 * 3, 1000 * 60 * 20, 0.0012, 0.0012, 0.0015));
