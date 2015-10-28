@@ -73,24 +73,42 @@ namespace NinjaTrader_Client
             backtester.backtestResultArrived += backtester_backtestResultArrived;
 
             if (doRandomTests)
+            {
                 backtester.backtestResultArrived += startNewBacktests;
+                startNewBacktests(null);
+                startNewBacktests(null);
+                startNewBacktests(null);
+                startNewBacktests(null);
+            }
+            else
+            {
+                List<Strategy> strats = new List<Strategy>();
+                strats.Add(new SSIStochStrategy(database, 0.29, 0.49, 0.16, 1000 * 60 * 150, 1000 * 60 * 1080));
+                strats.Add(new SSIStochStrategy(database, 0.35, 0.3, 0.16, 1000 * 60 * 159, 1000 * 60 * 1032));
+                strats.Add(new SSIStochStrategy(database, 0.35, 0.3, 0.16, 1000 * 60 * 159, 1000 * 60 * 1032));
+                strats.Add(new SSIStochStrategy(database, 0.35, 0.3, 0.16, 1000 * 60 * 159, 1000 * 60 * 1032));
 
-            List<Strategy> strats = new List<Strategy>();
+                backtester.startBacktest(strats, instruments[0]);
+            }
+
             //strats.Add(new SSIStochStrategy(database, 0.15, 0.15, 0.2, 1000 * 60 * 60 * 2, 1000 * 60 * 60 * 4));
 
             //strats.Add(new SSIStochStrategy(database, 0.10, 0.10, 0.15, 1000 * 60 * 60 * 2, 1000 * 60 * 60 * 5));
             //strats.Add(new SSIStochStrategy(database, 0.10, 0.10, 0.2, 1000 * 60 * 60 * 2, 1000 * 60 * 60 * 5));
 
-            strats.Add(new SSIStochStrategy(database, 0.29, 0.49, 0.16, 1000 * 60 * 150, 1000 * 60 * 1080));
-            strats.Add(new SSIStochStrategy(database, 0.35, 0.3, 0.16, 1000 * 60 * 159, 1000 * 60 * 1032));
             
+
+            //strats.Add(new SSIStrategy(database, 0.2, 0.2));
+            //strats.Add(new SSIStrategy(database, 0.1, 0.1));
+            //strats.Add(new SSIStrategy(database, 0.1, 0.2));
+            //strats.Add(new SSIStrategy(database, 0.2, 0.1));
+
             /*strats.Add(new SSIStochStrategy(database, 0.02, 0.10, 0.2, 1000 * 60 * 60, 1000 * 60 * 60 * 3));
             strats.Add(new SSIStochStrategy(database, 0.02, 0.10, 0.2, 1000 * 60 * 60, 1000 * 60 * 60 * 4));
             strats.Add(new SSIStochStrategy(database, 0.02, 0.10, 0.2, 1000 * 60 * 60, 1000 * 60 * 60 * 5));
             strats.Add(new SSIStochStrategy(database, 0.02, 0.10, 0.2, 1000 * 60 * 60, 1000 * 60 * 60 * 6));
             strats.Add(new SSIStochStrategy(database, 0.02, 0.10, 0.2, 1000 * 60 * 60, 1000 * 60 * 60 * 7));*/
 
-            backtester.startBacktest(strats, instruments[0]);
 
             //backtester.startBacktest(new FastMovement_Strategy(database, 1000 * 60 * 3, 1000 * 60 * 15, 0.60, 0.01, 0.02, true), instruments);
 
@@ -149,7 +167,9 @@ namespace NinjaTrader_Client
                 return;
             }
 
-            backtester.startBacktest(new SSIStochStrategy(database, Math.Round(z.NextDouble() * 0.5, 2) + 0.01, Math.Round(z.NextDouble() * 0.5, 2) + 0.01, Math.Round(z.NextDouble() * 0.15, 2) + 0.07, 1000 * 60 * 30 * z.Next(1, 8), 1000 * 60 * 60 * z.Next(1, 20)), "EURUSD");
+            //backtester.startBacktest(new SSIStochStrategy(database, Math.Round(z.NextDouble() * 0.5, 2) + 0.01, Math.Round(z.NextDouble() * 0.5, 2) + 0.01, Math.Round(z.NextDouble() * 0.15, 2) + 0.07, 1000 * 60 * 30 * z.Next(1, 8), 1000 * 60 * 60 * z.Next(1, 20)), "EURUSD");
+            backtester.startBacktest(new FastMovement_Strategy(database, 1000 * 60 * z.Next(1, 30), 1000 * 60 * 10 * z.Next(1, 20), Math.Round(z.NextDouble() * 0.7, 2) + 0.01, Math.Round(z.NextDouble() * 0.4, 2) + 0.01, Math.Round(z.NextDouble() * 0.4, 2) + 0.01, z.NextDouble() > 0.5), "EURUSD");
+            
             this.Text = "Random tests: " + tested++.ToString();
         }
 

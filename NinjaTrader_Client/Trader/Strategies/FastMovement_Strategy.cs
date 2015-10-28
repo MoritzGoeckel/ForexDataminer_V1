@@ -10,7 +10,7 @@ namespace NinjaTrader_Client.Trader.Strategies
 {
     public class FastMovement_Strategy : Strategy
     {
-        public FastMovement_Strategy(Database database, int preTime = 1000 * 60 * 7, int postTime = 1000 * 60 * 60, double thresholdPercent = 0.07, double takeprofitPercent = 0.04, double stoplossPercent = 0.02, bool follow_trend = true)
+        public FastMovement_Strategy(Database database, int preTime, int postTime, double thresholdPercent, double takeprofitPercent, double stoplossPercent, bool follow_trend = true)
             : base(database)
         {
             this.thresholdPercent = thresholdPercent;
