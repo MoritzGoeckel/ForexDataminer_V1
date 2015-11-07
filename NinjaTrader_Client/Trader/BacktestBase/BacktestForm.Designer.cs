@@ -33,6 +33,7 @@
             this.label_result = new System.Windows.Forms.Label();
             this.listBox_results = new System.Windows.Forms.ListBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.threadsLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label_parameters
@@ -81,11 +82,21 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // threadsLabel
+            // 
+            this.threadsLabel.AutoSize = true;
+            this.threadsLabel.Location = new System.Drawing.Point(698, 491);
+            this.threadsLabel.Name = "threadsLabel";
+            this.threadsLabel.Size = new System.Drawing.Size(49, 13);
+            this.threadsLabel.TabIndex = 5;
+            this.threadsLabel.Text = "Threads:";
+            // 
             // BacktestForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(789, 521);
+            this.Controls.Add(this.threadsLabel);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.listBox_results);
             this.Controls.Add(this.label_result);
@@ -106,6 +117,7 @@
         private System.Windows.Forms.Label label_result;
         private System.Windows.Forms.ListBox listBox_results;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label threadsLabel;
 
     }
 }

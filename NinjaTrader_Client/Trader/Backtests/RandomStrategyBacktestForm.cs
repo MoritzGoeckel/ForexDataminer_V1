@@ -9,13 +9,20 @@ namespace NinjaTrader_Client.Trader.Backtests
 {
     class RandomStrategyBacktestForm : BacktestForm
     {
+        private List<string> majors = new List<string>();
+
         public RandomStrategyBacktestForm(Database database)
             : base(database, 31 * 24, 60, true)
-        { }
+        {
+            majors.Add("EURUSD");
+            majors.Add("GBPUSD");
+            majors.Add("USDJPY");
+            majors.Add("USDCHF");
+        }
 
         protected override string getPairToTest()
         {
-            return "EURUSD";
+            return majors[z.Next(0, majors.Count)];
         }
 
         private Random z = new Random();

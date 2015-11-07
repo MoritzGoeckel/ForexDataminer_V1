@@ -45,6 +45,11 @@ namespace NinjaTrader_Client
         private int resolution;
         private bool doRandomTests;
 
+        private void outputThreadCount()
+        {
+            threadsLabel.Text = "Threads: " + backtester.getThreadsCount();
+        }
+
         private void BacktestForm_Load(object sender, EventArgs e)
         {
             backtester = new Backtester(database, resolution, startTimestamp, endTimestamp);
@@ -53,10 +58,9 @@ namespace NinjaTrader_Client
             if (doRandomTests)
             {
                 backtester.backtestResultArrived += startNewRandomBacktest;
-                startNewRandomBacktest(null);
-                startNewRandomBacktest(null);
-                startNewRandomBacktest(null);
-                startNewRandomBacktest(null);
+
+                for (int i = 0; i < Environment.ProcessorCount; i++)
+                    startNewRandomBacktest(null);
             }
             else
                 backtester.startBacktest(getStrategiesToTest(), getPairToTest());
@@ -73,6 +77,8 @@ namespace NinjaTrader_Client
             }
 
             backtester.startBacktest(getRandomStrategyToTest(), getPairToTest());
+
+            outputThreadCount();
         }
 
         private Dictionary<string, BacktestResult> results = new Dictionary<string, BacktestResult>();
@@ -84,6 +90,8 @@ namespace NinjaTrader_Client
                 this.Invoke(new Action(() => backtester_backtestResultArrived(result)));
                 return;
             }
+
+            outputThreadCount();
 
             double score = Convert.ToDouble(result.getResult("Profit")) - Convert.ToDouble(result.getResult("Positions")) * 0.0001d;
 
