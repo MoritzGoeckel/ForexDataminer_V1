@@ -41,7 +41,7 @@ namespace NinjaTrader_Client.Trader.Backtest
                 results.Add(key, value);
         }
 
-        public void addPositions(List<TradePosition> positions)
+        public void setPositions(List<TradePosition> positions)
         {
             trades.AddRange(positions);
 
@@ -57,32 +57,35 @@ namespace NinjaTrader_Client.Trader.Backtest
             int positiveDays = 0;
             int days = 0;
 
-            lastDayStart = positions[0].timestampOpen;
-
-            foreach(TradePosition position in trades)
+            if (positions.Count != 0)
             {
-                profit += position.getDifference();
-                holdTime += position.timestampClose - position.timestampOpen;
+                lastDayStart = positions[0].timestampOpen;
 
-                if (profit < drawdown)
-                    drawdown = profit;
-
-                if (position.type == TradePosition.PositionType.longPosition)
-                    longPositions++;
-
-                if (position.getDifference() > 0)
-                    winPositions++;
-
-                if(position.timestampClose > lastDayStart + 1000 * 60 * 60 * 24)
+                foreach (TradePosition position in trades)
                 {
-                    if (lastDayProfit >= profit)
-                        positiveDays++;
+                    profit += position.getDifference();
+                    holdTime += position.timestampClose - position.timestampOpen;
 
-                    days++;
+                    if (profit < drawdown)
+                        drawdown = profit;
 
-                    lastDayProfit = profit;
-                    while (lastDayStart < position.timestampClose)
-                        lastDayStart += 1000 * 60 * 60 * 24;
+                    if (position.type == TradePosition.PositionType.longPosition)
+                        longPositions++;
+
+                    if (position.getDifference() > 0)
+                        winPositions++;
+
+                    if (position.timestampClose > lastDayStart + 1000 * 60 * 60 * 24)
+                    {
+                        if (profit >= lastDayProfit)
+                            positiveDays++;
+
+                        days++;
+
+                        lastDayProfit = profit;
+                        while (lastDayStart < position.timestampClose)
+                            lastDayStart += 1000 * 60 * 60 * 24;
+                    }
                 }
             }
 

@@ -25,9 +25,12 @@ namespace NinjaTrader_Client
             this.backtestHours = backtestHours;
 
             endTimestamp = database.getLastTimestamp();
-            startTimestamp = endTimestamp - (backtestHours * 60 * 60 * 1000);
+            startTimestamp = endTimestamp - (backtestHours * 60L * 60L * 1000L);
             this.doRandomTests = doRandomTests;
             this.resolution = resolution;
+
+            if (startTimestamp > endTimestamp)
+                throw new Exception();
         }
 
         protected abstract List<Strategy> getStrategiesToTest();

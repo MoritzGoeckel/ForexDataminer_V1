@@ -10,7 +10,7 @@ namespace NinjaTrader_Client.Trader.Backtests
     class RandomStrategyBacktestForm : BacktestForm
     {
         public RandomStrategyBacktestForm(Database database)
-            : base(database, 24 * 24, 60, true)
+            : base(database, 31 * 24, 60, true)
         { }
 
         protected override string getPairToTest()
@@ -22,8 +22,11 @@ namespace NinjaTrader_Client.Trader.Backtests
         protected override Strategy getRandomStrategyToTest()
         {
             //here is the place to generate random strategies
-            return new SSIStochStrategy(database, Math.Round(z.NextDouble() * 0.3, 2) + 0.01, Math.Round(z.NextDouble() * 0.3, 2) + 0.01, Math.Round(z.NextDouble() * 0.15, 2) + 0.07, 1000 * 60 * 30 * z.Next(1, 8), 1000 * 60 * 60 * z.Next(1, 20));
-            //return new FastMovement_Strategy(database, 1000 * 60 * z.Next(1, 30), 1000 * 60 * 10 * z.Next(1, 20), Math.Round(z.NextDouble() * 0.7, 2) + 0.01, Math.Round(z.NextDouble() * 0.4, 2) + 0.01, Math.Round(z.NextDouble() * 0.4, 2) + 0.01, z.NextDouble() > 0.5);
+
+            if(z.Next(0, 2) == 1)
+                return new SSIStochStrategy(database, Math.Round(z.NextDouble() * 0.3, 2) + 0.01, Math.Round(z.NextDouble() * 0.3, 2) + 0.01, Math.Round(z.NextDouble() * 0.15, 2) + 0.07, 1000 * 60 * 30 * z.Next(1, 8), 1000 * 60 * 60 * z.Next(1, 20));
+            else
+                return new FastMovement_Strategy(database, 1000 * 60 * z.Next(1, 30), 1000 * 60 * 10 * z.Next(1, 20), Math.Round(z.NextDouble() * 0.7, 2) + 0.01, Math.Round(z.NextDouble() * 0.4, 2) + 0.01, Math.Round(z.NextDouble() * 0.4, 2) + 0.01, z.NextDouble() > 0.5);
         }
 
         protected override List<Strategy> getStrategiesToTest()

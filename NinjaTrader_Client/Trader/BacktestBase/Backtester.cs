@@ -28,6 +28,9 @@ namespace NinjaTrader_Client.Trader.Backtest
             this.resolutionInSeconds = resolutionInSeconds;
             this.startTimestamp = startTimestamp;
             this.endTimestamp = endTimestamp;
+
+            if (this.startTimestamp > this.endTimestamp)
+                throw new Exception();
         }
 
         public void startBacktest(Strategy strat, string pair)
@@ -61,6 +64,10 @@ namespace NinjaTrader_Client.Trader.Backtest
             watch.Start();
 
             long currentTimestamp = startTimestamp;
+
+            if (currentTimestamp > startTimestamp)
+                throw new Exception();
+
             while (currentTimestamp < endTimestamp)
             {
                 api.setNow(currentTimestamp);
@@ -73,7 +80,7 @@ namespace NinjaTrader_Client.Trader.Backtest
             api.closePositions(pair);
 
             BacktestResult result = new BacktestResult(endTimestamp - startTimestamp, pair, strat.getName());
-            result.addPositions(api.getHistory(pair));
+            result.setPositions(api.getHistory(pair));
             result = strat.addCustomVariables(result);
 
             watch.Stop();
