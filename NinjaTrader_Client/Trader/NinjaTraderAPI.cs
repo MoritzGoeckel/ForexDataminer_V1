@@ -27,8 +27,10 @@ namespace NinjaTrader_Client.Trader
             return connected;
         }
 
-        public NinjaTraderAPI(List<string> instrumentNames)
+        private string account;
+        public NinjaTraderAPI(List<string> instrumentNames, string account = "Sim101")
         {
+            this.account = account;
             instruments = new Dictionary<string,Tickdata>();
 
             foreach(string name in instrumentNames)
@@ -93,7 +95,6 @@ namespace NinjaTrader_Client.Trader
             }
         }
 
-        string account = "Sim101";
         public bool submitOrder(string instrument, NinjaTrader_Client.Trader.Model.TradePosition.PositionType type, int size, double price)
         {
             if (type == Model.TradePosition.PositionType.longPosition)

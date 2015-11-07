@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using NinjaTrader_Client.Trader.Model;
 using NinjaTrader_Client.Trader.Strategies;
+using NinjaTrader_Client.Trader.TradingAPIs;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -84,6 +85,8 @@ namespace NinjaTrader_Client.Trader
 
         public void startTradingLive(Strategy strat, List<string> tradablePairs, int interval = 500)
         {
+            strat.setAPI(NTLiveTradingAPI.getTheInstace());
+
             if (isDownloadingUpdates == false)
                 startDownloadingUpdates();
 

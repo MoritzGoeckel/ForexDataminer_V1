@@ -93,14 +93,11 @@ namespace NinjaTrader_Client
 
                 //EURUSD
                 Strategy usdStrat = new SSIStochStrategy(main.getDatabase(), 0.35, 0.3, 0.16, 1000 * 60 * 159, 1000 * 60 * 1032); //Avg
-                usdStrat.setAPI(NTLiveTradingAPI.getTheInstace());
                 main.startTradingLive(usdStrat, "EURUSD");
                 
                 //JPYUSD
                 Strategy jpyStrat = new SSIStochStrategy(main.getDatabase(), 0.2, 0.11, 0.08, 120 * 60 * 1000, 60 * 60 * 1000); //#1
-                jpyStrat.setAPI(NTLiveTradingAPI.getTheInstace());
-                main.startTradingLive(jpyStrat, "JPYUSD");
-
+                main.startTradingLive(jpyStrat, "JPYUSD"); //Not working... ???
             }
         }
 

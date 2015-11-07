@@ -10,7 +10,7 @@ namespace NinjaTrader_Client.Trader.Backtests
     class DedicatedStrategyBacktestForm : BacktestForm
     {
         public DedicatedStrategyBacktestForm(Database database)
-            : base(database, 24 * 16, 60, false)
+            : base(database, 24 * 24, 60, false)
         { }
 
         protected override string getPairToTest()
@@ -33,7 +33,8 @@ namespace NinjaTrader_Client.Trader.Backtests
 
             //USDJPY
             strats.Add(new SSIStochStrategy(database, 0.2, 0.11, 0.08, 120 * 60 * 1000, 60 * 60 * 1000)); //#1 besser
-            strats.Add(new SSIStochStrategy(database, 0.35, 0.3, 0.1, 175 * 60 * 1000, 830 * 60 * 1000)); //avg
+            //strats.Add(new SSIStochStrategy(database, 0.35, 0.3, 0.1, 175 * 60 * 1000, 830 * 60 * 1000)); //avg
+            //strats.Add(new SSIStochStrategy(database, 0.31, 0.1, 0.08, 180 * 60 * 1000, 540 * 60 * 1000)); //better?            
 
             return strats;
         }

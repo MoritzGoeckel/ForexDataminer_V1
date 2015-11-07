@@ -18,7 +18,7 @@ namespace NinjaTrader_Client.Trader.Strategies
 
         private int hitTimeout = 0, hitTp = 0, hitSl = 0;
 
-        public SSIStochStrategy(Database database, double takeprofitPercent = 0.01, double stoplossPercent = 0.05, double threshold = 0.2, int timeout = 1000 * 60 * 60, int stochTimeframe = 1000 * 60 * 60 * 6)
+        public SSIStochStrategy(Database database, double takeprofitPercent, double stoplossPercent, double threshold, int timeout, int stochTimeframe)
             : base(database)
         {
             stochIndicator = new StochIndicator(database, stochTimeframe);
