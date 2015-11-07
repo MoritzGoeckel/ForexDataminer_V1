@@ -51,6 +51,14 @@ namespace NinjaTrader_Client.Trader.Backtest
 
             long holdTime = 0;
 
+            double lastDayProfit = 0;
+            long lastDayStart = 0;
+
+            int positiveDays = 0;
+            int days = 0;
+
+            lastDayStart = positions[0].timestampOpen;
+
             foreach(TradePosition position in trades)
             {
                 profit += position.getDifference();
@@ -64,6 +72,18 @@ namespace NinjaTrader_Client.Trader.Backtest
 
                 if (position.getDifference() > 0)
                     winPositions++;
+
+                if(position.timestampClose > lastDayStart + 1000 * 60 * 60 * 24)
+                {
+                    if (lastDayProfit >= profit)
+                        positiveDays++;
+
+                    days++;
+
+                    lastDayProfit = profit;
+                    while (lastDayStart < position.timestampClose)
+                        lastDayStart += 1000 * 60 * 60 * 24;
+                }
             }
 
             setResult("Positions", trades.Count.ToString());
@@ -74,6 +94,7 @@ namespace NinjaTrader_Client.Trader.Backtest
             setResult("Pips/Position", (profit / (double)trades.Count).ToString());
             setResult("Pips/Day", (profit / (double)hours * 24d).ToString());
             setResult("Positions/Day", ((double)positions.Count / (double)hours * 24d).ToString());
+            setResult("PositiveDaysRatio", ((double)positiveDays / (double)days).ToString());
 
             if (positions.Count != 0)
                 setResult("Holdtime/Positions", (holdTime / positions.Count / 1000 / 60).ToString());
