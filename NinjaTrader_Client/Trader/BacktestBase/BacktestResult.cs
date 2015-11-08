@@ -102,7 +102,61 @@ namespace NinjaTrader_Client.Trader.Backtest
             setResult("Positions/Day", ((double)positions.Count / (double)hours * 24d).ToString());
             setResult("PositiveDaysRatio", ((double)positiveDays / (double)days).ToString());
 
-            //Standart Deviation!!! ???
+            //Standart Deviation
+            double sumNegative = 0, sumPositive = 0, sum = 0;
+            double countNegative = 0, countPositive = 0, count = 0;
+            double varianceSumNegative = 0, varianceSumPositive = 0, varianceSum = 0;
+
+            foreach (TradePosition trade in trades)
+            {
+                if(trade.getDifference() > 0)
+                {
+                    sumPositive += trade.getDifference();
+                    countPositive++;
+                }
+
+                if(trade.getDifference() < 0)
+                {
+                    sumNegative += trade.getDifference();
+                    countNegative++;
+                }
+
+                if (trade.getDifference() != 0)
+                {
+                    sum += trade.getDifference();
+                    count++;
+                }
+            }
+
+            double meanNegative = sumNegative / countNegative;
+            double meanPositive = sumPositive / countPositive;
+            double mean = sum / count;
+
+            setResult("MeanLoss", meanNegative.ToString());
+            setResult("MeanWin", meanPositive.ToString());
+            setResult("MeanTrade", mean.ToString());
+
+            foreach (TradePosition trade in trades)
+            {
+                if (trade.getDifference() > 0)
+                    varianceSumPositive += Math.Pow(trade.getDifference() - meanPositive, 2);
+
+                if (trade.getDifference() < 0)
+                    varianceSumNegative += Math.Pow(trade.getDifference() - meanNegative, 2);
+
+                if (trade.getDifference() != 0)
+                    varianceSum += Math.Pow(trade.getDifference() - mean, 2);
+            }
+
+            double stdDeviationNegative = Math.Sqrt(varianceSumNegative / countNegative);
+            double stdDeviationPositive = Math.Sqrt(varianceSumPositive / countPositive);
+            double stdDeviation = Math.Sqrt(varianceSum / count);
+
+            setResult("StdDeviationWin", stdDeviationPositive.ToString());
+            setResult("StdDeviationLoss", stdDeviationNegative.ToString());
+            setResult("StdDeviation", stdDeviation.ToString());
+
+            //Ende Standart Deviation
 
             if (positions.Count != 0)
                 setResult("Holdtime/Positions", (holdTime / positions.Count / 1000 / 60).ToString());
