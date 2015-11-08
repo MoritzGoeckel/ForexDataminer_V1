@@ -89,15 +89,22 @@ namespace NinjaTrader_Client
         {
             if (MessageBox.Show("Wirklich traden?", "", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
             {                
-                //Strategy strat = new SSIStochStrategy(main.getDatabase(), 0.29, 0.49, 0.16, 1000 * 60 * 150, 1000 * 60 * 1080); #1 EURUSD
-
                 //EURUSD
-                Strategy usdStrat = new SSIStochStrategy(main.getDatabase(), 0.35, 0.3, 0.16, 1000 * 60 * 159, 1000 * 60 * 1032); //Avg
+                Strategy usdStrat = new SSIStochStrategy(main.getDatabase(), 0.09, 0.28, 0.17, 1000 * 60 * 90, 1000 * 60 * 120); //#1
                 main.startTradingLive(usdStrat, "EURUSD");
                 
                 //JPYUSD
-                Strategy jpyStrat = new SSIStochStrategy(main.getDatabase(), 0.2, 0.11, 0.08, 120 * 60 * 1000, 60 * 60 * 1000); //#1
-                main.startTradingLive(jpyStrat, "JPYUSD"); //Not working... ???
+                Strategy jpyStrat = new SSIStrategy(main.getDatabase(), 0.1, 0.04, false); //#1
+                main.startTradingLive(jpyStrat, "JPYUSD");
+
+                //GBPUSD
+                Strategy gbpStrat = new SSIStrategy(main.getDatabase(), 0.19, 0.12, true); //#1
+                main.startTradingLive(jpyStrat, "GBPUSD");
+
+                //USDCHF
+                Strategy chfStrat = new SSIStochStrategy(main.getDatabase(), 0.23, 0.25, 0.14, 180 * 60 * 1000, 420 * 60 * 1000); //#1
+                main.startTradingLive(jpyStrat, "USDCHF");
+
             }
         }
 
