@@ -64,11 +64,11 @@ namespace NinjaTrader_Client.Trader.Strategies
 
         public override void doTick(string instrument)
         {
-            double takeprofit = api.getAvgPrice(instrument) * takeprofitPercent / 100d;
-            double stoploss = api.getAvgPrice(instrument) * stoplossPercent / 100d;
-
             if (api.isUptodate(instrument) == false)
                 return;
+            
+            double takeprofit = api.getAvgPrice(instrument) * takeprofitPercent / 100d;
+            double stoploss = api.getAvgPrice(instrument) * stoplossPercent / 100d;
 
             TimeValueData newestTick = stochIndicator.getIndicator(api.getNow(), "ssi-mt4", instrument);
             

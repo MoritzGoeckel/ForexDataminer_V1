@@ -14,7 +14,7 @@ namespace NinjaTrader_Client
     public partial class LiveTradingForm : Form
     {
         private NTLiveTradingAPI api;
-        private string pair = "EURUSD";
+        private string pair = "USDJPY";
         public LiveTradingForm(NTLiveTradingAPI api)
         {
             InitializeComponent();
