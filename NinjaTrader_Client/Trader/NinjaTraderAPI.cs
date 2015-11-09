@@ -53,7 +53,6 @@ namespace NinjaTrader_Client.Trader
             else
             {
                 connected = false;
-                throw new Exception("Not connected to NT: " + ntClient.Connected(0));
             }
         }
 
