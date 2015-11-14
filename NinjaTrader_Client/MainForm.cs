@@ -90,11 +90,11 @@ namespace NinjaTrader_Client
             if (MessageBox.Show("Wirklich traden?", "", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
             {                
                 //EURUSD
-                Strategy usdStrat = new SSIStochStrategy(main.getDatabase(), 0.09, 0.28, 0.17, 1000 * 60 * 90, 1000 * 60 * 120);
+                Strategy usdStrat = new SSIStochStrategy(main.getDatabase(), 0.23, 0.23, 0.9, 1000 * 60 * 90, 1000 * 60 * 120);
                 main.startTradingLive(usdStrat, "EURUSD");
 
                 //USDJPY
-                Strategy jpyStrat = new SSIStrategy(main.getDatabase(), 0.1, 0.04, false);
+                Strategy jpyStrat = new FastMovement_Strategy(main.getDatabase(), 18 * 60 * 1000, 160 * 60 * 1000, 0.3, 0.25, 0.17, false);
                 main.startTradingLive(jpyStrat, "USDJPY");
 
                 //GBPUSD
@@ -102,7 +102,7 @@ namespace NinjaTrader_Client
                 main.startTradingLive(gbpStrat, "GBPUSD");
 
                 //USDCHF
-                Strategy chfStrat = new SSIStochStrategy(main.getDatabase(), 0.23, 0.25, 0.14, 180 * 60 * 1000, 420 * 60 * 1000);
+                Strategy chfStrat = new SSIStochStrategy(main.getDatabase(), 0.24, 0.24, 0.14, 180 * 60 * 1000, 420 * 60 * 1000);
                 main.startTradingLive(chfStrat, "USDCHF");
 
                 button5.Enabled = false;
@@ -125,6 +125,35 @@ namespace NinjaTrader_Client
         {
             RandomStrategyBacktestForm backtestForm = new RandomStrategyBacktestForm(main.getDatabase());
             backtestForm.ShowDialog();
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            List<string> majors = new List<string>();
+            majors.Add("EURUSD");
+            majors.Add("GBPUSD");
+            majors.Add("USDJPY");
+            majors.Add("USDCHF");
+
+            List<string> minors = new List<string>();
+            minors.Add("AUDCAD");
+            minors.Add("AUDJPY");
+            minors.Add("AUDUSD");
+            minors.Add("CHFJPY");
+            minors.Add("EURCHF");
+            minors.Add("EURGBP");
+            minors.Add("EURJPY");
+            minors.Add("GBPCHF");
+            minors.Add("GBPJPY");
+            minors.Add("NZDUSD");
+            minors.Add("USDCAD");
+
+            List<string> all = new List<string>();
+            all.AddRange(majors);
+            all.AddRange(minors);
+
+            CorrelationAnalysisForm cf = new CorrelationAnalysisForm(main.getDatabase(), 1000, 31, all);
+            cf.ShowDialog();
         }
     }
 }

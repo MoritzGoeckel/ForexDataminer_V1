@@ -27,28 +27,39 @@ namespace NinjaTrader_Client.Trader
         private long chacheLastClearedTimestamp = 0;
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public Tickdata getPrice(long timestamp, string instrument)
+        public Tickdata getPrice(long timestamp, string instrument, bool caching = true)
         {
-            if (Timestamp.getNow() - chacheLastClearedTimestamp > 1000 * 60 * 60 * 5) //Nach einer Stunde, verhindert überlaufen
+            if (caching)
             {
-                chacheLastClearedTimestamp = Timestamp.getNow();
-                cachedPrices.Clear();
-            }
+                if (Timestamp.getNow() - chacheLastClearedTimestamp > 1000 * 60 * 60 * 5) //Nach einer Stunde, verhindert überlaufen
+                {
+                    chacheLastClearedTimestamp = Timestamp.getNow();
+                    cachedPrices.Clear();
+                }
 
-            if (cachedPrices.ContainsKey(timestamp + instrument)) //Simple Caching (Nicht schön... oder?)
-                return cachedPrices[timestamp + instrument];
+                if (cachedPrices.ContainsKey(timestamp + instrument)) //Simple Caching (Nicht schön... oder?)
+                    return cachedPrices[timestamp + instrument];
+                else
+                {
+                    Tickdata data = getPriceInternal(timestamp, instrument);
+                    cachedPrices.Add(timestamp + instrument, data);
+                    return data;
+                }
+            }
             else
             {
-                var collection = mongodb.getCollection(instrument);
-
-                var docsDarunter = collection.Find(Query.LT("timestamp", timestamp + 1)).SetSortOrder(SortBy.Descending("timestamp")).SetLimit(1);
-                BsonDocument darunter = docsDarunter.ToList<BsonDocument>()[0];
-
-                Tickdata data = new Tickdata(darunter["timestamp"].AsInt64, darunter["last"].AsDouble, darunter["bid"].AsDouble, darunter["ask"].AsDouble);
-                cachedPrices.Add(timestamp + instrument, data);
-
-                return data;
+                return getPriceInternal(timestamp, instrument);
             }
+        }
+
+        private Tickdata getPriceInternal(long timestamp, string instrument)
+        {
+            var collection = mongodb.getCollection(instrument);
+
+            var docsDarunter = collection.Find(Query.LT("timestamp", timestamp + 1)).SetSortOrder(SortBy.Descending("timestamp")).SetLimit(1);
+            BsonDocument darunter = docsDarunter.ToList<BsonDocument>()[0];
+
+            return new Tickdata(darunter["timestamp"].AsInt64, darunter["last"].AsDouble, darunter["bid"].AsDouble, darunter["ask"].AsDouble);
         }
 
         //Chache too?

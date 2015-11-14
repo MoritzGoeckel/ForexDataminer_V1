@@ -18,5 +18,10 @@ namespace NinjaTrader_Client.Trader.Model
             this.ask = ask;
             this.last = last;
         }
+
+        public double getAvg()
+        {
+            return (ask + bid) / 2;
+        }
     }
 }
