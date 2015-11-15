@@ -33,6 +33,8 @@ namespace NinjaTrader_Client.Trader.Model
                 fileDialog.InitialDirectory = startupPath;
 
                 FolderBrowserDialog folderDialog = new FolderBrowserDialog();
+                folderDialog.Description = "Select the data-directory of the mongodb";
+
                 //Data
 
                 while (true)

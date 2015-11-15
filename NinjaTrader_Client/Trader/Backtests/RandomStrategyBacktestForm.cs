@@ -12,7 +12,7 @@ namespace NinjaTrader_Client.Trader.Backtests
         private List<string> majors = new List<string>();
 
         public RandomStrategyBacktestForm(Database database)
-            : base(database, 31 * 24, 60, true)
+            : base(database, 38 * 24, 10, true)
         {
             majors.Add("EURUSD");
             majors.Add("GBPUSD");

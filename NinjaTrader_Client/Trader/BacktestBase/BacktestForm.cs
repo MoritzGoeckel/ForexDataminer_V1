@@ -114,7 +114,7 @@ namespace NinjaTrader_Client
             if (Directory.Exists(Application.StartupPath + "/backtestes/") == false)
                 Directory.CreateDirectory(Application.StartupPath + "/backtestes/");
 
-            string path = Application.StartupPath + "/backtestes/" + result.parameter["Pair"] + "_" + result.parameter["Strategy"] + "_" + DateTime.Now.ToString("yyyy-M-d") + ".csv";
+            string path = Application.StartupPath + "/backtestes/backtest-" + result.parameter["Strategy"] + ".csv";
 
             if (File.Exists(path) == false)
                 File.WriteAllText(path, "Score;" + result.getCSVHeader() + Environment.NewLine);
