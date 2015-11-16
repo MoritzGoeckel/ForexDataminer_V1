@@ -19,36 +19,26 @@ namespace NinjaTrader_Client
 {
     public abstract partial class BacktestForm : Form
     {
-        public BacktestForm(Database database, int backtestHours, int resolution, bool doRandomTests)
-        {
-            InitializeComponent();
-            this.database = database;
-            this.backtestHours = backtestHours;
-
-            endTimestamp = database.getLastTimestamp();
-            startTimestamp = endTimestamp - (backtestHours * 60L * 60L * 1000L);
-            this.doRandomTests = doRandomTests;
-            this.resolution = resolution;
-
-            if (startTimestamp > endTimestamp)
-                throw new Exception();
-        }
-
-        protected abstract List<Strategy> getStrategiesToTest();
-        protected abstract Strategy getRandomStrategyToTest();
-        protected abstract string getPairToTest();
+        protected abstract void getNextStrategyToTest(ref Strategy strategy, ref String instrument, ref bool continueBacktesting);
+        protected abstract void backtestResultArrived(Dictionary<string, string> parameters, Dictionary<string, string> result);
 
         private Backtester backtester;
         protected Database database;
 
-        private int backtestHours;
         private long endTimestamp, startTimestamp;
         private int resolution;
-        private bool doRandomTests;
 
-        private void outputThreadCount()
+        private int testsCount = 0;
+        private Dictionary<string, BacktestData> results = new Dictionary<string, BacktestData>();
+
+        public BacktestForm(Database database, int backtestHours, int resolution)
         {
-            threadsLabel.Text = "Threads: " + backtester.getThreadsCount();
+            InitializeComponent();
+            this.database = database;
+
+            this.endTimestamp = database.getLastTimestamp();
+            this.startTimestamp = endTimestamp - (backtestHours * 60L * 60L * 1000L);
+            this.resolution = resolution;
         }
 
         private void BacktestForm_Load(object sender, EventArgs e)
@@ -56,33 +46,26 @@ namespace NinjaTrader_Client
             backtester = new Backtester(database, resolution, startTimestamp, endTimestamp);
             backtester.backtestResultArrived += backtester_backtestResultArrived;
 
-            if (doRandomTests)
-            {
-                backtester.backtestResultArrived += startNewRandomBacktest;
-
-                for (int i = 0; i < Environment.ProcessorCount; i++)
-                    startNewRandomBacktest(null);
-            }
-            else
-                backtester.startBacktest(getStrategiesToTest(), getPairToTest());
+            startNewBacktests();
         }
 
-        private int testsCount = 0;
-
-        private void startNewRandomBacktest(BacktestData result)
+        private void startNewBacktests()
         {
-            if (InvokeRequired)
+            int maxThreads = Environment.ProcessorCount + (Environment.ProcessorCount / 4);
+            while (backtester.getThreadsCount() < maxThreads)
             {
-                this.Invoke(new Action(() => startNewRandomBacktest(result)));
-                return;
+                bool continueTesting = false;
+                string pair = null;
+                Strategy strategy = null;
+                
+                getNextStrategyToTest(ref strategy, ref pair, ref continueTesting);
+
+                if (continueTesting && pair != null && strategy != null)
+                    backtester.startBacktest(strategy, pair);
+                else
+                    break;
             }
-
-            backtester.startBacktest(getRandomStrategyToTest(), getPairToTest());
-
-            outputThreadCount();
         }
-
-        private Dictionary<string, BacktestData> results = new Dictionary<string, BacktestData>();
 
         private void backtester_backtestResultArrived(BacktestData result)
         {
@@ -120,6 +103,14 @@ namespace NinjaTrader_Client
             if (File.Exists(path) == false)
                 File.WriteAllText(path, "Score;" + BacktestFormatter.getCSVHeader(result) + Environment.NewLine);
             File.AppendAllText(path, score + ";" + BacktestFormatter.getCSVLine(result) + Environment.NewLine);
+
+            this.backtestResultArrived(result.getParameters(), result.getResult());
+            startNewBacktests();
+        }
+
+        private void outputThreadCount()
+        {
+            threadsLabel.Text = "Threads: " + backtester.getThreadsCount();
         }
 
         //UI stuff

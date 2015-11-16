@@ -133,7 +133,7 @@
     <Compile Include="Trader\Strategies\SSIStrategy.cs" />
     <Compile Include="Trader\TradingAPIs\BacktestTradingAPI.cs" />
     <Compile Include="Trader\Model\TradePosition.cs" />
-    <Compile Include="Trader\Strategies\Strategy.cs" />
+    <Compile Include="Trader\StrategyBase\Strategy.cs" />
     <Compile Include="Trader\Model\Config.cs" />
     <Compile Include="Trader\Main.cs" />
     <Compile Include="Trader\Model\TimeValueData.cs" />
