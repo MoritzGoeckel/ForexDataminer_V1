@@ -21,6 +21,17 @@ namespace NinjaTrader_Client.Trader.Strategies
             this.follow_trend = follow_trend;
         }
 
+        public FastMovement_Strategy(Database database, Dictionary<string, string> parameters) 
+            : base(database)
+        {
+            preTime = Convert.ToInt32(parameters["preT"]);
+            postTime = Convert.ToInt32(parameters["postT"]);
+            thresholdPercent = Double.Parse(parameters["threshold"]);
+            takeprofitPercent = Double.Parse(parameters["tp"]);
+            stoplossPercent = Double.Parse(parameters["sl"]);
+            follow_trend = Boolean.Parse(parameters["followTrend"]);
+        }
+
         public override Strategy copy()
         {
             return new FastMovement_Strategy(database, preTime, postTime, thresholdPercent, takeprofitPercent, stoplossPercent, follow_trend);
@@ -31,29 +42,27 @@ namespace NinjaTrader_Client.Trader.Strategies
             return "FastMovement-Strategy";
         }
 
-        public override BacktestResult addCustomVariables(BacktestResult given)
+        public override Dictionary<string, string> getParameters()
         {
-            given.setParameter("PostT", ((double)postTime / 1000d / 60d).ToString());
-            given.setParameter("PreT", ((double)preTime / 1000d / 60d).ToString());
-            given.setParameter("Threshold", thresholdPercent.ToString());
-            given.setParameter("takeprofit", takeprofitPercent.ToString());
-            given.setParameter("stoploss", stoplossPercent.ToString());
-            given.setParameter("FollowTrend", follow_trend.ToString());
+            Dictionary<string, string> parameters = new Dictionary<string, string>();
+            parameters.Add("postT", postTime.ToString());
+            parameters.Add("preT", preTime.ToString());
+            parameters.Add("threshold", thresholdPercent.ToString());
+            parameters.Add("tp", takeprofitPercent.ToString());
+            parameters.Add("sl", stoplossPercent.ToString());
+            parameters.Add("followTrend", follow_trend.ToString());
 
-            //Real results
-            given.setResult("HitSL", hitSL.ToString());
-            given.setResult("HitTP", hitTP.ToString());
-            given.setResult("HitTO", hitTO.ToString());
-
-            return given;
+            return parameters;
         }
 
-        public override void reset()
+        public override Dictionary<string, string> getResult()
         {
-            hitSL = 0;
-            hitTO = 0;
-            hitTP = 0;
-            old_tickdata = new List<Tickdata>();
+            Dictionary<string, string> result = new Dictionary<string, string>();
+            result.Add("hitSl", hitSL.ToString());
+            result.Add("hitTp", hitTP.ToString());
+            result.Add("hitTo", hitTO.ToString());
+
+            return result;
         }
 
         private List<Tickdata> old_tickdata;

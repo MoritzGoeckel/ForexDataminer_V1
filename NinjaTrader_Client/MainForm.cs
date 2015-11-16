@@ -90,7 +90,7 @@ namespace NinjaTrader_Client
             if (MessageBox.Show("Wirklich traden?", "", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
             {                
                 //EURUSD
-                Strategy usdStrat = new SSIStochStrategy(main.getDatabase(), 0.23, 0.23, 0.9, 1000 * 60 * 90, 1000 * 60 * 120);
+                Strategy usdStrat = new SSIStochStrategy(main.getDatabase(), 0.23, 0.23, 0.9, 1000 * 60 * 90, 1000 * 60 * 120, true);
                 main.startTradingLive(usdStrat, "EURUSD");
 
                 //USDJPY
@@ -102,7 +102,7 @@ namespace NinjaTrader_Client
                 main.startTradingLive(gbpStrat, "GBPUSD");
 
                 //USDCHF
-                Strategy chfStrat = new SSIStochStrategy(main.getDatabase(), 0.24, 0.24, 0.14, 180 * 60 * 1000, 420 * 60 * 1000);
+                Strategy chfStrat = new SSIStochStrategy(main.getDatabase(), 0.24, 0.24, 0.14, 180 * 60 * 1000, 420 * 60 * 1000, true);
                 main.startTradingLive(chfStrat, "USDCHF");
 
                 button5.Enabled = false;

@@ -7,38 +7,27 @@ using System.Threading.Tasks;
 
 namespace NinjaTrader_Client.Trader.Backtest
 {
-    public class BacktestResult
+    public class BacktestData
     {
-        public Dictionary<string, string> parameter = new Dictionary<string, string>();
-        public Dictionary<string, Dictionary<string, BacktestResult>> pairResults = new Dictionary<string, Dictionary<string, BacktestResult>>();
-
-        public Dictionary<string, string> results = new Dictionary<string, string>();
-
-        private List<TradePosition> trades = new List<TradePosition>();
+        //Export these! ???
+        private Dictionary<string, string> parameterSet = new Dictionary<string, string>();
+        private Dictionary<string, string> resultSet = new Dictionary<string, string>();
+        private List<TradePosition> trades = new List<TradePosition>(); //Generate grahpic
 
         private long hours;
         private string pair, strategy;
 
         //Generate Chart? Optional?
 
-        public BacktestResult(long timeframe, string pair, string strategy)
+        public BacktestData(long timeframe, string pair, string strategy)
         {
             this.pair = pair;
             this.hours = timeframe / 1000 / 60 / 60;
             this.strategy = strategy;
 
-            setParameter("Pair", pair);
-            setParameter("Time", hours.ToString());
-            setParameter("Strategy", strategy);
-        }
-
-        public void setResult(string key, string value)
-        {
-            key = key.ToLower();
-            if (results.ContainsKey(key))
-                results[key] = value;
-            else
-                results.Add(key, value);
+            setParameter("pair", pair);
+            setParameter("timeframe", hours.ToString());
+            setParameter("strategy", strategy);
         }
 
         public void setPositions(List<TradePosition> positions)
@@ -92,15 +81,12 @@ namespace NinjaTrader_Client.Trader.Backtest
             if (drawdown > 0)
                 drawdown = 0;
 
-            setResult("Positions", trades.Count.ToString());
-            setResult("Profit", profit.ToString());
-            setResult("Drawdown", drawdown.ToString());
-            setResult("Long", ((double)longPositions / (double)trades.Count).ToString());
-            setResult("Winning", ((double)winPositions / (double)trades.Count).ToString());
-            setResult("Pips/Position", (profit / (double)trades.Count).ToString());
-            setResult("Pips/Day", (profit / (double)hours * 24d).ToString());
-            setResult("Positions/Day", ((double)positions.Count / (double)hours * 24d).ToString());
-            setResult("PositiveDaysRatio", ((double)positiveDays / (double)days).ToString());
+            setResult("positions", trades.Count.ToString());
+            setResult("profit", profit.ToString());
+            setResult("drawdown", drawdown.ToString());
+            setResult("long", ((double)longPositions / (double)trades.Count).ToString());
+            setResult("winRatio", ((double)winPositions / (double)trades.Count).ToString());
+            setResult("positiveDaysRatio", ((double)positiveDays / (double)days).ToString());
 
             //Standart Deviation
             double sumNegative = 0, sumPositive = 0, sum = 0;
@@ -132,9 +118,9 @@ namespace NinjaTrader_Client.Trader.Backtest
             double meanPositive = sumPositive / countPositive;
             double mean = sum / count;
 
-            setResult("MeanLoss", meanNegative.ToString());
-            setResult("MeanWin", meanPositive.ToString());
-            setResult("MeanTrade", mean.ToString());
+            setResult("meanLoss", meanNegative.ToString());
+            setResult("meanWin", meanPositive.ToString());
+            setResult("meanTrade", mean.ToString());
 
             foreach (TradePosition trade in trades)
             {
@@ -152,60 +138,19 @@ namespace NinjaTrader_Client.Trader.Backtest
             double stdDeviationPositive = Math.Sqrt(varianceSumPositive / countPositive);
             double stdDeviation = Math.Sqrt(varianceSum / count);
 
-            setResult("StdDeviationWin", stdDeviationPositive.ToString());
-            setResult("StdDeviationLoss", stdDeviationNegative.ToString());
-            setResult("StdDeviation", stdDeviation.ToString());
+            setResult("stdDeviationWin", stdDeviationPositive.ToString());
+            setResult("stdDeviationLoss", stdDeviationNegative.ToString());
+            setResult("stdDeviation", stdDeviation.ToString());
 
             //Ende Standart Deviation
 
             if (positions.Count != 0)
-                setResult("Holdtime/Positions", (holdTime / positions.Count / 1000 / 60).ToString());
+                setResult("meanHoldtime", (holdTime / positions.Count / 1000 / 60).ToString());
         }
 
         public string getResult(string key)
         {
-            return results[key.ToLower()];
-        }
-
-        public string getCSVHeader()
-        {
-            string output = "";
-            foreach (KeyValuePair<string, string> pair in parameter)
-                output += pair.Key + ";";
-
-            foreach (KeyValuePair<string, string> pair in results)
-                output += pair.Key + ";";
-
-            return output;
-        }
-
-        public string getCSV()
-        {
-            string output = "";
-            foreach (KeyValuePair<string, string> pair in parameter)
-                output += pair.Value + ";";
-
-            foreach (KeyValuePair<string, string> pair in results)
-                output += pair.Value + ";";
-
-            return output;
-        }
-
-        public string getResultText()
-        {
-            string output = "";
-            foreach(KeyValuePair<string, string> pair in results)
-                output += pair.Key + ": " + pair.Value + Environment.NewLine;
-            return output;
-        }
-
-        public string getTradesText()
-        {
-            string output = "";
-            foreach(TradePosition position in trades)
-                output += Math.Round(position.getDifference(), 4) + Environment.NewLine;
-
-            return output;
+            return resultSet[key.ToLower()];
         }
 
         public List<TradePosition> getPositions()
@@ -213,20 +158,49 @@ namespace NinjaTrader_Client.Trader.Backtest
             return trades;
         }
 
-        public void setParameter(string key, string value)
+        public void setParameter(Dictionary<string, string> parameter)
         {
-            if (parameter.ContainsKey(key))
-                parameter[key] = value;
-            else
-                parameter.Add(key, value);
+            foreach (KeyValuePair<string, string> pair in parameter)
+                if (this.parameterSet.ContainsKey(pair.Key) == false)
+                    this.parameterSet.Add(pair.Key, pair.Value);
+                else
+                    this.parameterSet[pair.Key] = pair.Value;
         }
 
-        public string getParameterText()
+        public void setParameter(string key, string value)
         {
-            string output = "";
-            foreach (KeyValuePair<string, string> pair in parameter)
-                output += pair.Key + ": " + pair.Value + Environment.NewLine;
-            return output;
+            if (parameterSet.ContainsKey(key))
+                parameterSet[key] = value;
+            else
+                parameterSet.Add(key, value);
+        }
+
+        public Dictionary<string, string> getParameters()
+        {
+            return parameterSet;
+        }
+
+        public void setResult(string key, string value)
+        {
+            key = key.ToLower();
+            if (resultSet.ContainsKey(key))
+                resultSet[key] = value;
+            else
+                resultSet.Add(key, value);
+        }
+
+        public void setResult(Dictionary<string, string> results)
+        {
+            foreach (KeyValuePair<string, string> pair in results)
+                if (this.resultSet.ContainsKey(pair.Key) == false)
+                    this.resultSet.Add(pair.Key, pair.Value);
+                else
+                    this.resultSet[pair.Key] = pair.Value;
+        }
+
+        public Dictionary<string, string> getResult()
+        {
+            return resultSet;
         }
     }
 }

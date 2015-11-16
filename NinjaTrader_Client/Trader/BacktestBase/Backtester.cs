@@ -17,7 +17,7 @@ namespace NinjaTrader_Client.Trader.Backtest
         private int resolutionInSeconds;
         private long startTimestamp, endTimestamp;
 
-        public delegate void BacktestResultArrivedHandler(BacktestResult result);
+        public delegate void BacktestResultArrivedHandler(BacktestData result);
         public event BacktestResultArrivedHandler backtestResultArrived;
 
         private List<Thread> threads = new List<Thread>();
@@ -76,12 +76,13 @@ namespace NinjaTrader_Client.Trader.Backtest
                 currentTimestamp += 1000 * resolutionInSeconds;
             }
 
-            Dictionary<string, BacktestResult> results = new Dictionary<string, BacktestResult>();
+            Dictionary<string, BacktestData> results = new Dictionary<string, BacktestData>();
             api.closePositions(pair);
 
-            BacktestResult result = new BacktestResult(endTimestamp - startTimestamp, pair, strat.getName());
+            BacktestData result = new BacktestData(endTimestamp - startTimestamp, pair, strat.getName());
             result.setPositions(api.getHistory(pair));
-            result = strat.addCustomVariables(result);
+            result.setParameter(strat.getParameters());
+            result.setResult(strat.getResult());
 
             watch.Stop();
             usedTime += watch.ElapsedMilliseconds;

@@ -18,16 +18,27 @@ namespace NinjaTrader_Client.Trader.Model
 
         public double getDifference()
         {
+            if (priceClose == -1)
+                throw new Exception();
+
             if (type == PositionType.shortPosition)
                 return priceOpen - priceClose;
             else
                 return priceClose - priceOpen;
         }
 
+        public double getDifference(double currentBid, double currentAsk)
+        {
+            if (type == PositionType.shortPosition)
+                return priceOpen - currentAsk;
+            else
+                return currentBid - priceOpen;
+        }
+
         public long timestampOpen = -1;
         public long timestampClose = -1;
         public double priceOpen;
-        public double priceClose;
+        public double priceClose = -1;
         public PositionType type;
 
         public string pair;

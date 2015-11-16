@@ -1,5 +1,6 @@
 ﻿using NinjaTrader_Client.Trader;
 using NinjaTrader_Client.Trader.Backtest;
+using NinjaTrader_Client.Trader.BacktestBase;
 using NinjaTrader_Client.Trader.Model;
 using NinjaTrader_Client.Trader.Strategies;
 using System;
@@ -68,7 +69,7 @@ namespace NinjaTrader_Client
 
         private int testsCount = 0;
 
-        private void startNewRandomBacktest(BacktestResult result)
+        private void startNewRandomBacktest(BacktestData result)
         {
             if (InvokeRequired)
             {
@@ -81,9 +82,9 @@ namespace NinjaTrader_Client
             outputThreadCount();
         }
 
-        private Dictionary<string, BacktestResult> results = new Dictionary<string, BacktestResult>();
+        private Dictionary<string, BacktestData> results = new Dictionary<string, BacktestData>();
 
-        private void backtester_backtestResultArrived(BacktestResult result)
+        private void backtester_backtestResultArrived(BacktestData result)
         {
             if (InvokeRequired)
             {
@@ -97,10 +98,10 @@ namespace NinjaTrader_Client
 
             //Output to interface
             int i = 1;
-            string name = Math.Round(score, 4) + result.parameter["Strategy"] + "_" + result.parameter["Pair"];
+            string name = Math.Round(score, 4) + result.getParameters()["Strategy"] + "_" + result.getParameters()["Pair"];
             while (results.ContainsKey(name))
             {
-                name = Math.Round(score, 4) + " " + result.parameter["Strategy"] + "_" + result.parameter["Pair"] + "_" + i;
+                name = Math.Round(score, 4) + " " + result.getParameters()["Strategy"] + "_" + result.getParameters()["Pair"] + "_" + i;
                 i++;
             }
 
@@ -114,11 +115,11 @@ namespace NinjaTrader_Client
             if (Directory.Exists(Application.StartupPath + "/backtestes/") == false)
                 Directory.CreateDirectory(Application.StartupPath + "/backtestes/");
 
-            string path = Application.StartupPath + "/backtestes/backtest-" + result.parameter["Strategy"] + ".csv";
+            string path = Application.StartupPath + "/backtestes/backtest-" + result.getParameters()["Strategy"] + ".csv";
 
             if (File.Exists(path) == false)
-                File.WriteAllText(path, "Score;" + result.getCSVHeader() + Environment.NewLine);
-            File.AppendAllText(path, score + ";" + result.getCSV() + Environment.NewLine);
+                File.WriteAllText(path, "Score;" + BacktestFormatter.getCSVHeader(result) + Environment.NewLine);
+            File.AppendAllText(path, score + ";" + BacktestFormatter.getCSVLine(result) + Environment.NewLine);
         }
 
         //UI stuff
@@ -126,19 +127,19 @@ namespace NinjaTrader_Client
         {
             if (listBox_results.SelectedItem != null)
             {
-                BacktestResult result = results[listBox_results.SelectedItem.ToString()];
+                BacktestData result = results[listBox_results.SelectedItem.ToString()];
 
-                label_trades.Text = result.getTradesText();
-                label_parameters.Text = result.getParameterText();
-                label_result.Text = result.getResultText();
+                label_trades.Text = BacktestFormatter.getPositionsText(result);
+                label_parameters.Text = BacktestFormatter.getParameterText(result);
+                label_result.Text = BacktestFormatter.getResultText(result);
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void openChartBtn_Click(object sender, EventArgs e)
         {
-            BacktestResult result = results[listBox_results.SelectedItem.ToString()];
+            BacktestData result = results[listBox_results.SelectedItem.ToString()];
             ChartingForm chartingForm = new ChartingForm(database, result.getPositions(), startTimestamp, endTimestamp);
-            chartingForm.Show(); //caching!
+            chartingForm.Show(); //caching! ???
         }
     }
 }

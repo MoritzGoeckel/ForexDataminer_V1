@@ -19,6 +19,14 @@ namespace NinjaTrader_Client.Trader.Strategies
             this.followTrend = followTrend;
         }
 
+        public SSIStrategy(Database database, Dictionary<string, string> parameters)
+            : base(database)
+        {
+            thresholdOpen = Double.Parse(parameters["thresholdOpen"]);
+            thresholdClose = Double.Parse(parameters["thresholdClose"]);
+            followTrend = Boolean.Parse(parameters["followTrend"]);
+        }
+
         public override Strategy copy()
         {
             return new SSIStrategy(database, thresholdOpen, thresholdClose, followTrend);
@@ -29,18 +37,20 @@ namespace NinjaTrader_Client.Trader.Strategies
             return "SSIStrategy";
         }
 
-        public override BacktestResult addCustomVariables(BacktestResult given)
+        public override Dictionary<string, string> getParameters()
         {
-            given.setParameter("Threshold Open", thresholdOpen.ToString());
-            given.setParameter("Threshold Close", thresholdClose.ToString());
-            given.setParameter("Follow Trend", followTrend.ToString());
+            Dictionary<string, string> parameters = new Dictionary<string, string>();
+            parameters.Add("thresholdOpen", thresholdOpen.ToString());
+            parameters.Add("thresholdClose", thresholdClose.ToString());
+            parameters.Add("followTrend", followTrend.ToString());
 
-            return given;
+            return parameters;
         }
 
-        public override void reset()
+        public override Dictionary<string, string> getResult()
         {
-            
+            Dictionary<string, string> result = new Dictionary<string, string>();
+            return result;
         }
 
         //private long pauseTil = 0;
