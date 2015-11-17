@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -72,13 +73,7 @@ namespace NinjaTrader_Client.Trader.Backtest
             if (currentTimestamp > startTimestamp)
                 throw new Exception();
 
-            int namePostfix = 0;
-            while(progress.ContainsKey(strat.getName() + "_" + namePostfix))
-                namePostfix++;
-
-            string name = strat.getName() + "_" + namePostfix;
-
-            progress.Add(name, 0);
+            string name = getUniqueStrategyName(strat.getName());
 
             bool reportStrategy = true;
             while (currentTimestamp < endTimestamp)
@@ -123,6 +118,18 @@ namespace NinjaTrader_Client.Trader.Backtest
             }
             else if (backtestResultArrived != null)
                 backtestResultArrived(null);
+        }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        private string getUniqueStrategyName(string name)
+        {
+            int namePostfix = 0;
+            while (progress.ContainsKey(name + "_" + namePostfix))
+                namePostfix++;
+
+            progress.Add(name + "_" + namePostfix, 0);
+
+            return name + "_" + namePostfix;
         }
 
         public string getProgressText()

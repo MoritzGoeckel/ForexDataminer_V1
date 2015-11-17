@@ -1,4 +1,5 @@
-﻿using NinjaTrader_Client.Trader.Strategies;
+﻿using NinjaTrader_Client.Trader.BacktestBase;
+using NinjaTrader_Client.Trader.Strategies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,21 +10,13 @@ namespace NinjaTrader_Client.Trader.Backtests
 {
     class DedicatedStrategyBacktestForm : BacktestForm
     {
-        List<Strategy> strats = new List<Strategy>();
+        List<Dictionary<string, string>> parameterList = new List<Dictionary<string, string>>();
         int nextStratId = 0;
 
         public DedicatedStrategyBacktestForm(Database database)
-            : base(database, 31 * 24, 60)
+            : base(database, 38 * 24, 10)
         {
-            strats.Add(new SSIStrategy(database, 0.2, 0.2, false));
-            strats.Add(new SSIStrategy(database, 0.1, 0.2, false));
-            strats.Add(new SSIStrategy(database, 0.2, 0.1, false));
-            strats.Add(new SSIStrategy(database, 0.1, 0.1, false));
-
-            strats.Add(new SSIStrategy(database, 0.2, 0.2, true));
-            strats.Add(new SSIStrategy(database, 0.1, 0.2, true));
-            strats.Add(new SSIStrategy(database, 0.2, 0.1, true));
-            strats.Add(new SSIStrategy(database, 0.1, 0.1, true));
+            parameterList.Add(BacktestFormatter.convertStringCodedToParameters("pair:USDCHF|timeframe:912|strategy:SSIStochStrategy|tp:0,26|threshold:0,21|to:3600000|stochT:28800000|sl:0,2|againstCrowd:True"));
         }
 
         protected override void backtestResultArrived(Dictionary<string, string> parameters, Dictionary<string, string> result)
@@ -33,7 +26,7 @@ namespace NinjaTrader_Client.Trader.Backtests
 
         protected override void getNextStrategyToTest(ref Strategy strategy, ref string instrument, ref bool continueBacktesting)
         {
-            if (nextStratId < strats.Count)
+            if (nextStratId < parameterList.Count)
                 continueBacktesting = true;
             else
             {
@@ -41,10 +34,15 @@ namespace NinjaTrader_Client.Trader.Backtests
                 return;
             }
 
-            strategy = strats[nextStratId];
-            nextStratId++;
+            strategy = null;
+            if (parameterList[nextStratId]["strategy"] == "SSIStochStrategy")
+                strategy = new SSIStochStrategy(database, parameterList[nextStratId]);
 
-            instrument = "EURUSD";
+            instrument = parameterList[nextStratId]["pair"];
+
+            continueBacktesting = (strategy != null);
+
+            nextStratId++;
         }
     }
 }

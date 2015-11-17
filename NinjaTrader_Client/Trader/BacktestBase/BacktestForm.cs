@@ -31,7 +31,8 @@ namespace NinjaTrader_Client
         private int testsCount = 0;
         private Dictionary<string, BacktestData> results = new Dictionary<string, BacktestData>();
 
-        int errorTests = 0;
+        private int errorTests = 0;
+        private int maxThreads = Environment.ProcessorCount + (Environment.ProcessorCount / 2);
 
         public BacktestForm(Database database, int backtestHours, int resolution)
         {
@@ -50,13 +51,10 @@ namespace NinjaTrader_Client
 
             timer1.Start();
             timer1.Interval = 1000;
-
-            startNewBacktests();
         }
 
-        private void startNewBacktests()
+        private void checkStartNewBacktest()
         {
-            int maxThreads = Environment.ProcessorCount + (Environment.ProcessorCount / 2);
             while (backtester.getThreadsCount() < maxThreads)
             {
                 bool continueTesting = false;
@@ -113,8 +111,6 @@ namespace NinjaTrader_Client
             {
                 errorTests++;
             }
-
-            startNewBacktests();
         }
 
         private void outputBacktestState()
@@ -149,6 +145,7 @@ namespace NinjaTrader_Client
         private void timer1_Tick(object sender, EventArgs e)
         {
             outputBacktestState();
+            checkStartNewBacktest();
         }
     }
 }
