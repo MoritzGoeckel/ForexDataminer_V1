@@ -19,6 +19,8 @@ namespace NinjaTrader_Client.Trader.Strategies
 
         private int hitTimeout = 0, hitTp = 0, hitSl = 0;
 
+        int version = 0;
+
         public SSIStochStrategy(Database database, double takeprofitPercent, double stoplossPercent, double threshold, int timeout, int stochTimeframe, bool againstCrowd)
             : base(database)
         {
@@ -51,7 +53,7 @@ namespace NinjaTrader_Client.Trader.Strategies
 
         public override string getName()
         {
-            return "SSIStochStrategy";
+            return "SSIStochStrategy" + "_V" + version;
         }
 
         public override Dictionary<string, string> getParameters()

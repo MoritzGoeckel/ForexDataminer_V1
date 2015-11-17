@@ -10,6 +10,8 @@ namespace NinjaTrader_Client.Trader.Strategies
 {
     public class FastMovement_Strategy : Strategy
     {
+        int version = 0;
+
         public FastMovement_Strategy(Database database, int preTime, int postTime, double thresholdPercent, double takeprofitPercent, double stoplossPercent, bool follow_trend)
             : base(database)
         {
@@ -39,7 +41,7 @@ namespace NinjaTrader_Client.Trader.Strategies
 
         public override string getName()
         {
-            return "FastMovement-Strategy";
+            return "FastMovement-Strategy" + "_V" + version;
         }
 
         public override Dictionary<string, string> getParameters()

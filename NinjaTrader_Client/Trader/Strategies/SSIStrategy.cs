@@ -11,6 +11,9 @@ namespace NinjaTrader_Client.Trader.Strategies
     {
         double thresholdOpen, thresholdClose;
         bool followTrend;
+
+        int version = 0;
+
         public SSIStrategy(Database database, double thresholdOpen, double thresholdClose, bool followTrend)
             : base(database)
         {
@@ -34,7 +37,7 @@ namespace NinjaTrader_Client.Trader.Strategies
 
         public override string getName()
         {
-            return "SSIStrategy";
+            return "SSIStrategy" + "_V" + version;
         }
 
         public override Dictionary<string, string> getParameters()
