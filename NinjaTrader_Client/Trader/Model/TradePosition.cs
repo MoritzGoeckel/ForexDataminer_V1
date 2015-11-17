@@ -8,6 +8,17 @@ namespace NinjaTrader_Client.Trader.Model
 {
     public class TradePosition
     {
+        public TradePosition(PositionType type, long timestampOpen, double priceOpen, long timestampClose, double priceClose)
+        {
+            this.timestampOpen = timestampOpen;
+            this.timestampClose = timestampClose;
+
+            this.priceOpen = priceOpen;
+            this.priceClose = priceClose;
+
+            this.type = type;
+        }
+
         public TradePosition(long timestampOpen, double priceOpen, PositionType type, string pair)
         {
             this.timestampOpen = timestampOpen;

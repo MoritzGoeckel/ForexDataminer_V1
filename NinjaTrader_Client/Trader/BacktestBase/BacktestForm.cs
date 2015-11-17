@@ -77,14 +77,12 @@ namespace NinjaTrader_Client
 
             outputThreadCount();
 
-            double score = Convert.ToDouble(result.getResult("Profit")) - Convert.ToDouble(result.getResult("Positions")) * 0.0001d;
-
             //Output to interface
             int i = 1;
-            string name = Math.Round(score, 4) + result.getParameters()["Strategy"] + "_" + result.getParameters()["Pair"];
+            string name = result.getParameters()["strategy"] + "_" + result.getParameters()["pair"];
             while (results.ContainsKey(name))
             {
-                name = Math.Round(score, 4) + " " + result.getParameters()["Strategy"] + "_" + result.getParameters()["Pair"] + "_" + i;
+                name = result.getParameters()["strategy"] + "_" + result.getParameters()["pair"] + "_" + i;
                 i++;
             }
 
@@ -98,11 +96,11 @@ namespace NinjaTrader_Client
             if (Directory.Exists(Application.StartupPath + "/backtestes/") == false)
                 Directory.CreateDirectory(Application.StartupPath + "/backtestes/");
 
-            string path = Application.StartupPath + "/backtestes/backtest-" + result.getParameters()["Strategy"] + ".csv";
+            string path = Application.StartupPath + "/backtestes/backtest-" + result.getParameters()["strategy"] + ".csv";
 
             if (File.Exists(path) == false)
-                File.WriteAllText(path, "Score;" + BacktestFormatter.getCSVHeader(result) + Environment.NewLine);
-            File.AppendAllText(path, score + ";" + BacktestFormatter.getCSVLine(result) + Environment.NewLine);
+                File.WriteAllText(path, BacktestFormatter.getCSVHeader(result) + Environment.NewLine);
+            File.AppendAllText(path, BacktestFormatter.getCSVLine(result) + Environment.NewLine);
 
             this.backtestResultArrived(result.getParameters(), result.getResult());
             startNewBacktests();

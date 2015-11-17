@@ -24,24 +24,49 @@ namespace NinjaTrader_Client.Trader.BacktestBase
             foreach (KeyValuePair<string, string> pair in resultSet)
                 output += pair.Key + ";";
 
+            output += "stringCodedParams;stringCodedPositions;";
+
             return output;
         }
 
         public static string getCSVLine(BacktestData data)
         {
-            return getCSVLine(data.getParameters(), data.getResult());
-        }
-
-        public static string getCSVLine(Dictionary<string, string> parameterSet, Dictionary<string, string> resultSet)
-        {
             string output = "";
-            foreach (KeyValuePair<string, string> pair in parameterSet)
+            foreach (KeyValuePair<string, string> pair in data.getParameters())
                 output += pair.Value + ";";
 
-            foreach (KeyValuePair<string, string> pair in resultSet)
+            foreach (KeyValuePair<string, string> pair in data.getResult())
                 output += pair.Value + ";";
+
+            output += BacktestFormatter.getParameterStringCoded(data.getParameters()) + ";";
+            output += BacktestFormatter.getStringCodedPositionHistory(data.getPositions()) + ";";
 
             return output;
+        }
+
+        public static string getStringCodedPositionHistory(List<TradePosition> positions)
+        {
+            string output = "";
+            foreach(TradePosition pos in positions)
+                output += (pos.type == TradePosition.PositionType.longPosition ? "L" : "S") + ":" + pos.timestampOpen + ":" + pos.priceOpen + ":" + pos.timestampClose + ":" + pos.priceClose + "|";
+
+            return output;
+        }
+
+        public static List<TradePosition> getPositionHistoryFromCodedString(string str)
+        {
+            List<string> positions = new List<string>();
+            positions.AddRange(str.Split("|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries));
+
+            List<TradePosition> positionList = new List<TradePosition>();
+
+            foreach (string posString in positions)
+            {
+                string[] posArray = posString.Split(':');
+                positionList.Add(new TradePosition((posArray[0] == "L" ? TradePosition.PositionType.longPosition : TradePosition.PositionType.shortPosition), long.Parse(posArray[1]), double.Parse(posArray[2]), long.Parse(posArray[3]), double.Parse(posArray[4])));
+            }
+
+            return positionList;
         }
 
         public static string getResultText(BacktestData data)
@@ -82,6 +107,35 @@ namespace NinjaTrader_Client.Trader.BacktestBase
             foreach (KeyValuePair<string, string> pair in parameterSet)
                 output += pair.Key + ": " + pair.Value + Environment.NewLine;
             return output;
+        }
+
+        public static string getParameterStringCoded(BacktestData data)
+        {
+            return getParameterStringCoded(data.getParameters());
+        }
+
+        public static string getParameterStringCoded(Dictionary<string, string> parameterSet)
+        {
+            string output = "";
+            foreach (KeyValuePair<string, string> pair in parameterSet)
+                output += pair.Key + ":" + pair.Value + "|";
+            return output.Substring(0, output.Length - 1);
+        }
+
+        public static Dictionary<string, string> convertStringCodedToParameters(string str)
+        {
+            List<string> parameters = new List<string>();
+            parameters.AddRange(str.Split("|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries));
+
+            Dictionary<string, string> paramDict = new Dictionary<string,string>();
+
+            foreach(string parameter in parameters)
+            {
+                string[] pair = parameter.Split(':');
+                paramDict.Add(pair[0], pair[1]);
+            }
+
+            return paramDict;
         }
     }
 }
