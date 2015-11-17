@@ -155,5 +155,11 @@ namespace NinjaTrader_Client
             CorrelationAnalysisForm cf = new CorrelationAnalysisForm(main.getDatabase(), 1000, 31, all);
             cf.ShowDialog();
         }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            TradeHistoryChartForm thcf = new TradeHistoryChartForm();
+            thcf.ShowDialog();
+        }
     }
 }

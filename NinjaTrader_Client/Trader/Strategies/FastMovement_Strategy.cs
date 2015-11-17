@@ -65,7 +65,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             return result;
         }
 
-        private List<Tickdata> old_tickdata;
+        private List<Tickdata> old_tickdata = new List<Tickdata>();
 
         private double thresholdPercent;
         private int preTime, postTime;

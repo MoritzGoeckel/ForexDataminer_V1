@@ -65,6 +65,8 @@ namespace NinjaTrader_Client
                 else
                     break;
             }
+
+            outputThreadCount();
         }
 
         private void backtester_backtestResultArrived(BacktestData result)

@@ -47,8 +47,14 @@ namespace NinjaTrader_Client.Trader.BacktestBase
         public static string getStringCodedPositionHistory(List<TradePosition> positions)
         {
             string output = "";
-            foreach(TradePosition pos in positions)
-                output += (pos.type == TradePosition.PositionType.longPosition ? "L" : "S") + ":" + pos.timestampOpen + ":" + pos.priceOpen + ":" + pos.timestampClose + ":" + pos.priceClose + "|";
+
+            if (positions.Count < 1000)
+            {
+                foreach (TradePosition pos in positions)
+                    output += (pos.type == TradePosition.PositionType.longPosition ? "L" : "S") + ":" + pos.timestampOpen + ":" + pos.priceOpen + ":" + pos.timestampClose + ":" + pos.priceClose + "|";
+            }
+            else
+                output = "More than 1000";
 
             return output;
         }
@@ -62,8 +68,12 @@ namespace NinjaTrader_Client.Trader.BacktestBase
 
             foreach (string posString in positions)
             {
-                string[] posArray = posString.Split(':');
-                positionList.Add(new TradePosition((posArray[0] == "L" ? TradePosition.PositionType.longPosition : TradePosition.PositionType.shortPosition), long.Parse(posArray[1]), double.Parse(posArray[2]), long.Parse(posArray[3]), double.Parse(posArray[4])));
+                try
+                {
+                    string[] posArray = posString.Split(':');
+                    positionList.Add(new TradePosition((posArray[0] == "L" ? TradePosition.PositionType.longPosition : TradePosition.PositionType.shortPosition), long.Parse(posArray[1]), double.Parse(posArray[2]), long.Parse(posArray[3]), double.Parse(posArray[4])));
+                }
+                catch (Exception e){ }
             }
 
             return positionList;
