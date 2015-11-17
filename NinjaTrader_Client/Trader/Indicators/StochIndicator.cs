@@ -12,7 +12,7 @@ namespace NinjaTrader_Client.Trader.Indicators
     {
         private int timeframe;
 
-        public StochIndicator(Database database, int timeframe = 1000 * 60 * 60) : base(database)
+        public StochIndicator(Database database, int timeframe) : base(database)
         {
             this.timeframe = timeframe;
         }
@@ -21,7 +21,7 @@ namespace NinjaTrader_Client.Trader.Indicators
         //Maybe just save the data to save cpu?
         public override TimeValueData getIndicator(long timestamp, string instrument)
         {
-            List<Tickdata> data = database.getPrices(timestamp - timeframe, timestamp, instrument);
+            List<Tickdata> data = database.getPrices(timestamp - timeframe, timestamp, instrument); //Flaschenhals ???
 
             if (data.Count == 0)
                 return null;
@@ -47,7 +47,7 @@ namespace NinjaTrader_Client.Trader.Indicators
 
         public override TimeValueData getIndicator(long timestamp, string dataName, string instrument)
         {
-            List<TimeValueData> data = database.getDataInRange(timestamp - timeframe, timestamp, dataName, instrument);
+            List<TimeValueData> data = database.getDataInRange(timestamp - timeframe, timestamp, dataName, instrument); //Flaschenhals ???
 
             if (data.Count == 0)
                 return null;

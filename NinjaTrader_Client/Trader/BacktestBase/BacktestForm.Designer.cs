@@ -28,12 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.label_parameters = new System.Windows.Forms.Label();
             this.label_trades = new System.Windows.Forms.Label();
             this.label_result = new System.Windows.Forms.Label();
             this.listBox_results = new System.Windows.Forms.ListBox();
             this.button1 = new System.Windows.Forms.Button();
             this.threadsLabel = new System.Windows.Forms.Label();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // label_parameters
@@ -85,17 +87,21 @@
             // threadsLabel
             // 
             this.threadsLabel.AutoSize = true;
-            this.threadsLabel.Location = new System.Drawing.Point(698, 491);
+            this.threadsLabel.Location = new System.Drawing.Point(708, 9);
             this.threadsLabel.Name = "threadsLabel";
-            this.threadsLabel.Size = new System.Drawing.Size(49, 13);
+            this.threadsLabel.Size = new System.Drawing.Size(77, 13);
             this.threadsLabel.TabIndex = 5;
-            this.threadsLabel.Text = "Threads:";
+            this.threadsLabel.Text = "Backtest State";
+            // 
+            // timer1
+            // 
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // BacktestForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(789, 521);
+            this.ClientSize = new System.Drawing.Size(950, 521);
             this.Controls.Add(this.threadsLabel);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.listBox_results);
@@ -118,6 +124,7 @@
         private System.Windows.Forms.ListBox listBox_results;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label threadsLabel;
+        private System.Windows.Forms.Timer timer1;
 
     }
 }

@@ -21,13 +21,17 @@ namespace NinjaTrader_Client.Trader.Backtest
         public event BacktestResultArrivedHandler backtestResultArrived;
 
         private List<Thread> threads = new List<Thread>();
+        public Dictionary<string, int> progress = new Dictionary<string, int>();
 
-        public Backtester(Database database, int resolutionInSeconds, long startTimestamp, long endTimestamp)
+        private int maxPositionsPerHour;
+
+        public Backtester(Database database, int resolutionInSeconds, long startTimestamp, long endTimestamp, int maxPositionsPerHour)
         {
             this.database = database;
             this.resolutionInSeconds = resolutionInSeconds;
             this.startTimestamp = startTimestamp;
             this.endTimestamp = endTimestamp;
+            this.maxPositionsPerHour = maxPositionsPerHour;
 
             if (this.startTimestamp > this.endTimestamp)
                 throw new Exception();
@@ -68,30 +72,71 @@ namespace NinjaTrader_Client.Trader.Backtest
             if (currentTimestamp > startTimestamp)
                 throw new Exception();
 
+            int namePostfix = 0;
+            while(progress.ContainsKey(strat.getName() + "_" + namePostfix))
+                namePostfix++;
+
+            string name = strat.getName() + "_" + namePostfix;
+
+            progress.Add(name, 0);
+
+            bool reportStrategy = true;
             while (currentTimestamp < endTimestamp)
             {
+                long doneHours = (currentTimestamp - startTimestamp) / 1000 / 60 / 60;
+
+                if (doneHours >= 1 && api.getHistory(pair).Count / doneHours > maxPositionsPerHour)
+                {
+                    reportStrategy = false;
+                    break;
+                }
+
                 api.setNow(currentTimestamp);
                 strat.doTick(pair);
-                
+
+                int percent = Convert.ToInt32(Convert.ToDouble(currentTimestamp - startTimestamp) / Convert.ToDouble(endTimestamp - startTimestamp) * 100);
+                progress[name] = percent;
+
                 currentTimestamp += 1000 * resolutionInSeconds;
             }
 
-            Dictionary<string, BacktestData> results = new Dictionary<string, BacktestData>();
-            api.closePositions(pair);
+            progress.Remove(name);
 
-            BacktestData result = new BacktestData(endTimestamp - startTimestamp, pair, strat.getName());
-            result.setPositions(api.getHistory(pair));
-            result.setParameter(strat.getParameters());
-            result.setResult(strat.getResult());
+            if (reportStrategy)
+            {
+                Dictionary<string, BacktestData> results = new Dictionary<string, BacktestData>();
+                api.closePositions(pair);
 
-            watch.Stop();
-            usedTime += watch.ElapsedMilliseconds;
-            doneTests++;
+                BacktestData result = new BacktestData(endTimestamp - startTimestamp, pair, strat.getName());
+                result.setPositions(api.getHistory(pair));
+                result.setParameter(strat.getParameters());
+                result.setResult(strat.getResult());
 
-            timePerTest = (double)usedTime / (double)doneTests;
+                watch.Stop();
+                usedTime += watch.ElapsedMilliseconds;
+                doneTests++;
 
-            if (backtestResultArrived != null)
-                backtestResultArrived(result);
+                timePerTest = (double)usedTime / (double)doneTests;
+
+                if (backtestResultArrived != null)
+                    backtestResultArrived(result);
+            }
+            else if (backtestResultArrived != null)
+                backtestResultArrived(null);
+        }
+
+        public string getProgressText()
+        {
+            string output = "";
+
+            try
+            {
+                foreach (KeyValuePair<string, int> pair in progress)
+                    output += pair.Key + ": " + pair.Value + "%" + Environment.NewLine;
+            }
+            catch (Exception e) { }
+
+            return output;
         }
 
         double timePerTest = 0;

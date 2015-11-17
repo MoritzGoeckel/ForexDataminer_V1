@@ -31,6 +31,8 @@ namespace NinjaTrader_Client
         private int testsCount = 0;
         private Dictionary<string, BacktestData> results = new Dictionary<string, BacktestData>();
 
+        int errorTests = 0;
+
         public BacktestForm(Database database, int backtestHours, int resolution)
         {
             InitializeComponent();
@@ -43,15 +45,18 @@ namespace NinjaTrader_Client
 
         private void BacktestForm_Load(object sender, EventArgs e)
         {
-            backtester = new Backtester(database, resolution, startTimestamp, endTimestamp);
+            backtester = new Backtester(database, resolution, startTimestamp, endTimestamp, 30);
             backtester.backtestResultArrived += backtester_backtestResultArrived;
+
+            timer1.Start();
+            timer1.Interval = 1000;
 
             startNewBacktests();
         }
 
         private void startNewBacktests()
         {
-            int maxThreads = Environment.ProcessorCount + (Environment.ProcessorCount / 4);
+            int maxThreads = Environment.ProcessorCount + (Environment.ProcessorCount / 2);
             while (backtester.getThreadsCount() < maxThreads)
             {
                 bool continueTesting = false;
@@ -65,8 +70,6 @@ namespace NinjaTrader_Client
                 else
                     break;
             }
-
-            outputThreadCount();
         }
 
         private void backtester_backtestResultArrived(BacktestData result)
@@ -77,40 +80,50 @@ namespace NinjaTrader_Client
                 return;
             }
 
-            outputThreadCount();
-
-            //Output to interface
-            int i = 1;
-            string name = result.getParameters()["strategy"] + "_" + result.getParameters()["pair"];
-            while (results.ContainsKey(name))
+            if (result != null)
             {
-                name = result.getParameters()["strategy"] + "_" + result.getParameters()["pair"] + "_" + i;
-                i++;
+                //Output to interface
+                int i = 1;
+                string name = result.getParameters()["strategy"] + "_" + result.getParameters()["pair"];
+                while (results.ContainsKey(name))
+                {
+                    name = result.getParameters()["strategy"] + "_" + result.getParameters()["pair"] + "_" + i;
+                    i++;
+                }
+
+                results.Add(name, result);
+                listBox_results.Items.Add(name);
+
+                int threads = backtester.getThreadsCount();
+                this.Text = "Tests: " + (++testsCount).ToString() + " | Sec/Test: " + Math.Round(backtester.getAVGTimeTest() / 1000, 4) + " | Threads: " + threads + " | = " + Math.Round(backtester.getAVGTimeTest() / 1000 / threads) + " Seconds";
+
+                //Output to file
+                if (Directory.Exists(Application.StartupPath + "/backtestes/") == false)
+                    Directory.CreateDirectory(Application.StartupPath + "/backtestes/");
+
+                string path = Application.StartupPath + "/backtestes/backtest-" + result.getParameters()["strategy"] + ".csv";
+
+                if (File.Exists(path) == false)
+                    File.WriteAllText(path, BacktestFormatter.getCSVHeader(result) + Environment.NewLine);
+                File.AppendAllText(path, BacktestFormatter.getCSVLine(result) + Environment.NewLine);
+
+                this.backtestResultArrived(result.getParameters(), result.getResult());
+            }
+            else
+            {
+                errorTests++;
             }
 
-            results.Add(name, result);
-            listBox_results.Items.Add(name);
-
-            int threads = backtester.getThreadsCount();
-            this.Text = "Tests: " + (++testsCount).ToString() + " | Sec/Test: " + Math.Round(backtester.getAVGTimeTest() / 1000, 4) + " | Threads: " + threads + " | = " + Math.Round(backtester.getAVGTimeTest() / 1000 / threads) + " Seconds";
-
-            //Output to file
-            if (Directory.Exists(Application.StartupPath + "/backtestes/") == false)
-                Directory.CreateDirectory(Application.StartupPath + "/backtestes/");
-
-            string path = Application.StartupPath + "/backtestes/backtest-" + result.getParameters()["strategy"] + ".csv";
-
-            if (File.Exists(path) == false)
-                File.WriteAllText(path, BacktestFormatter.getCSVHeader(result) + Environment.NewLine);
-            File.AppendAllText(path, BacktestFormatter.getCSVLine(result) + Environment.NewLine);
-
-            this.backtestResultArrived(result.getParameters(), result.getResult());
             startNewBacktests();
         }
 
-        private void outputThreadCount()
+        private void outputBacktestState()
         {
-            threadsLabel.Text = "Threads: " + backtester.getThreadsCount();
+            threadsLabel.Text = "Backteststate:" + Environment.NewLine + 
+                "Threads: " + backtester.getThreadsCount() + Environment.NewLine + 
+                "Error: " + errorTests + Environment.NewLine + 
+                Environment.NewLine + 
+                backtester.getProgressText();
         }
 
         //UI stuff
@@ -131,6 +144,11 @@ namespace NinjaTrader_Client
             BacktestData result = results[listBox_results.SelectedItem.ToString()];
             ChartingForm chartingForm = new ChartingForm(database, result.getPositions(), startTimestamp, endTimestamp);
             chartingForm.Show(); //caching! ???
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            outputBacktestState();
         }
     }
 }
