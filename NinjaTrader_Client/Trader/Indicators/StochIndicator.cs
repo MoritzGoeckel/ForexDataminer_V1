@@ -96,9 +96,18 @@ namespace NinjaTrader_Client.Trader.Indicators
                 if (cache.min == removedMin || cache.max == removedMax)
                 {
                     //Suche komplett
-                    getMinMaxInData(ref min, ref max, data);
-                    cache.min = min;
-                    cache.max = max;
+
+                    if (data.Count > 0)
+                    {
+                        getMinMaxInData(ref min, ref max, data);
+                        cache.min = min;
+                        cache.max = max;
+                    }
+                    else
+                    {
+                        min = cache.min;
+                        max = cache.max;
+                    }
                 }
                 else //Suche sonst nur im newData
                 {
@@ -135,10 +144,14 @@ namespace NinjaTrader_Client.Trader.Indicators
                 cache.timestamp = timestamp;
             }
 
-            TimeValueData lastTick = data[data.Count - 1];
-            double now = lastTick.value;
+            if (data.Count != 0)
+            {
+                TimeValueData lastTick = data[data.Count - 1];
+                double now = lastTick.value;
 
-            return new TimeValueData(lastTick.timestamp, (now - min) / (max - min));
+                return new TimeValueData(lastTick.timestamp, (now - min) / (max - min));
+            }
+            return new TimeValueData(timestamp, 0.5);
         }
 
         private void getMinMaxInData(ref double min, ref double max, List<TimeValueData> data)

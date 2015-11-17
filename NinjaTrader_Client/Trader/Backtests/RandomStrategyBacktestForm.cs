@@ -23,7 +23,14 @@ namespace NinjaTrader_Client.Trader.Backtests
         private Random z = new Random();
         protected override void backtestResultArrived(Dictionary<string, string> parameters, Dictionary<string, string> result)
         {
-            
+            /*double profit = double.Parse(result["profit"]);
+            string pair = result["pair"];
+            int positions = Convert.ToInt32(result["positions"]);
+
+            if(positions < 1000)
+            {
+                profit stark im minus und strategie umkehrbar -> kehre um und starte
+            }*/
         }
 
         protected override void getNextStrategyToTest(ref Strategy strategy, ref string instrument, ref bool continueBacktesting)
