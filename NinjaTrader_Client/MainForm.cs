@@ -7,6 +7,7 @@ using NinjaTrader_Client.Trader.Strategies;
 using NinjaTrader_Client.Trader.TradingAPIs;
 using NinjaTrader_Client.Trader.Analysis;
 using NinjaTrader_Client.Trader.Backtests;
+using NinjaTrader_Client.Trader.BacktestBase;
 
 namespace NinjaTrader_Client
 {
@@ -83,22 +84,29 @@ namespace NinjaTrader_Client
         private void button5_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("Wirklich traden?", "", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
-            {                
+            {
+                List<string> strats = new List<string>();
+                
                 //EURUSD
-                Strategy usdStrat = new SSIStochStrategy(main.getDatabase(), 0.23, 0.23, 0.9, 1000 * 60 * 90, 1000 * 60 * 120, true);
-                main.startTradingLive(usdStrat, "EURUSD");
-
-                //USDJPY
-                Strategy jpyStrat = new FastMovement_Strategy(main.getDatabase(), 18 * 60 * 1000, 160 * 60 * 1000, 0.3, 0.25, 0.17, false);
-                main.startTradingLive(jpyStrat, "USDJPY");
+                strats.Add("pair:EURUSD|timeframe:912|strategy:FastMovement-Strategy_V0|postT:1200000|preT:1140000|threshold:0,41|tp:0,28|sl:0,23|followTrend:True");
 
                 //GBPUSD
-                Strategy gbpStrat = new SSIStrategy(main.getDatabase(), 0.19, 0.12, true);
-                main.startTradingLive(gbpStrat, "GBPUSD");
+                strats.Add("pair:GBPUSD|timeframe:912|strategy:SSIStrategy_V0|thresholdOpen:0,21|thresholdClose:0,12|followTrend:True");
 
                 //USDCHF
-                Strategy chfStrat = new SSIStochStrategy(main.getDatabase(), 0.24, 0.24, 0.14, 180 * 60 * 1000, 420 * 60 * 1000, true);
-                main.startTradingLive(chfStrat, "USDCHF");
+                strats.Add("pair:USDCHF|timeframe:912|strategy:SSIStochStrategy_V0|tp:0,24|threshold:0,19|to:12600000|stochT:25200000|sl:0,2|againstCrowd:True");
+
+                //USDJPY
+                strats.Add("pair:USDJPY|timeframe:912|strategy:SSIStrategy_V0|thresholdOpen:0,23|thresholdClose:0,08|followTrend:False"); //Fehler!!?? Key nicht in wörterbuch!
+
+                foreach (string stratStr in strats)
+                {
+                    Strategy strat = null;
+                    string instrument = null;
+
+                    BacktestFormatter.getStrategyFromString(main.getDatabase(), "", ref strat, ref instrument);
+                    main.startTradingLive(strat, instrument);
+                }
 
                 button5.Enabled = false;
             }

@@ -28,7 +28,7 @@ namespace NinjaTrader_Client.Trader
 
         private long accessCacheing = 0, access = 0;
 
-        private long maxCacheSize = 1000 * 1000;
+        private long maxCacheSize = 1000 * 1000 * 16;
 
         public int getCacheingAccessPercent()
         {

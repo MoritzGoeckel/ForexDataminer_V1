@@ -1,5 +1,6 @@
 ﻿using NinjaTrader_Client.Trader.Backtest;
 using NinjaTrader_Client.Trader.Model;
+using NinjaTrader_Client.Trader.Strategies;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -130,6 +131,22 @@ namespace NinjaTrader_Client.Trader.BacktestBase
             foreach (KeyValuePair<string, string> pair in parameterSet)
                 output += pair.Key + ":" + pair.Value + "|";
             return output.Substring(0, output.Length - 1);
+        }
+
+        public static void getStrategyFromString(Database database, string parameters, ref Strategy strategy, ref string instrument)
+        {
+            Dictionary<string, string> parameterDict = convertStringCodedToParameters(parameters);
+
+            if (parameterDict["strategy"].StartsWith("SSIStochStrategy"))
+                strategy = new SSIStochStrategy(database, parameterDict);
+
+            if (parameterDict["strategy"].StartsWith("FastMovement-Strategy"))
+                strategy = new FastMovement_Strategy(database, parameterDict);
+
+            if (parameterDict["strategy"].StartsWith("SSIStrategy"))
+                strategy = new SSIStrategy(database, parameterDict);
+
+            instrument = parameterDict["pair"];
         }
 
         public static Dictionary<string, string> convertStringCodedToParameters(string str)
