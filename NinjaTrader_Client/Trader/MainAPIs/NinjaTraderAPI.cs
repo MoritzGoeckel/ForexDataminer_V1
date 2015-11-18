@@ -56,6 +56,21 @@ namespace NinjaTrader_Client.Trader
             }
         }
 
+        public double getProfit()
+        {
+            return ntClient.RealizedPnL(account);
+        }
+
+        public double getCashValue()
+        {
+            return ntClient.CashValue(account);
+        }
+
+        public double getBuyingPower()
+        {
+            return ntClient.BuyingPower(account);
+        }
+
         private void updateData()
         {
             while (resume)

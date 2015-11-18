@@ -1,19 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using NinjaTrader.Client;
 using NinjaTrader_Client.Trader;
 using NinjaTrader_Client.Trader.Model;
 using NinjaTrader_Client.Trader.Strategies;
 using NinjaTrader_Client.Trader.TradingAPIs;
-using NinjaTrader_Client.Trader.Indicators;
 using NinjaTrader_Client.Trader.Analysis;
 using NinjaTrader_Client.Trader.Backtests;
 
@@ -31,7 +22,7 @@ namespace NinjaTrader_Client
         {
             main = new Main(Application.StartupPath);
             main.uiDataChanged += updateUI;
-            NTLiveTradingAPI.createInstace(main.getAPI(), 250); //250 per position * 4 strategies = 1000 investement
+            NTLiveTradingAPI.createInstace(main.getAPI(), 125); //125 per position * 4 strategies = 500 investement
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -49,7 +40,11 @@ namespace NinjaTrader_Client
 
             label1.Text = "Errors: " + data.dbErrors;
             label2.Text = "Datasets: " + data.dataSets;
-            label3.Text = "Tradingtick: " + data.tradingTick;
+            label3.Text = "Tradingtick: " + data.tradingTick + Environment.NewLine +
+                "Positionsize: " + NTLiveTradingAPI.getTheInstace().getPositionSize() + Environment.NewLine +
+                "CV: " + NTLiveTradingAPI.getTheInstace().getCashValue() + " BP: " + NTLiveTradingAPI.getTheInstace().getBuyingPower();
+
+            //setPositionSize(Convert.ToInt32(getCashValue() / 4 / 4));
         }
 
         private void button1_Click(object sender, EventArgs e)

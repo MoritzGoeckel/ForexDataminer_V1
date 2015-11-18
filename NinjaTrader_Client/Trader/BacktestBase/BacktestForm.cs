@@ -119,7 +119,11 @@ namespace NinjaTrader_Client
                 "Threads: " + backtester.getThreadsCount() + Environment.NewLine + 
                 "Error: " + errorTests + Environment.NewLine + 
                 Environment.NewLine + 
-                backtester.getProgressText();
+                backtester.getProgressText() +
+                Environment.NewLine +
+                "Cacheing: " + database.getCacheingAccessPercent() + "%" +
+                Environment.NewLine +
+                "Cache filled: " + database.getCacheFilledPercent() + "%";
         }
 
         //UI stuff

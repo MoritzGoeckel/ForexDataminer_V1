@@ -1,17 +1,13 @@
 ﻿using NinjaTrader_Client.Trader.BacktestBase;
 using NinjaTrader_Client.Trader.Strategies;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NinjaTrader_Client.Trader.Backtests
 {
     class DedicatedStrategyBacktestForm : BacktestForm
     {
         List<Dictionary<string, string>> parameterList = new List<Dictionary<string, string>>();
-        int nextStratId = 0;
+        int nextStratId = 8;
 
         public DedicatedStrategyBacktestForm(Database database)
             : base(database, 38 * 24, 1)

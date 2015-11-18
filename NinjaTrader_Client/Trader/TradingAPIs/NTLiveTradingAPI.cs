@@ -12,7 +12,7 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
     public class NTLiveTradingAPI : ITradingAPI
     {
         private NinjaTraderAPI api;
-        private int positionSize = 1000;
+        private int positionSize;
 
         private static NTLiveTradingAPI theInstace;
         public static void createInstace(NinjaTraderAPI api, int positionSize)
@@ -33,6 +33,16 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
             this.api = api;
             this.positionSize = positionSize;
             api.tickdataArrived += api_tickdataArrived;
+        }
+
+        public int getPositionSize()
+        {
+            return this.positionSize;
+        }
+
+        public void setPositionSize(int newPositionSize)
+        {
+            this.positionSize = newPositionSize;
         }
 
         private Dictionary<string, PairData> pairData = new Dictionary<string,PairData>();
@@ -60,11 +70,26 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
             pairData[instrument].lastTickData = data;
         }
 
+        public double getProfit()
+        {
+            return api.getProfit();
+        }
+
+        public double getBuyingPower()
+        {
+            return api.getBuyingPower();
+        }
+
+        public double getCashValue()
+        {
+            return api.getCashValue();
+        }
+
         public override bool openLong(string instrument)
         {
-            if (api.submitOrder(instrument, Model.TradePosition.PositionType.longPosition, positionSize, pairData[instrument].lastTickData.ask))
+            if (api.submitOrder(instrument, TradePosition.PositionType.longPosition, positionSize, pairData[instrument].lastTickData.ask))
             {
-                pairData[instrument].lastLongPosition = new Model.TradePosition(getNow(), pairData[instrument].lastTickData.ask, Model.TradePosition.PositionType.longPosition, instrument);
+                pairData[instrument].lastLongPosition = new TradePosition(getNow(), pairData[instrument].lastTickData.ask, Model.TradePosition.PositionType.longPosition, instrument);
                 return true;
             }
             return false;
@@ -72,9 +97,9 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
 
         public override bool openShort(string instrument)
         {
-            if (api.submitOrder(instrument, Model.TradePosition.PositionType.shortPosition, positionSize, pairData[instrument].lastTickData.bid))
+            if (api.submitOrder(instrument, TradePosition.PositionType.shortPosition, positionSize, pairData[instrument].lastTickData.bid))
             {
-                pairData[instrument].lastShortPosition = new Model.TradePosition(getNow(), pairData[instrument].lastTickData.bid, Model.TradePosition.PositionType.shortPosition, instrument);
+                pairData[instrument].lastShortPosition = new TradePosition(getNow(), pairData[instrument].lastTickData.bid, Model.TradePosition.PositionType.shortPosition, instrument);
                 return true;
             }
             else
@@ -124,7 +149,7 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
             return Timestamp.getNow();
         }
 
-        public override Model.TradePosition getLongPosition(string instrument)
+        public override TradePosition getLongPosition(string instrument)
         {
             if (pairData.ContainsKey(instrument))
                 return pairData[instrument].lastLongPosition;
@@ -132,7 +157,7 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
                 return null;
         }
 
-        public override Model.TradePosition getShortPosition(string instrument)
+        public override TradePosition getShortPosition(string instrument)
         {
             if (pairData.ContainsKey(instrument))
                 return pairData[instrument].lastShortPosition;
@@ -140,7 +165,7 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
                 return null;
         }
 
-        public override List<Model.TradePosition> getHistory(string instrument)
+        public override List<TradePosition> getHistory(string instrument)
         {
             throw new NotImplementedException();
         }

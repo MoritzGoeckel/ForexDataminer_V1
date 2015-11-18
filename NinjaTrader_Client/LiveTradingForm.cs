@@ -1,12 +1,5 @@
 ﻿using NinjaTrader_Client.Trader.TradingAPIs;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace NinjaTrader_Client
@@ -34,12 +27,11 @@ namespace NinjaTrader_Client
                 + Environment.NewLine + "Short " + (api.getShortPosition(pair) != null ? (api.getShortPosition(pair).priceOpen) - api.getAsk(pair) + "" : "NULL")
                 + Environment.NewLine + "Uptodate " + api.isUptodate(pair) + " (" + api.getNow() + ")";
 
-                goLongBtn.Enabled = (api.getLongPosition(pair) == null);
-                closeLongBtn.Enabled = (api.getLongPosition(pair) != null);
+            goLongBtn.Enabled = (api.getLongPosition(pair) == null);
+            closeLongBtn.Enabled = (api.getLongPosition(pair) != null);
 
-                goShortBtn.Enabled = (api.getShortPosition(pair) == null);
-                closeShortBtn.Enabled = (api.getShortPosition(pair) != null);
-
+            goShortBtn.Enabled = (api.getShortPosition(pair) == null);
+            closeShortBtn.Enabled = (api.getShortPosition(pair) != null);
         }
 
         private void goLongBtn_Click(object sender, EventArgs e)

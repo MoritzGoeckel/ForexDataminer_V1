@@ -1,14 +1,10 @@
-﻿using NinjaTrader_Client.Trader.Model;
-using NinjaTrader_Client.Trader.Strategies;
+﻿using NinjaTrader_Client.Trader.Strategies;
 using NinjaTrader_Client.Trader.TradingAPIs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace NinjaTrader_Client.Trader.Backtest
 {

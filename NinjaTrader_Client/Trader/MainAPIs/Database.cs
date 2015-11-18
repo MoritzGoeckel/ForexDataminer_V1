@@ -26,19 +26,40 @@ namespace NinjaTrader_Client.Trader
         private Dictionary<string, Tickdata> cachedPrices = new Dictionary<string, Tickdata>();
         private long chacheLastClearedTimestamp = 0;
 
+        private long accessCacheing = 0, access = 0;
+
+        private long maxCacheSize = 1000 * 1000;
+
+        public int getCacheingAccessPercent()
+        {
+            if (access != 0)
+                return Convert.ToInt32(Convert.ToDouble(accessCacheing) / Convert.ToDouble(access) * 100d);
+            else
+                return -1;
+        }
+
+        public int getCacheFilledPercent()
+        {
+            return Convert.ToInt32(Convert.ToDouble(cachedPrices.Count()) / Convert.ToDouble(maxCacheSize) * 100d);
+        }
+
         [MethodImpl(MethodImplOptions.Synchronized)]
         public Tickdata getPrice(long timestamp, string instrument, bool caching = true)
         {
+            access++;
             if (caching)
             {
-                if (Timestamp.getNow() - chacheLastClearedTimestamp > 1000 * 60 * 60 * 5) //Nach einer Stunde, verhindert überlaufen
+                if (Timestamp.getNow() - chacheLastClearedTimestamp > 1000 * 60 * 60 * 5 || cachedPrices.Count > maxCacheSize)
                 {
                     chacheLastClearedTimestamp = Timestamp.getNow();
                     cachedPrices.Clear();
                 }
 
                 if (cachedPrices.ContainsKey(timestamp + instrument)) //Simple Caching (Nicht schön... oder?)
+                {
+                    accessCacheing++;
                     return cachedPrices[timestamp + instrument];
+                }
                 else
                 {
                     Tickdata data = getPriceInternal(timestamp, instrument);
