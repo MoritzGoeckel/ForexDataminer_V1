@@ -104,7 +104,7 @@ namespace NinjaTrader_Client
                     Strategy strat = null;
                     string instrument = null;
 
-                    BacktestFormatter.getStrategyFromString(main.getDatabase(), "", ref strat, ref instrument);
+                    BacktestFormatter.getStrategyFromString(main.getDatabase(), stratStr, ref strat, ref instrument);
                     main.startTradingLive(strat, instrument);
                 }
 
