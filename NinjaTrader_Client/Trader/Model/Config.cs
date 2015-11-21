@@ -17,9 +17,9 @@ namespace NinjaTrader_Client.Trader.Model
 
         public static void startConfig(string startupPath)
         {
-            if (File.Exists(startupPath + "/config.json"))
+            if (File.Exists(startupPath + "\\config.json"))
             {
-                string json = File.ReadAllText(startupPath + "/config.json");
+                string json = File.ReadAllText(startupPath + "\\config.json");
                 dynamic config = JObject.Parse(json);
 
                 mongodbExePath = config.mongodbExePath;
@@ -45,9 +45,9 @@ namespace NinjaTrader_Client.Trader.Model
                         JObject config = new JObject();
                         config["mongodbExePath"] = fileDialog.FileName;
                         config["mogodbDataPath"] = folderDialog.SelectedPath;
-                        config["errorLogPath"] = startupPath + "/error.log";
+                        config["errorLogPath"] = startupPath + "\\error.log";
 
-                        File.WriteAllText(startupPath + "/config.json", config.ToString());
+                        File.WriteAllText(startupPath + "\\config.json", config.ToString());
 
                         mongodbExePath = config["mongodbExePath"].ToString();
                         mongodbDataPath = config["mogodbDataPath"].ToString();
