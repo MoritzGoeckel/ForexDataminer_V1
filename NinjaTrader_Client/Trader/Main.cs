@@ -12,7 +12,6 @@ namespace NinjaTrader_Client.Trader
         private Database database;
         private NinjaTraderAPI api;
         private SSI_Downloader ssi;
-        private Config config;
 
         public delegate void UIDataChangedHandler(UIData uiData);
         public event UIDataChangedHandler uiDataChanged;
@@ -36,8 +35,8 @@ namespace NinjaTrader_Client.Trader
             instruments.Add("GBPCHF");
             instruments.Add("GBPJPY");
 
-            config = new Config(startupPath);
-            mongodb = new MongoFacade(config.mongodbExePath, config.mongodbDataPath, "nt_trader");
+            Config.startConfig(startupPath);
+            mongodb = new MongoFacade(Config.mongodbExePath, Config.mongodbDataPath, "nt_trader");
             
             database = new Database(mongodb);
             api = new NinjaTraderAPI(instruments);

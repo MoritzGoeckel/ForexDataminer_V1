@@ -165,7 +165,7 @@ namespace NinjaTrader_Client.Trader.Indicators
             }
 
             if (data.Count == 0 || min == double.MaxValue || max == double.MinValue)
-                throw new Exception();
+                throw new Exception("StochIndicator getMinMaxInData: data.Count == 0 or min/max not set");
         }
     }
 }

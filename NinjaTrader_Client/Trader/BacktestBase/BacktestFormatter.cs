@@ -74,7 +74,7 @@ namespace NinjaTrader_Client.Trader.BacktestBase
                     string[] posArray = posString.Split(':');
                     positionList.Add(new TradePosition((posArray[0] == "L" ? TradePosition.PositionType.longPosition : TradePosition.PositionType.shortPosition), long.Parse(posArray[1]), double.Parse(posArray[2]), long.Parse(posArray[3]), double.Parse(posArray[4])));
                 }
-                catch (Exception e){ }
+                catch (Exception){ }
             }
 
             return positionList;

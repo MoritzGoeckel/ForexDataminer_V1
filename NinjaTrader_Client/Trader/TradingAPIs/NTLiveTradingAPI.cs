@@ -20,7 +20,7 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
             if (theInstace == null)
                 theInstace = new NTLiveTradingAPI(api, positionSize);
             else
-                throw new Exception();
+                throw new Exception("NTLiveTradingAPI Constructor: There is allready an instance");
         }
 
         public static NTLiveTradingAPI getTheInstace()

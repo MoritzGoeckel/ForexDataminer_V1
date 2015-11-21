@@ -11,10 +11,11 @@ namespace NinjaTrader_Client.Trader.Model
 {
     class Config
     {
-        public string mongodbExePath;
-        public string mongodbDataPath;
+        public static string mongodbExePath;
+        public static string mongodbDataPath;
+        public static string errorLogPath;
 
-        public Config(string startupPath)
+        public static void startConfig(string startupPath)
         {
             if (File.Exists(startupPath + "/config.json"))
             {
@@ -23,6 +24,7 @@ namespace NinjaTrader_Client.Trader.Model
 
                 mongodbExePath = config.mongodbExePath;
                 mongodbDataPath = config.mogodbDataPath;
+                errorLogPath = config.errorLogPath;
             }
             else
             {
@@ -36,7 +38,6 @@ namespace NinjaTrader_Client.Trader.Model
                 folderDialog.Description = "Select the data-directory of the mongodb";
 
                 //Data
-
                 while (true)
                 {
                     if (fileDialog.ShowDialog() == DialogResult.OK && folderDialog.ShowDialog() == DialogResult.OK)
@@ -44,6 +45,8 @@ namespace NinjaTrader_Client.Trader.Model
                         JObject config = new JObject();
                         config["mongodbExePath"] = fileDialog.FileName;
                         config["mogodbDataPath"] = folderDialog.SelectedPath;
+                        config["errorLogPath"] = startupPath + "/error.log";
+
                         File.WriteAllText(startupPath + "/config.json", config.ToString());
 
                         mongodbExePath = config["mongodbExePath"].ToString();

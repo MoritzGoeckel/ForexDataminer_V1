@@ -10,6 +10,8 @@ namespace NinjaTrader_Client.Trader.Backtests
     class RandomStrategyBacktestForm : BacktestForm
     {
         private List<string> majors = new List<string>();
+        private List<string> minors = new List<string>();
+        private List<string> all = new List<string>();
 
         public RandomStrategyBacktestForm(Database database)
             : base(database, 38 * 24, 10)
@@ -18,6 +20,21 @@ namespace NinjaTrader_Client.Trader.Backtests
             majors.Add("GBPUSD");
             majors.Add("USDJPY");
             majors.Add("USDCHF");
+
+            minors.Add("AUDCAD");
+            minors.Add("AUDJPY");
+            minors.Add("AUDUSD");
+            minors.Add("CHFJPY");
+            minors.Add("EURCHF");
+            minors.Add("EURGBP");
+            minors.Add("EURJPY");
+            minors.Add("GBPCHF");
+            minors.Add("GBPJPY");
+            minors.Add("NZDUSD");
+            minors.Add("USDCAD");
+
+            all.AddRange(majors);
+            all.AddRange(minors);
         }
 
         private Random z = new Random();
@@ -35,17 +52,51 @@ namespace NinjaTrader_Client.Trader.Backtests
 
         protected override void getNextStrategyToTest(ref Strategy strategy, ref string instrument, ref bool continueBacktesting)
         {
-            instrument = majors[z.Next(0, majors.Count)];
+            instrument = all[z.Next(0, all.Count)];
             continueBacktesting = true;
 
             int r = z.Next(0, 6);
 
             if (r <= 2)
-                strategy = new SSIStochStrategy(database, Math.Round(z.NextDouble() * 0.3, 2) + 0.01, Math.Round(z.NextDouble() * 0.3, 2) + 0.01, Math.Round(z.NextDouble() * 0.15, 2) + 0.07, 1000 * 60 * 30 * z.Next(1, 8), 1000 * 60 * 60 * z.Next(1, 20), z.NextDouble() > 0.5);
+                strategy = new SSIStochStrategy(database,
+                    generateDouble(0.01, 0.50, 0.01), //TP
+                    generateDouble(0.01, 0.50, 0.01), //SL
+                    generateDouble(0.05, 0.50, 0.01), //Threshold
+                    generateInt(1000 * 60 * 30 * 1, 1000 * 60 * 30 * 8, 1000 * 60 * 5), //To
+                    generateInt(1000 * 60 * 60 * 1, 1000 * 60 * 60 * 20, 1000 * 60 * 20), //StochTime
+                    generateBool()); //againstCrowd
+
             else if (r <= 4)
-                strategy = new FastMovement_Strategy(database, 1000 * 60 * z.Next(1, 30), 1000 * 60 * 10 * z.Next(1, 20), Math.Round(z.NextDouble() * 0.7, 2) + 0.01, Math.Round(z.NextDouble() * 0.4, 2) + 0.01, Math.Round(z.NextDouble() * 0.4, 2) + 0.01, z.NextDouble() > 0.5);
+                strategy = new FastMovement_Strategy(database,
+                    generateInt(1000 * 60 * 1, 1000 * 60 * 30, 1000 * 60 * 5),
+                    generateInt(1000 * 60 * 10 * 1, 1000 * 60 * 10 * 20, 1000 * 60 * 5),
+                    generateDouble(0.01, 0.70, 0.03),
+                    generateDouble(0.01, 0.40, 0.02),
+                    generateDouble(0.01, 0.40, 0.02),
+                    generateBool());
+
             else
-                strategy = new SSIStrategy(database, Math.Round(z.NextDouble() * 0.5, 2), Math.Round(z.NextDouble() * 0.5, 2), z.NextDouble() > 0.5);
+                strategy = new SSIStrategy(database,
+                    generateDouble(0.0, 0.5, 0.01),
+                    generateDouble(0.0, 0.5, 0.01),
+                    generateBool());
+        }
+
+        private bool generateBool()
+        {
+            return z.NextDouble() > 0.5;
+        }
+
+        private double generateDouble(double min, double max, double stepSize)
+        {
+            int stepCount = Convert.ToInt32(Math.Round((max - min) / Convert.ToDouble(stepSize)));
+            return Math.Round(min + (z.Next(0, stepCount) * stepSize), 2);
+        }
+
+        private int generateInt(int min, int max, int stepSize)
+        {
+            int stepCount = Convert.ToInt32(Math.Round(Convert.ToDouble(max - min) / Convert.ToDouble(stepSize)));
+            return min + (z.Next(0, stepCount) * stepSize);
         }
     }
 }

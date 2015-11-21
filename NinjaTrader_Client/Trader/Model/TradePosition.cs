@@ -30,7 +30,7 @@ namespace NinjaTrader_Client.Trader.Model
         public double getDifference()
         {
             if (priceClose == -1)
-                throw new Exception();
+                throw new Exception("TradePosition getDifference: Position not yet closed");
 
             if (type == PositionType.shortPosition)
                 return priceOpen - priceClose;

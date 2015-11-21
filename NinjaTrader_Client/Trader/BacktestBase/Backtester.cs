@@ -1,8 +1,11 @@
-﻿using NinjaTrader_Client.Trader.Strategies;
+﻿using NinjaTrader_Client.Trader.BacktestBase;
+using NinjaTrader_Client.Trader.Model;
+using NinjaTrader_Client.Trader.Strategies;
 using NinjaTrader_Client.Trader.TradingAPIs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
@@ -31,7 +34,7 @@ namespace NinjaTrader_Client.Trader.Backtest
             this.maxPositionsPerHour = maxPositionsPerHour;
 
             if (this.startTimestamp > this.endTimestamp)
-                throw new Exception();
+                throw new Exception("BacktestConstructor: startTimestamp > endTimestamp");
         }
 
         public void startBacktest(Strategy strat, string pair)
@@ -67,28 +70,35 @@ namespace NinjaTrader_Client.Trader.Backtest
             long currentTimestamp = startTimestamp;
 
             if (currentTimestamp > startTimestamp)
-                throw new Exception();
+                throw new Exception("Backtester runBacktest: currentTimestamp > startTimestamp");
 
             string name = getUniqueStrategyName(strat.getName());
 
             bool reportStrategy = true;
-            while (currentTimestamp < endTimestamp)
+            try
             {
-                long doneHours = (currentTimestamp - startTimestamp) / 1000 / 60 / 60;
-
-                if (doneHours >= 1 && api.getHistory(pair).Count / doneHours > maxPositionsPerHour)
+                while (currentTimestamp < endTimestamp)
                 {
-                    reportStrategy = false;
-                    break;
+                    long doneHours = (currentTimestamp - startTimestamp) / 1000 / 60 / 60;
+
+                    if (doneHours >= 1 && api.getHistory(pair).Count / doneHours > maxPositionsPerHour)
+                    {
+                        reportStrategy = false;
+                        break;
+                    }
+
+                    api.setNow(currentTimestamp);
+                    strat.doTick(pair);
+
+                    int percent = Convert.ToInt32(Convert.ToDouble(currentTimestamp - startTimestamp) / Convert.ToDouble(endTimestamp - startTimestamp) * 100);
+                    progress[name] = percent;
+
+                    currentTimestamp += 1000 * resolutionInSeconds;
                 }
-
-                api.setNow(currentTimestamp);
-                strat.doTick(pair);
-
-                int percent = Convert.ToInt32(Convert.ToDouble(currentTimestamp - startTimestamp) / Convert.ToDouble(endTimestamp - startTimestamp) * 100);
-                progress[name] = percent;
-
-                currentTimestamp += 1000 * resolutionInSeconds;
+            }
+            catch (Exception e) {
+                reportStrategy = false;
+                File.AppendAllText(Config.errorLogPath, "Backtest:" + "\t" + e.Source + "->" + e.Message + "\t" + BacktestFormatter.getDictStringCoded(strat.getParameters()));
             }
 
             progress.Remove(name);
@@ -137,7 +147,7 @@ namespace NinjaTrader_Client.Trader.Backtest
                 foreach (KeyValuePair<string, int> pair in progress)
                     output += pair.Key + ": " + pair.Value + "%" + Environment.NewLine;
             }
-            catch (Exception e) { }
+            catch (Exception) { }
 
             return output;
         }

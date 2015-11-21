@@ -97,7 +97,7 @@ namespace NinjaTrader_Client
                 strats.Add("pair:USDCHF|timeframe:912|strategy:SSIStochStrategy_V0|tp:0,24|threshold:0,19|to:12600000|stochT:25200000|sl:0,2|againstCrowd:True");
 
                 //USDJPY
-                strats.Add("pair:USDJPY|timeframe:912|strategy:SSIStrategy_V0|thresholdOpen:0,23|thresholdClose:0,08|followTrend:False"); //Fehler!!?? Key nicht in wörterbuch!
+                strats.Add("pair:USDJPY|timeframe:912|strategy:SSIStrategy_V0|thresholdOpen:0,23|thresholdClose:0,08|followTrend:False");
 
                 foreach (string stratStr in strats)
                 {

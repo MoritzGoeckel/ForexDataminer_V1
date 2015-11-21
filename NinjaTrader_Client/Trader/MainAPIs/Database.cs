@@ -6,8 +6,10 @@ using NinjaTrader_Client.Trader.Model;
 using NinjaTrader_Client.Trader.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,11 +26,8 @@ namespace NinjaTrader_Client.Trader
         }
 
         private Dictionary<string, Tickdata> cachedPrices = new Dictionary<string, Tickdata>();
-        private long chacheLastClearedTimestamp = 0;
-
         private long accessCacheing = 0, access = 0;
-
-        private long maxCacheSize = 1000 * 1000 * 16;
+        private long maxCacheSize = 1000 * 1000 * 20;
 
         public int getCacheingAccessPercent()
         {
@@ -49,10 +48,15 @@ namespace NinjaTrader_Client.Trader
             access++;
             if (caching)
             {
-                if (Timestamp.getNow() - chacheLastClearedTimestamp > 1000 * 60 * 60 * 5 || cachedPrices.Count > maxCacheSize)
+                if (cachedPrices.Count > maxCacheSize)
                 {
-                    chacheLastClearedTimestamp = Timestamp.getNow();
-                    cachedPrices.Clear();
+                    int i = 0;
+                    while(i < 1000 * 100)
+                    {
+                        string key = cachedPrices.First().Key;
+                        cachedPrices.Remove(key);
+                        i++;
+                    }
                 }
 
                 if (cachedPrices.ContainsKey(timestamp + instrument)) //Simple Caching (Nicht schön... oder?)
