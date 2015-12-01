@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using Newtonsoft.Json.Linq;
 using NinjaTrader_Client.Trader;
+using NinjaTrader_Client.Trader.MainAPIs;
 using NinjaTrader_Client.Trader.Utils;
 using System;
 using System.Collections.Generic;
@@ -60,7 +61,7 @@ namespace NinjaTrader_Client
 
         private void export()
         {
-            try
+            /*try
             {
                 database.exportData(Convert.ToInt64(textBox_from.Text), Application.StartupPath);
                 reportResult("Export successful");
@@ -68,12 +69,12 @@ namespace NinjaTrader_Client
             catch (Exception ex)
             {
                 reportResult("Export failed: " + ex.Message);
-            }
+            }*/
         }
 
         private void import_btn_Click(object sender, EventArgs e)
         {
-            OpenFileDialog fileDialog = new OpenFileDialog();
+            /*OpenFileDialog fileDialog = new OpenFileDialog();
             fileDialog.InitialDirectory = Application.StartupPath;
 
             if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -94,7 +95,7 @@ namespace NinjaTrader_Client
                 MessageBox.Show("Import done.");
             }
             else
-                MessageBox.Show("Please select a file to import");
+                MessageBox.Show("Please select a file to import");*/
         }
     }
 }

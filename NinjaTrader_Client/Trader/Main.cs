@@ -1,4 +1,5 @@
-﻿using NinjaTrader_Client.Trader.Model;
+﻿using NinjaTrader_Client.Trader.MainAPIs;
+using NinjaTrader_Client.Trader.Model;
 using NinjaTrader_Client.Trader.Strategies;
 using NinjaTrader_Client.Trader.TradingAPIs;
 using System.Collections.Generic;
@@ -8,7 +9,6 @@ namespace NinjaTrader_Client.Trader
 {
     public class Main
     {
-        private MongoFacade mongodb;
         private Database database;
         private NinjaTraderAPI api;
         private SSI_Downloader ssi;
@@ -36,9 +36,11 @@ namespace NinjaTrader_Client.Trader
             instruments.Add("GBPJPY");
 
             Config.startConfig(startupPath);
-            mongodb = new MongoFacade(Config.mongodbExePath, Config.mongodbDataPath, "nt_trader");
-            
-            database = new Database(mongodb);
+            //mongodb = new MongoFacade(Config.mongodbExePath, Config.mongodbDataPath, "nt_trader");
+
+            database = new SQLDatabase();
+
+            //database = new MongoDatabase(mongodb);
             api = new NinjaTraderAPI(instruments);
             ssi = new SSI_Downloader(instruments);
         }
@@ -112,7 +114,7 @@ namespace NinjaTrader_Client.Trader
             database.setPrice(data, instrument);
 
             UIData uiData = new UIData();
-            uiData.dbErrors = database.errors;
+            //uiData.dbErrors = database.errors; ???
             uiData.dataSets = insertedSets++;
             uiData.tradingTick = tradingTick;
 
@@ -127,7 +129,7 @@ namespace NinjaTrader_Client.Trader
 
             ssi.stop();
             api.stop();
-            mongodb.shutdown();
+            database.shutdown();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using ChartDirector;
 using NinjaTrader_Client.Trader;
 using NinjaTrader_Client.Trader.Charting;
+using NinjaTrader_Client.Trader.MainAPIs;
 using NinjaTrader_Client.Trader.Model;
 using NinjaTrader_Client.Trader.Utils;
 using System;

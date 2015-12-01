@@ -1,4 +1,5 @@
 ﻿using NinjaTrader_Client.Trader.Backtest;
+using NinjaTrader_Client.Trader.MainAPIs;
 using System;
 using System.Collections.Generic;
 using System.Linq;

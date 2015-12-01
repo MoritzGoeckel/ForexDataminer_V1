@@ -1,6 +1,7 @@
 ﻿using NinjaTrader_Client.Trader;
 using NinjaTrader_Client.Trader.Backtest;
 using NinjaTrader_Client.Trader.BacktestBase;
+using NinjaTrader_Client.Trader.MainAPIs;
 using NinjaTrader_Client.Trader.Model;
 using NinjaTrader_Client.Trader.Strategies;
 using System;
@@ -115,15 +116,15 @@ namespace NinjaTrader_Client
 
         private void outputBacktestState()
         {
-            threadsLabel.Text = "Backteststate:" + Environment.NewLine + 
-                "Threads: " + backtester.getThreadsCount() + Environment.NewLine + 
-                "Error: " + errorTests + Environment.NewLine + 
-                Environment.NewLine + 
+            threadsLabel.Text = "Backteststate:" + Environment.NewLine +
+                "Threads: " + backtester.getThreadsCount() + Environment.NewLine +
+                "Error: " + errorTests + Environment.NewLine +
+                Environment.NewLine +
                 backtester.getProgressText() +
                 Environment.NewLine +
-                "Cacheing: " + database.getCacheingAccessPercent() + "%" +
-                Environment.NewLine +
-                "Cache filled: " + database.getCacheFilledPercent() + "%";
+                //"Cacheing: " + database.getCacheingAccessPercent() + "%" +
+                Environment.NewLine;
+                //"Cache filled: " + database.getCacheFilledPercent() + "%";
         }
 
         //UI stuff

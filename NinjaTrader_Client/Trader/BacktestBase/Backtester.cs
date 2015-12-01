@@ -1,4 +1,5 @@
 ﻿using NinjaTrader_Client.Trader.BacktestBase;
+using NinjaTrader_Client.Trader.MainAPIs;
 using NinjaTrader_Client.Trader.Model;
 using NinjaTrader_Client.Trader.Strategies;
 using NinjaTrader_Client.Trader.TradingAPIs;
@@ -96,9 +97,20 @@ namespace NinjaTrader_Client.Trader.Backtest
                     currentTimestamp += 1000 * resolutionInSeconds;
                 }
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 reportStrategy = false;
-                File.AppendAllText(Config.errorLogPath, "Backtest:" + "\t" + e.Source + "->" + e.Message + "\t" + BacktestFormatter.getDictStringCoded(strat.getParameters()));
+
+                bool done = false;
+                while (done == false)
+                { 
+                    try
+                    {
+                        File.AppendAllText(Config.errorLogPath, "Backtest:" + "\t" + e.Source + "->" + e.Message + "\t" + BacktestFormatter.getDictStringCoded(strat.getParameters()) + Environment.NewLine);
+                        done = true;
+                    }
+                    catch (Exception) { Thread.Sleep(100); }
+                }
             }
 
             progress.Remove(name);

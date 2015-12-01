@@ -8,6 +8,7 @@ using NinjaTrader_Client.Trader.TradingAPIs;
 using NinjaTrader_Client.Trader.Analysis;
 using NinjaTrader_Client.Trader.Backtests;
 using NinjaTrader_Client.Trader.BacktestBase;
+using NinjaTrader_Client.Trader.MainAPIs;
 
 namespace NinjaTrader_Client
 {
@@ -23,7 +24,7 @@ namespace NinjaTrader_Client
         {
             main = new Main(Application.StartupPath);
             main.uiDataChanged += updateUI;
-            NTLiveTradingAPI.createInstace(main.getAPI(), 125); //125 per position * 4 strategies = 500 investement
+            NTLiveTradingAPI.createInstace(main.getAPI(), 125); //125 per position * 11 strategies = 1375 investement
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -65,8 +66,8 @@ namespace NinjaTrader_Client
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if(MessageBox.Show("Wirklich migrieren?", "", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
-                main.getDatabase().megrate();
+            /*if(MessageBox.Show("Wirklich migrieren?", "", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
+                main.getDatabase().megrate(sql);*/
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -85,20 +86,13 @@ namespace NinjaTrader_Client
         {
             if (MessageBox.Show("Wirklich traden?", "", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
             {
-                List<string> strats = new List<string>();
+                OpenFileDialog ofd = new OpenFileDialog();
+                ofd.InitialDirectory = Config.startupPath;
+
+                while (ofd.ShowDialog() != DialogResult.OK) ;
+
+                List<string> strats = BacktestFormatter.getParametersFromFile(ofd.FileName);
                 
-                //EURUSD
-                strats.Add("pair:EURUSD|timeframe:912|strategy:FastMovement-Strategy_V0|postT:1200000|preT:1140000|threshold:0,41|tp:0,28|sl:0,23|followTrend:True");
-
-                //GBPUSD
-                strats.Add("pair:GBPUSD|timeframe:912|strategy:SSIStrategy_V0|thresholdOpen:0,21|thresholdClose:0,12|followTrend:True");
-
-                //USDCHF
-                strats.Add("pair:USDCHF|timeframe:912|strategy:SSIStochStrategy_V0|tp:0,24|threshold:0,19|to:12600000|stochT:25200000|sl:0,2|againstCrowd:True");
-
-                //USDJPY
-                strats.Add("pair:USDJPY|timeframe:912|strategy:SSIStrategy_V0|thresholdOpen:0,23|thresholdClose:0,08|followTrend:False");
-
                 foreach (string stratStr in strats)
                 {
                     Strategy strat = null;

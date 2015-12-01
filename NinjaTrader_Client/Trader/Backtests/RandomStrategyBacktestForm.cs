@@ -1,4 +1,5 @@
-﻿using NinjaTrader_Client.Trader.Strategies;
+﻿using NinjaTrader_Client.Trader.MainAPIs;
+using NinjaTrader_Client.Trader.Strategies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,7 +56,14 @@ namespace NinjaTrader_Client.Trader.Backtests
             instrument = all[z.Next(0, all.Count)];
             continueBacktesting = true;
 
-            int r = z.Next(0, 6);
+            strategy = new BinaryStrategy(database,
+                generateDouble(0.01,0.5, 0.01),
+                generateDouble(0.01, 0.5, 0.01),
+                generateInt(1000 * 60, 1000 * 60 * 60 * 5, 1000 * 60 * 5),
+                generateDouble(0.01, 1, 0.02),
+                generateBool());
+
+            /*int r = z.Next(0, 6);
 
             if (r <= 2)
                 strategy = new SSIStochStrategy(database,
@@ -67,7 +75,7 @@ namespace NinjaTrader_Client.Trader.Backtests
                     generateBool()); //againstCrowd
 
             else if (r <= 4)
-                strategy = new FastMovement_Strategy(database,
+                strategy = new FastMovementStrategy(database,
                     generateInt(1000 * 60 * 1, 1000 * 60 * 30, 1000 * 60 * 5),
                     generateInt(1000 * 60 * 10 * 1, 1000 * 60 * 10 * 20, 1000 * 60 * 5),
                     generateDouble(0.01, 0.70, 0.03),
@@ -79,7 +87,7 @@ namespace NinjaTrader_Client.Trader.Backtests
                 strategy = new SSIStrategy(database,
                     generateDouble(0.0, 0.5, 0.01),
                     generateDouble(0.0, 0.5, 0.01),
-                    generateBool());
+                    generateBool());*/
         }
 
         private bool generateBool()

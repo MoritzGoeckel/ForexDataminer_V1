@@ -1,0 +1,32 @@
+//EURUSD ???
+pair:EURUSD|timeframe:912|strategy:FastMovement-Strategy_V0|postT:1200000|preT:1140000|threshold:0,41|tp:0,28|sl:0,23|followTrend:True
+
+//GBPUSD
+pair:GBPUSD|timeframe:912|strategy:SSIStrategy_V0|thresholdOpen:0,21|thresholdClose:0,12|followTrend:True
+
+//USDCHF
+pair:USDCHF|timeframe:912|strategy:SSIStochStrategy_V0|tp:0,24|threshold:0,19|to:12600000|stochT:25200000|sl:0,2|againstCrowd:True
+
+//USDJPY
+pair:USDJPY|timeframe:912|strategy:SSIStrategy_V0|thresholdOpen:0,23|thresholdClose:0,08|followTrend:False
+
+//AUDUSD
+//pair:AUDUSD|timeframe:960|strategy:FastMovement-Strategy_V0|postT:7800000|preT:660000|threshold:0,4|tp:0,39|sl:0,31|followTrend:False
+
+//AUDJPY
+//pair:AUDJPY|timeframe:960|strategy:FastMovement-Strategy_V0|postT:6300000|preT:1560000|threshold:0,31|tp:0,37|sl:0,13|followTrend:False
+
+//AUDCAD
+//pair:AUDCAD|timeframe:960|strategy:FastMovement-Strategy_V0|postT:10800000|preT:1260000|threshold:0,25|tp:0,31|sl:0,21|followTrend:False
+
+//EURJPY
+pair:EURJPY|timeframe:960|strategy:FastMovement-Strategy_V0|postT:3600000|preT:960000|threshold:0,13|tp:0,39|sl:0,29|followTrend:True
+
+//EURCHF ???
+pair:EURCHF|timeframe:960|strategy:FastMovement-Strategy_V0|postT:600000|preT:360000|threshold:0,34|tp:0,21|sl:0,07|followTrend:False
+
+//GBPJPY ???
+pair:GBPJPY|timeframe:960|strategy:FastMovement-Strategy_V0|postT:8700000|preT:360000|threshold:0,25|tp:0,39|sl:0,35|followTrend:False
+
+//EURGBP ???
+pair:EURGBP|timeframe:960|strategy:FastMovement-Strategy_V0|postT:3900000|preT:1560000|threshold:0,43|tp:0,29|sl:0,25|followTrend:True

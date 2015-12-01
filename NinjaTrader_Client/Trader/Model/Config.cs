@@ -14,9 +14,12 @@ namespace NinjaTrader_Client.Trader.Model
         public static string mongodbExePath;
         public static string mongodbDataPath;
         public static string errorLogPath;
+        public static string startupPath;
 
         public static void startConfig(string startupPath)
         {
+            Config.startupPath = startupPath;
+
             if (File.Exists(startupPath + "\\config.json"))
             {
                 string json = File.ReadAllText(startupPath + "\\config.json");

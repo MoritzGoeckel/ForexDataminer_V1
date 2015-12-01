@@ -1,5 +1,6 @@
 ﻿using NinjaTrader_Client.Trader.Backtest;
 using NinjaTrader_Client.Trader.Indicators;
+using NinjaTrader_Client.Trader.MainAPIs;
 using NinjaTrader_Client.Trader.Model;
 using System;
 using System.Collections.Generic;

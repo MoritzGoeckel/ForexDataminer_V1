@@ -12,12 +12,12 @@ namespace NinjaTrader_Client.Trader
 {
     public class MongoFacade
     {
-        private MongoDatabase database;
+        private MongoDB.Driver.MongoDatabase database;
         private MongoServer server;
         private MongoClient client;
         private Process serverProcess = null;
 
-        private Dictionary<string, MongoCollection<BsonDocument>> collections;
+        private Dictionary<string, MongoCollection> collections;
 
         public MongoFacade(string exePath, string dataPath, string dbName)
         {
@@ -38,9 +38,14 @@ namespace NinjaTrader_Client.Trader
             database = server.GetDatabase(dbName);
         }
 
-        public MongoCollection<BsonDocument> getCollection(String name){
+        public MongoDB.Driver.MongoDatabase getDatabase()
+        {
+            return database;
+        }
+
+        public MongoCollection getCollection(String name){
             if(collections == null)
-                collections = new Dictionary<string,MongoCollection<BsonDocument>>();
+                collections = new Dictionary<string, MongoCollection>();
 
             if(collections.ContainsKey(name) == false)
                 collections.Add(name, database.GetCollection(name));
@@ -48,9 +53,9 @@ namespace NinjaTrader_Client.Trader
             return collections[name];
         }
 
-        public List<MongoCollection<BsonDocument>> getCollections()
+        public List<MongoCollection> getCollections()
         {
-            List<MongoCollection<BsonDocument>> list = new List<MongoCollection<BsonDocument>>();
+            List<MongoCollection> list = new List<MongoCollection>();
             foreach(string collectionName in database.GetCollectionNames())
                 list.Add(getCollection(collectionName));
 

@@ -1,8 +1,10 @@
 ﻿using NinjaTrader_Client.Trader.Backtest;
+using NinjaTrader_Client.Trader.MainAPIs;
 using NinjaTrader_Client.Trader.Model;
 using NinjaTrader_Client.Trader.Strategies;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace NinjaTrader_Client.Trader.BacktestBase
@@ -133,6 +135,28 @@ namespace NinjaTrader_Client.Trader.BacktestBase
             return output.Substring(0, output.Length - 1);
         }
 
+        public static List<string> getParametersFromFile(string path)
+        {
+            List<string> parameterList = new List<string>();
+            string[] file = File.ReadAllText(path).Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            foreach (string line in file)
+            {
+                if (line.StartsWith("//") == false && line != "")
+                    parameterList.Add(line);
+            }
+
+            //Test if file is valid
+            foreach (string parameter in parameterList)
+            {
+                try
+                {
+                    convertStringCodedToParameters(parameter);
+                }
+                catch { throw new Exception("DedicatedStrategyBacktestForm Constructor: Invalid parameter->" + parameter); }
+            }
+            return parameterList;
+        }
+
         public static void getStrategyFromString(Database database, string parameters, ref Strategy strategy, ref string instrument)
         {
             Dictionary<string, string> parameterDict = convertStringCodedToParameters(parameters);
@@ -141,7 +165,7 @@ namespace NinjaTrader_Client.Trader.BacktestBase
                 strategy = new SSIStochStrategy(database, parameterDict);
 
             if (parameterDict["strategy"].StartsWith("FastMovement-Strategy"))
-                strategy = new FastMovement_Strategy(database, parameterDict);
+                strategy = new FastMovementStrategy(database, parameterDict);
 
             if (parameterDict["strategy"].StartsWith("SSIStrategy"))
                 strategy = new SSIStrategy(database, parameterDict);

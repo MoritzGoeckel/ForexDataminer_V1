@@ -20,3 +20,4 @@ E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\x64\Debug\Ninj
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\x64\Debug\NinjaTrader_Client.exe
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\x64\Debug\NinjaTrader_Client.pdb
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\x64\Debug\NinjaTrader_Client.csprojResolveAssemblyReference.cache
+E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\bin\x64\Debug\MySql.Data.dll
