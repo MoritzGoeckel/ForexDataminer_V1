@@ -155,10 +155,11 @@
     </Compile>
     <Compile Include="Trader\Charting\SimpleChart_Stepline.cs" />
     <Compile Include="Trader\Charting\SimpleChart_Scatter.cs" />
+    <Compile Include="Trader\Databases\CachedDatabase.cs" />
     <Compile Include="Trader\Indicators\Indicator.cs" />
     <Compile Include="Trader\Indicators\StochIndicator.cs" />
-    <Compile Include="Trader\MainAPIs\Database.cs" />
-    <Compile Include="Trader\MainAPIs\SQLDatabase.cs" />
+    <Compile Include="Trader\Databases\Database.cs" />
+    <Compile Include="Trader\Databases\SQLDatabase.cs" />
     <Compile Include="Trader\Strategies\TemplateStrategy.cs" />
     <Compile Include="Trader\Strategies\BinaryStrategy.cs" />
     <Compile Include="Trader\Strategies\FastMovementStrategy.cs" />
@@ -172,11 +173,11 @@
     <Compile Include="Trader\Model\TimeValueData.cs" />
     <Compile Include="Trader\Model\Tickdata.cs" />
     <Compile Include="Trader\Model\UIData.cs" />
-    <Compile Include="Trader\MainAPIs\MongoFacade.cs" />
+    <Compile Include="Trader\Databases\MongoFacade.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Trader\MainAPIs\NinjaTraderAPI.cs" />
-    <Compile Include="Trader\MainAPIs\MongoDatabase.cs" />
+    <Compile Include="Trader\Databases\MongoDatabase.cs" />
     <Compile Include="Trader\Datastreams\SSI_Downloader.cs" />
     <Compile Include="Trader\TradingAPIs\ITradingAPI.cs" />
     <Compile Include="Trader\TradingAPIs\NTLiveTradingAPI.cs" />

@@ -48,7 +48,7 @@ namespace NinjaTrader_Client
             if (historicPositions != null)
                 sc.addHistoricPositions(historicPositions);
 
-            sc.drawPriceChartWithSSI(upperChart, this.Width, this.Height, "EURUSD", timestampStart, timestampEnd);
+            sc.drawPriceChartWithSSI(upperChart, this.Width, this.Height, "AUDUSD", timestampStart, timestampEnd);
         }
 
         void upperChart_DoubleClick(object sender, EventArgs e)

@@ -2,30 +2,74 @@
 using NinjaTrader_Client.Trader.Model;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NinjaTrader_Client.Trader.MainAPIs
 {
     public class SQLDatabase : Database
     {
-        private MySqlConnection connection;
+        string myConnectionString = "SERVER=localhost;" +
+                            "DATABASE=tradingsystem;" +
+                            "UID=root;" +
+                            "PASSWORD=;" +
+                            "MaximumPoolSize=30;";
 
         public SQLDatabase()
         {
-            string myConnectionString = "SERVER=localhost;" +
-                            "DATABASE=tradingsystem;" +
-                            "UID=root;" +
-                            "PASSWORD=;";
+            new Thread(delegate()
+            {
+                checkThreadTimeout();
+                Thread.Sleep(1000 * 60);
+            }).Start();
+        }
 
-            connection = new MySqlConnection(myConnectionString);
-            connection.Open();
+        Dictionary<string, MySqlConnection> connections = new Dictionary<string, MySqlConnection>();
+        Dictionary<string, DateTime> threadLastAccess = new Dictionary<string, DateTime>();
+
+        private MySqlConnection getConnection()
+        {
+            string threadName = Thread.CurrentThread.ManagedThreadId.ToString();
+
+            if (connections.ContainsKey(threadName) == false)
+            {
+                MySqlConnection con = new MySqlConnection(myConnectionString);
+                con.Open();
+
+                connections.Add(threadName, con);
+                threadLastAccess.Add(threadName, DateTime.Now);
+            }
+
+            threadLastAccess[threadName] = DateTime.Now;
+
+            return connections[threadName];
+        }
+
+        private void checkThreadTimeout()
+        {
+            List<string> threadsToDelete = new List<string>();
+            foreach (KeyValuePair<string, DateTime> pair in threadLastAccess)
+            {
+                if (DateTime.Now - pair.Value > new TimeSpan(0, 5, 0))
+                    threadsToDelete.Add(pair.Key);
+            }
+
+            foreach (string threadId in threadsToDelete)
+            {
+                connections[threadId].Close();
+
+                connections.Remove(threadId);
+                threadLastAccess.Remove(threadId);
+            }
         }
 
         public override Tickdata getPrice(long timestamp, string instrument, bool caching = true)
         {
-            MySqlCommand command = connection.CreateCommand();
+            MySqlCommand command = getConnection().CreateCommand();
             command.CommandText = "SELECT * FROM prices WHERE instrument = '" + instrument + "' AND timestamp < " + timestamp + " ORDER BY timestamp DESC LIMIT 1";
             MySqlDataReader Reader = command.ExecuteReader();
             Reader.Read();
@@ -36,7 +80,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
         public override List<Tickdata> getPrices(long startTimestamp, long endTimestamp, string instrument)
         {
             List<Tickdata> output = new List<Tickdata>();
-            MySqlCommand command = connection.CreateCommand();
+            MySqlCommand command = getConnection().CreateCommand();
             command.CommandText = "SELECT * FROM prices WHERE instrument = '" + instrument + "' AND timestamp > " + startTimestamp + " AND timestamp < "+ endTimestamp + " ORDER BY timestamp DESC";
             MySqlDataReader Reader = command.ExecuteReader();
             while(Reader.Read())
@@ -61,10 +105,10 @@ namespace NinjaTrader_Client.Trader.MainAPIs
             if (insertQue.Count != 0)
             {
                 StringBuilder builder = new StringBuilder();
-                foreach (string s in insertQue)
+                foreach (string s in insertQue) //Changed???
                     builder.Append(s + ";");
 
-                MySqlCommand command = connection.CreateCommand();
+                MySqlCommand command = getConnection().CreateCommand();
                 command.CommandText = builder.ToString();
                 command.ExecuteReader().Close();
 
@@ -74,18 +118,19 @@ namespace NinjaTrader_Client.Trader.MainAPIs
 
         public override TimeValueData getData(long timestamp, string dataName, string instrument)
         {
-            MySqlCommand command = connection.CreateCommand();
+            MySqlCommand command = getConnection().CreateCommand();
             command.CommandText = "SELECT * FROM timevaluepair WHERE instrument = '" + instrument + "' AND name = '" + dataName + "' AND timestamp < " + timestamp + " ORDER BY timestamp DESC LIMIT 1";
             MySqlDataReader Reader = command.ExecuteReader();
             Reader.Read();
+            TimeValueData output =  new TimeValueData((long)Reader["timestamp"], (double)Reader["value"]);
             Reader.Close();
-            return new TimeValueData((long)Reader["timestamp"], (double)Reader["value"]);
+            return output;
         }
 
         public override List<TimeValueData> getDataInRange(long startTimestamp, long endTimestamp, string dataName, string instrument)
         {
             List<TimeValueData> output = new List<TimeValueData>();
-            MySqlCommand command = connection.CreateCommand();
+            MySqlCommand command = getConnection().CreateCommand();
             command.CommandText = "SELECT * FROM timevaluepair WHERE instrument = '" + instrument + "' AND name = '" + dataName + "' AND timestamp > " + startTimestamp + " AND timestamp < " + endTimestamp + " ORDER BY timestamp DESC";
             MySqlDataReader Reader = command.ExecuteReader();
             while (Reader.Read())
@@ -107,7 +152,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
 
         public override long getFirstTimestamp()
         {
-            MySqlCommand command = connection.CreateCommand();
+            MySqlCommand command = getConnection().CreateCommand();
             command.CommandText = "SELECT * FROM prices ORDER BY timestamp ASC LIMIT 1";
             MySqlDataReader Reader = command.ExecuteReader();
             Reader.Read();
@@ -117,17 +162,18 @@ namespace NinjaTrader_Client.Trader.MainAPIs
 
         public override long getLastTimestamp()
         {
-            MySqlCommand command = connection.CreateCommand();
+            MySqlCommand command = getConnection().CreateCommand();
             command.CommandText = "SELECT * FROM prices ORDER BY timestamp DESC LIMIT 1";
             MySqlDataReader Reader = command.ExecuteReader();
             Reader.Read();
+            long output = (long)Reader["timestamp"];
             Reader.Close();
-            return (long)Reader["timestamp"];
+            return output;
         }
 
         public override long getSetsCount()
         {
-            MySqlCommand command = connection.CreateCommand();
+            MySqlCommand command = getConnection().CreateCommand();
             command.CommandText = "SELECT COUNT(*) FROM prices";
             MySqlDataReader Reader = command.ExecuteReader();
             Reader.Read();
@@ -140,9 +186,17 @@ namespace NinjaTrader_Client.Trader.MainAPIs
             return d.ToString().Replace(',', '.');
         }
 
+        private void closeConnections()
+        {
+            foreach (KeyValuePair<string, MySqlConnection> pair in connections)
+                pair.Value.Close();
+
+            connections.Clear();
+        }
+
         public override void shutdown()
         {
-            connection.Close();
+            closeConnections();
         }
     }
 }
