@@ -71,7 +71,7 @@ namespace NinjaTrader_Client.Trader
             return output;
         }
 
-        public override void setPrice(Tickdata td, string instrument, int buffer = 0)
+        public override void setPrice(Tickdata td, string instrument)
         {
             try
             {
@@ -87,7 +87,7 @@ namespace NinjaTrader_Client.Trader
             catch { errors++; }
         }
 
-        public override void setData(TimeValueData data, string dataName, string instrument, int buffer = 0) 
+        public override void setData(TimeValueData data, string dataName, string instrument) 
         {
             try
             {
@@ -279,11 +279,6 @@ namespace NinjaTrader_Client.Trader
             }*/
         }
 
-        public override void sendInsertBuffer()
-        {
-
-        }
-
         public void megrate(SQLDatabase sql)
         {
             //Implement migrations ???
@@ -317,17 +312,17 @@ namespace NinjaTrader_Client.Trader
                             {
                                 if (collectionName.Contains("_") == false)
                                 {
-                                    sql.setPrice(new Tickdata(doc["timestamp"].AsInt64, doc["last"].AsDouble, doc["bid"].AsDouble, doc["ask"].AsDouble), collectionName, 1000);
+                                    sql.setPrice(new Tickdata(doc["timestamp"].AsInt64, doc["last"].AsDouble, doc["bid"].AsDouble, doc["ask"].AsDouble), collectionName);
                                 }
                                 else
                                 {
                                     string instrument = collectionName.Substring(0, collectionName.IndexOf("_"));
                                     string dataName = collectionName.Substring(instrument.Length + 1);
-                                    sql.setData(new TimeValueData(doc["timestamp"].AsInt64, doc["value"].AsDouble), dataName, instrument, 1000);
+                                    sql.setData(new TimeValueData(doc["timestamp"].AsInt64, doc["value"].AsDouble), dataName, instrument);
                                 }
                             }
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
                             error++;
                             break;
@@ -335,8 +330,7 @@ namespace NinjaTrader_Client.Trader
 
                         now += step;
                     }
-
-                    sql.sendInsertBuffer();
+                    //Send buffer?
                 }
             }
 

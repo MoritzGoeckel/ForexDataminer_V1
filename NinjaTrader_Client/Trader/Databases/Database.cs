@@ -7,14 +7,13 @@ namespace NinjaTrader_Client.Trader.MainAPIs
     {
         public abstract Tickdata getPrice(long timestamp, string instrument, bool caching = true);
         public abstract List<Tickdata> getPrices(long startTimestamp, long endTimestamp, string instrument);
-        public abstract void setPrice(Tickdata td, string instrument, int buffer = 0);
-        public abstract void setData(TimeValueData data, string dataName, string instrument, int buffer = 0);
+        public abstract void setPrice(Tickdata td, string instrument);
+        public abstract void setData(TimeValueData data, string dataName, string instrument);
         public abstract TimeValueData getData(long timestamp, string dataName, string instrument);
         public abstract List<TimeValueData> getDataInRange(long startTimestamp, long endTimestamp, string dataName, string instrument);
         public abstract long getSetsCount();
         public abstract long getLastTimestamp();
         public abstract long getFirstTimestamp();
-        public abstract void sendInsertBuffer();
 
         public abstract void shutdown();
 

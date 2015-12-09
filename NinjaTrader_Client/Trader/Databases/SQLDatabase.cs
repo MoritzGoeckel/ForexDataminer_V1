@@ -69,8 +69,11 @@ namespace NinjaTrader_Client.Trader.MainAPIs
 
         public override Tickdata getPrice(long timestamp, string instrument, bool caching = true)
         {
-            MySqlCommand command = getConnection().CreateCommand();
-            command.CommandText = "SELECT * FROM prices WHERE instrument = '" + instrument + "' AND timestamp < " + timestamp + " ORDER BY timestamp DESC LIMIT 1";
+            MySqlCommand command = new MySqlCommand("SELECT * FROM prices WHERE instrument = @instrument AND timestamp < @timestamp ORDER BY timestamp DESC LIMIT 1", getConnection());
+            command.Parameters.AddWithValue("@timestamp", timestamp);
+            command.Parameters.AddWithValue("@instrument", instrument);
+            command.Prepare();
+
             MySqlDataReader Reader = command.ExecuteReader();
             Reader.Read();
             Reader.Close();
@@ -80,8 +83,13 @@ namespace NinjaTrader_Client.Trader.MainAPIs
         public override List<Tickdata> getPrices(long startTimestamp, long endTimestamp, string instrument)
         {
             List<Tickdata> output = new List<Tickdata>();
-            MySqlCommand command = getConnection().CreateCommand();
-            command.CommandText = "SELECT * FROM prices WHERE instrument = '" + instrument + "' AND timestamp > " + startTimestamp + " AND timestamp < "+ endTimestamp + " ORDER BY timestamp DESC";
+
+            MySqlCommand command = new MySqlCommand("SELECT * FROM prices WHERE instrument = @instrument AND timestamp > @startTimestamp AND timestamp < @endTimestamp ORDER BY timestamp DESC", getConnection());
+            command.Parameters.AddWithValue("@endTimestamp", endTimestamp);
+            command.Parameters.AddWithValue("@startTimestamp", startTimestamp);
+            command.Parameters.AddWithValue("@instrument", instrument);
+            command.Prepare();
+
             MySqlDataReader Reader = command.ExecuteReader();
             while(Reader.Read())
             {
@@ -92,34 +100,27 @@ namespace NinjaTrader_Client.Trader.MainAPIs
             return output;
         }
 
-        List<string> insertQue = new List<string>();
-        public override void setPrice(Tickdata td, string instrument, int buffer = 0)
+        public override void setPrice(Tickdata td, string instrument)
         {
-            insertQue.Add("INSERT INTO prices (instrument, timestamp, bid, ask, last) VALUES ('" + instrument + "', " + format(td.timestamp) + ", " + format(td.bid) + ", " + format(td.ask) + ", " + format(td.last) + ")");
-            if (insertQue.Count > buffer)
-                sendInsertBuffer();
-        }
+            MySqlCommand command = new MySqlCommand("INSERT INTO prices (instrument, timestamp, bid, ask, last) VALUES (@instrument, @timestamp, @bid, @ask, @last)", getConnection());
+            command.Parameters.AddWithValue("@last", format(td.last));
+            command.Parameters.AddWithValue("@ask", format(td.ask));
+            command.Parameters.AddWithValue("@bid", format(td.bid));
+            command.Parameters.AddWithValue("@timestamp", format(td.timestamp));
+            command.Parameters.AddWithValue("@instrument", instrument);
+            command.Prepare();
 
-        public override void sendInsertBuffer()
-        {
-            if (insertQue.Count != 0)
-            {
-                StringBuilder builder = new StringBuilder();
-                foreach (string s in insertQue) //Changed???
-                    builder.Append(s + ";");
-
-                MySqlCommand command = getConnection().CreateCommand();
-                command.CommandText = builder.ToString();
-                command.ExecuteReader().Close();
-
-                insertQue.Clear();
-            }
+            command.ExecuteReader().Close();
         }
 
         public override TimeValueData getData(long timestamp, string dataName, string instrument)
         {
-            MySqlCommand command = getConnection().CreateCommand();
-            command.CommandText = "SELECT * FROM timevaluepair WHERE instrument = '" + instrument + "' AND name = '" + dataName + "' AND timestamp < " + timestamp + " ORDER BY timestamp DESC LIMIT 1";
+            MySqlCommand command = new MySqlCommand("SELECT * FROM timevaluepair WHERE instrument = @instrument AND name = @name AND timestamp < @timestamp ORDER BY timestamp DESC LIMIT 1", getConnection());
+            command.Parameters.AddWithValue("@timestamp", timestamp);
+            command.Parameters.AddWithValue("@name", dataName);
+            command.Parameters.AddWithValue("@instrument", instrument);
+            command.Prepare();
+
             MySqlDataReader Reader = command.ExecuteReader();
             Reader.Read();
             TimeValueData output =  new TimeValueData((long)Reader["timestamp"], (double)Reader["value"]);
@@ -130,8 +131,14 @@ namespace NinjaTrader_Client.Trader.MainAPIs
         public override List<TimeValueData> getDataInRange(long startTimestamp, long endTimestamp, string dataName, string instrument)
         {
             List<TimeValueData> output = new List<TimeValueData>();
-            MySqlCommand command = getConnection().CreateCommand();
-            command.CommandText = "SELECT * FROM timevaluepair WHERE instrument = '" + instrument + "' AND name = '" + dataName + "' AND timestamp > " + startTimestamp + " AND timestamp < " + endTimestamp + " ORDER BY timestamp DESC";
+
+            MySqlCommand command = new MySqlCommand("SELECT * FROM timevaluepair WHERE instrument = @instrument AND name = @name AND timestamp > @startTimestamp AND timestamp < @endTimestamp ORDER BY timestamp DESC", getConnection());
+            command.Parameters.AddWithValue("@startTimestamp", startTimestamp);
+            command.Parameters.AddWithValue("@endTimestamp", endTimestamp);
+            command.Parameters.AddWithValue("@name", dataName);
+            command.Parameters.AddWithValue("@instrument", instrument);
+            command.Prepare();
+
             MySqlDataReader Reader = command.ExecuteReader();
             while (Reader.Read())
             {
@@ -142,18 +149,23 @@ namespace NinjaTrader_Client.Trader.MainAPIs
             return output;
         }
 
-        public override void setData(TimeValueData data, string dataName, string instrument, int buffer = 0)
+        public override void setData(TimeValueData data, string dataName, string instrument)
         {
-            insertQue.Add("INSERT INTO timevaluepair (instrument, name, timestamp, value) VALUES ('" + instrument + "', '" + dataName + "', " + data.timestamp + ", " + format(data.value) + ")");
+            MySqlCommand command = new MySqlCommand("INSERT INTO timevaluepair(instrument, name, timestamp, value) VALUES(@instrument, @dataName, @timestamp, @value)", getConnection());
+            command.Parameters.AddWithValue("@value", format(data.value));
+            command.Parameters.AddWithValue("@timestamp", data.timestamp);
+            command.Parameters.AddWithValue("@dataName", dataName);
+            command.Parameters.AddWithValue("@instrument", instrument);
+            command.Prepare();
 
-            if (insertQue.Count > buffer)
-                sendInsertBuffer();
+            command.ExecuteReader().Close();
         }
 
         public override long getFirstTimestamp()
         {
-            MySqlCommand command = getConnection().CreateCommand();
-            command.CommandText = "SELECT * FROM prices ORDER BY timestamp ASC LIMIT 1";
+            MySqlCommand command = new MySqlCommand("SELECT * FROM prices ORDER BY timestamp ASC LIMIT 1", getConnection());
+            command.Prepare();
+
             MySqlDataReader Reader = command.ExecuteReader();
             Reader.Read();
             Reader.Close();
@@ -162,8 +174,9 @@ namespace NinjaTrader_Client.Trader.MainAPIs
 
         public override long getLastTimestamp()
         {
-            MySqlCommand command = getConnection().CreateCommand();
-            command.CommandText = "SELECT * FROM prices ORDER BY timestamp DESC LIMIT 1";
+            MySqlCommand command = new MySqlCommand("SELECT * FROM prices ORDER BY timestamp DESC LIMIT 1", getConnection());
+            command.Prepare();
+
             MySqlDataReader Reader = command.ExecuteReader();
             Reader.Read();
             long output = (long)Reader["timestamp"];
@@ -173,8 +186,9 @@ namespace NinjaTrader_Client.Trader.MainAPIs
 
         public override long getSetsCount()
         {
-            MySqlCommand command = getConnection().CreateCommand();
-            command.CommandText = "SELECT COUNT(*) FROM prices";
+            MySqlCommand command = new MySqlCommand("SELECT COUNT(*) FROM prices", getConnection());
+            command.Prepare();
+
             MySqlDataReader Reader = command.ExecuteReader();
             Reader.Read();
             Reader.Close();
