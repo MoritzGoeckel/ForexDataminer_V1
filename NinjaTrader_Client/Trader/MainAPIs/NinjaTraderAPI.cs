@@ -28,7 +28,7 @@ namespace NinjaTrader_Client.Trader
         }
 
         private string account;
-        public NinjaTraderAPI(List<string> instrumentNames, string account = "Sim101")
+        public NinjaTraderAPI(List<string> instrumentNames, string account = "Sim101") //??? Account?
         {
             this.account = account;
             instruments = new Dictionary<string,Tickdata>();
