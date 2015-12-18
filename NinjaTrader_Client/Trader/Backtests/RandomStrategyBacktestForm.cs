@@ -15,7 +15,7 @@ namespace NinjaTrader_Client.Trader.Backtests
         private List<string> all = new List<string>();
 
         public RandomStrategyBacktestForm(Database database)
-            : base(database, 38 * 24, 10)
+            : base(database, 50 * 24, 30)
         {
             majors.Add("EURUSD");
             majors.Add("GBPUSD");
@@ -56,12 +56,22 @@ namespace NinjaTrader_Client.Trader.Backtests
             instrument = all[z.Next(0, all.Count)];
             continueBacktesting = true;
 
-            strategy = new BinaryStrategy(database,
+            /*strategy = new BinaryStrategy(database,
                 generateDouble(0.01,0.5, 0.01),
                 generateDouble(0.01, 0.5, 0.01),
                 generateInt(1000 * 60, 1000 * 60 * 60 * 5, 1000 * 60 * 5),
                 generateDouble(0.01, 1, 0.02),
-                generateBool());
+                generateBool());*/
+
+            double sltp = generateDouble(0.05, 1, 0.01);
+
+            strategy = new StochStrategy(database,
+                sltp,
+                sltp,
+                generateInt(1000 * 60 * 60 * 3, 1000 * 60 * 60 * 48, 1000 * 60 * 60 * 1),
+                generateDouble(0.00, 0.3, 0.05),
+                generateBool()
+                );
 
             /*int r = z.Next(0, 6);
 

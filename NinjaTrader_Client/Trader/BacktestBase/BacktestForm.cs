@@ -33,7 +33,7 @@ namespace NinjaTrader_Client
         private Dictionary<string, BacktestData> results = new Dictionary<string, BacktestData>();
 
         private int errorTests = 0;
-        private int maxThreads = Environment.ProcessorCount + (Environment.ProcessorCount / 2);
+        private int maxThreads = Environment.ProcessorCount - 1; // Threads Count ???
 
         public BacktestForm(Database database, int backtestHours, int resolution)
         {
@@ -94,7 +94,7 @@ namespace NinjaTrader_Client
                 listBox_results.Items.Add(name);
 
                 int threads = backtester.getThreadsCount();
-                this.Text = "Tests: " + (++testsCount).ToString() + " | Sec/Test: " + Math.Round(backtester.getAVGTimeTest() / 1000, 4) + " | Threads: " + threads + " | = " + Math.Round(backtester.getAVGTimeTest() / 1000 / threads) + " Seconds";
+                this.Text = "Tests: " + (++testsCount).ToString() + " | Sec/Test: " + Math.Round(backtester.getMillisecondsPerTest() / 1000, 4) + " | Threads: " + threads + " | = " + Math.Round(backtester.getMillisecondsPerTest() / 1000 / threads) + " Seconds" + " | API:" + Math.Round(backtester.getMillisecondsAPITimePerTick(), 2) + " | Strategy:" + Math.Round(backtester.getMillisecondsStrategyTimePerTick(), 2);
 
                 //Output to file
                 if (Directory.Exists(Application.StartupPath + "/backtestes/") == false)

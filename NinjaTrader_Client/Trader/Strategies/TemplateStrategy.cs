@@ -75,16 +75,28 @@ namespace NinjaTrader_Client.Trader.Strategies
             }
 
             if (api.getShortPosition(instrument).getDifference() > takeprofit)
+            {
                 api.closeShort(instrument);
+                hitTP++;
+            }
 
             if (api.getLongPosition(instrument).getDifference() > takeprofit)
+            {
                 api.closeLong(instrument);
+                hitTP++;
+            }
 
             if (api.getShortPosition(instrument).getDifference() < -stoploss)
+            {
                 api.closeShort(instrument);
+                hitSL++;
+            }
 
-            if (api.getLongPosition(instrument).getDifference() > -stoploss)
+            if (api.getLongPosition(instrument).getDifference() < -stoploss)
+            {
                 api.closeLong(instrument);
+                hitSL++;
+            }
         }
     }
 }

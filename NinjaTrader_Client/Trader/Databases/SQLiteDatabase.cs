@@ -1,35 +1,28 @@
-﻿using MySql.Data.MySqlClient;
-using NinjaTrader_Client.Trader.Model;
+﻿using NinjaTrader_Client.Trader.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SQLite;
 using System.Threading;
 
 namespace NinjaTrader_Client.Trader.MainAPIs
 {
-    public class SQLDatabase : Database
+    public class SQLiteDatabase : Database
     {
-        string myConnectionString = "SERVER=localhost;" +
-                            "DATABASE=tradingsystem;" +
-                            "UID=root;" +
-                            "PASSWORD=;" +
-                            "MinimumPoolSize=20;" +
-                            "MaximumPoolSize=100;";
+        string myConnectionString;
+        string path;
 
-        public SQLDatabase()
+        public SQLiteDatabase(string path)
         {
-            MySqlConnection connection = getConnection();
-            MySqlCommand cmd = new MySqlCommand("set net_write_timeout=100; set net_read_timeout=100", connection);
-            cmd.ExecuteNonQuery();
-
-            connection.Close();
+            this.path = path;
+            myConnectionString = "Data Source=" + path + ";Version=3;"; //In memory ????
         }
 
         private int timeout = 10;
 
-        private MySqlConnection getConnection()
+        private SQLiteConnection getConnection()
         {
-            MySqlConnection con = new MySqlConnection(myConnectionString);
+            SQLiteConnection con = new SQLiteConnection(myConnectionString);
             con.Open();
 
             return con;
@@ -42,7 +35,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
 
         public override Tickdata getPrice(long timestamp, string instrument, bool caching = true)
         {
-            MySqlConnection connection = null;
+            SQLiteConnection connection = null;
             Tickdata output = null;
 
             bool done = false;
@@ -52,14 +45,14 @@ namespace NinjaTrader_Client.Trader.MainAPIs
                 {
                     connection = getConnection();
 
-                    MySqlCommand command = new MySqlCommand("SELECT * FROM prices WHERE instrument = @instrument AND timestamp < @timestamp ORDER BY timestamp DESC LIMIT 1", connection);
+                    SQLiteCommand command = new SQLiteCommand("SELECT * FROM prices WHERE instrument = @instrument AND timestamp < @timestamp ORDER BY timestamp DESC LIMIT 1", connection);
                     command.Parameters.AddWithValue("@timestamp", timestamp);
                     command.Parameters.AddWithValue("@instrument", instrument);
                     command.Prepare();
 
                     command.CommandTimeout = timeout;
 
-                    MySqlDataReader Reader = command.ExecuteReader();
+                    SQLiteDataReader Reader = command.ExecuteReader();
 
                     if (Reader.Read())
                         output = new Tickdata((long)Reader["timestamp"], (double)Reader["last"], (double)Reader["bid"], (double)Reader["ask"]);
@@ -82,7 +75,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
         public override List<Tickdata> getPrices(long startTimestamp, long endTimestamp, string instrument)
         {
             List<Tickdata> output = new List<Tickdata>();
-            MySqlConnection connection = null;
+            SQLiteConnection connection = null;
 
             bool done = false;
             while (done == false)
@@ -91,7 +84,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
                 {
                     connection = getConnection();
 
-                    MySqlCommand command = new MySqlCommand("SELECT * FROM prices WHERE instrument = @instrument AND timestamp > @startTimestamp AND timestamp < @endTimestamp ORDER BY timestamp DESC", connection);
+                    SQLiteCommand command = new SQLiteCommand("SELECT * FROM prices WHERE instrument = @instrument AND timestamp > @startTimestamp AND timestamp < @endTimestamp ORDER BY timestamp DESC", connection);
                     command.Parameters.AddWithValue("@endTimestamp", endTimestamp);
                     command.Parameters.AddWithValue("@startTimestamp", startTimestamp);
                     command.Parameters.AddWithValue("@instrument", instrument);
@@ -99,7 +92,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
 
                     command.CommandTimeout = timeout;
 
-                    MySqlDataReader Reader = command.ExecuteReader();
+                    SQLiteDataReader Reader = command.ExecuteReader();
                     while (Reader.Read())
                     {
                         output.Add(new Tickdata((long)Reader["timestamp"], (double)Reader["last"], (double)Reader["bid"], (double)Reader["ask"]));
@@ -119,9 +112,9 @@ namespace NinjaTrader_Client.Trader.MainAPIs
 
         public override void setPrice(Tickdata td, string instrument)
         {
-            MySqlConnection connection = getConnection();
+            SQLiteConnection connection = getConnection();
 
-            MySqlCommand command = new MySqlCommand("INSERT INTO prices (instrument, timestamp, bid, ask, last) VALUES (@instrument, @timestamp, @bid, @ask, @last)", connection);
+            SQLiteCommand command = new SQLiteCommand("INSERT INTO prices (instrument, timestamp, bid, ask, last) VALUES (@instrument, @timestamp, @bid, @ask, @last)", connection);
             command.Parameters.AddWithValue("@last", format(td.last));
             command.Parameters.AddWithValue("@ask", format(td.ask));
             command.Parameters.AddWithValue("@bid", format(td.bid));
@@ -137,9 +130,9 @@ namespace NinjaTrader_Client.Trader.MainAPIs
 
         public override TimeValueData getData(long timestamp, string dataName, string instrument)
         {
-            MySqlConnection connection = getConnection();
+            SQLiteConnection connection = getConnection();
 
-            MySqlCommand command = new MySqlCommand("SELECT * FROM timevaluepair WHERE instrument = @instrument AND name = @name AND timestamp < @timestamp ORDER BY timestamp DESC LIMIT 1", connection);
+            SQLiteCommand command = new SQLiteCommand("SELECT * FROM timevaluepair WHERE instrument = @instrument AND name = @name AND timestamp < @timestamp ORDER BY timestamp DESC LIMIT 1", connection);
             command.Parameters.AddWithValue("@timestamp", timestamp);
             command.Parameters.AddWithValue("@name", dataName);
             command.Parameters.AddWithValue("@instrument", instrument);
@@ -147,7 +140,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
 
             command.CommandTimeout = timeout;
 
-            MySqlDataReader Reader = command.ExecuteReader();
+            SQLiteDataReader Reader = command.ExecuteReader();
             Reader.Read();
             TimeValueData output =  new TimeValueData((long)Reader["timestamp"], (double)Reader["value"]);
             Reader.Close();
@@ -158,11 +151,11 @@ namespace NinjaTrader_Client.Trader.MainAPIs
 
         public override List<TimeValueData> getDataInRange(long startTimestamp, long endTimestamp, string dataName, string instrument)
         {
-            MySqlConnection connection = getConnection();
+            SQLiteConnection connection = getConnection();
 
             List<TimeValueData> output = new List<TimeValueData>();
 
-            MySqlCommand command = new MySqlCommand("SELECT * FROM timevaluepair WHERE instrument = @instrument AND name = @name AND timestamp > @startTimestamp AND timestamp < @endTimestamp ORDER BY timestamp DESC", connection);
+            SQLiteCommand command = new SQLiteCommand("SELECT * FROM timevaluepair WHERE instrument = @instrument AND name = @name AND timestamp > @startTimestamp AND timestamp < @endTimestamp ORDER BY timestamp DESC", connection);
             command.Parameters.AddWithValue("@startTimestamp", startTimestamp);
             command.Parameters.AddWithValue("@endTimestamp", endTimestamp);
             command.Parameters.AddWithValue("@name", dataName);
@@ -171,7 +164,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
 
             command.CommandTimeout = timeout;
 
-            MySqlDataReader Reader = command.ExecuteReader();
+            SQLiteDataReader Reader = command.ExecuteReader();
             while (Reader.Read())
             {
                 output.Add(new TimeValueData((long)Reader["timestamp"], (double)Reader["value"]));
@@ -184,9 +177,9 @@ namespace NinjaTrader_Client.Trader.MainAPIs
 
         public override void setData(TimeValueData data, string dataName, string instrument)
         {
-            MySqlConnection connection = getConnection();
+            SQLiteConnection connection = getConnection();
 
-            MySqlCommand command = new MySqlCommand("INSERT INTO timevaluepair(instrument, name, timestamp, value) VALUES(@instrument, @dataName, @timestamp, @value)", connection);
+            SQLiteCommand command = new SQLiteCommand("INSERT INTO timevaluepair(instrument, name, timestamp, value) VALUES(@instrument, @dataName, @timestamp, @value)", connection);
             command.Parameters.AddWithValue("@value", format(data.value));
             command.Parameters.AddWithValue("@timestamp", data.timestamp);
             command.Parameters.AddWithValue("@dataName", dataName);
@@ -202,14 +195,14 @@ namespace NinjaTrader_Client.Trader.MainAPIs
 
         public override long getFirstTimestamp()
         {
-            MySqlConnection connection = getConnection();
+            SQLiteConnection connection = getConnection();
 
-            MySqlCommand command = new MySqlCommand("SELECT * FROM prices ORDER BY timestamp ASC LIMIT 1", connection);
+            SQLiteCommand command = new SQLiteCommand("SELECT * FROM prices ORDER BY timestamp ASC LIMIT 1", connection);
             command.Prepare();
 
             command.CommandTimeout = timeout;
 
-            MySqlDataReader Reader = command.ExecuteReader();
+            SQLiteDataReader Reader = command.ExecuteReader();
             Reader.Read();
             Reader.Close();
 
@@ -222,14 +215,14 @@ namespace NinjaTrader_Client.Trader.MainAPIs
 
         public override long getLastTimestamp()
         {
-            MySqlConnection connection = getConnection();
+            SQLiteConnection connection = getConnection();
 
-            MySqlCommand command = new MySqlCommand("SELECT * FROM prices ORDER BY timestamp DESC LIMIT 1", connection);
+            SQLiteCommand command = new SQLiteCommand("SELECT * FROM prices ORDER BY timestamp DESC LIMIT 1", connection);
             command.Prepare();
 
             command.CommandTimeout = timeout;
 
-            MySqlDataReader Reader = command.ExecuteReader();
+            SQLiteDataReader Reader = command.ExecuteReader();
             Reader.Read();
             long output = (long)Reader["timestamp"];
             Reader.Close();
@@ -241,14 +234,14 @@ namespace NinjaTrader_Client.Trader.MainAPIs
 
         public override long getSetsCount()
         {
-            MySqlConnection connection = getConnection();
+            SQLiteConnection connection = getConnection();
 
-            MySqlCommand command = new MySqlCommand("SELECT COUNT(*) FROM prices", connection);
+            SQLiteCommand command = new SQLiteCommand("SELECT COUNT(*) FROM prices", connection);
             command.Prepare();
 
             command.CommandTimeout = timeout;
 
-            MySqlDataReader Reader = command.ExecuteReader();
+            SQLiteDataReader Reader = command.ExecuteReader();
             Reader.Read();
             Reader.Close();
 
@@ -268,5 +261,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
         {
             
         }
+
+        //Migrate from MySQL ???
     }
 }

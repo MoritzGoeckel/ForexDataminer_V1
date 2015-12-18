@@ -25,13 +25,14 @@ namespace NinjaTrader_Client.Trader.Strategies
         public SSIStochStrategy(Database database, double takeprofitPercent, double stoplossPercent, double threshold, int timeout, int stochTimeframe, bool againstCrowd)
             : base(database)
         {
-            stochIndicator = new StochIndicator(database, stochTimeframe);
             this.takeprofitPercent = takeprofitPercent;
             this.threshold = threshold;
             this.timeout = timeout;
             this.stochTimeframe = stochTimeframe;
             this.stoplossPercent = stoplossPercent;
             this.againstCrowd = againstCrowd;
+
+            stochIndicator = new StochIndicator(database, stochTimeframe);
         }
 
         public SSIStochStrategy(Database database, Dictionary<string, string> parameters)

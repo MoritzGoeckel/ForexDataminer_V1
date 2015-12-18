@@ -18,37 +18,110 @@ namespace NinjaTrader_Client.Trader.Indicators
         {
             public long timestamp = 0;
             public double min, max;
-            public List<TimeValueData> data;
+            public List<TimeValueData> timeValueData;
+            public List<Tickdata> tickData;
         }
 
         Dictionary<string, IndicatorCache> caches = new Dictionary<string, IndicatorCache>();
 
-        //Todo: Caching, Abstract
-        //Maybe just save the data to save cpu?
-        public override TimeValueData getIndicator(long timestamp, string instrument) //Noch nicht optimiert. Siehe anderen getIndicator!
+        public override TimeValueData getIndicator(long timestamp, string instrument)
         {
-            List<Tickdata> data = database.getPrices(timestamp - timeframe, timestamp, instrument); //Flaschenhals ???
+            if (caches.ContainsKey(instrument) == false)
+                caches.Add(instrument, new IndicatorCache());
 
-            if (data.Count == 0)
-                return null;
+            IndicatorCache cache = caches[instrument];
 
-            double min = double.MaxValue;
-            double max = double.MinValue;
+            double removedMin = double.MaxValue, removedMax = double.MinValue, min = double.MaxValue, max = double.MinValue;
 
-            foreach(Tickdata tick in data)
+            List<Tickdata> data;
+
+            //Es gibt überschneidungen
+            if (timestamp - timeframe < cache.timestamp && timestamp > cache.timestamp && cache.timestamp - timeframe < timestamp - timeframe && cache.timestamp != 0)
             {
-                if (tick.ask > max)
-                    max = tick.ask;
+                List<Tickdata> newData = database.getPrices(cache.timestamp, timestamp, instrument);
 
-                if (tick.bid < min)
-                    min = tick.bid;
+                data = cache.tickData;
+                data.AddRange(newData);
+
+                cache.timestamp = timestamp;
+
+                //remove the first element until in timeframe
+                while (data.Count != 0)
+                {
+                    if (data[0].timestamp >= timestamp - timeframe)
+                        break;
+                    else
+                    {
+                        if (data[0].getAvg() > removedMax)
+                            removedMax = data[0].getAvg();
+
+                        if (data[0].getAvg() < removedMin)
+                            removedMin = data[0].getAvg();
+
+                        data.RemoveAt(0);
+                    }
+                }
+
+                //Suche neues min max, wenn removed worden
+                if (cache.min == removedMin || cache.max == removedMax)
+                {
+                    //Suche komplett
+
+                    if (data.Count > 0)
+                    {
+                        getMinMaxInPrices(ref min, ref max, data);
+                        cache.min = min;
+                        cache.max = max;
+                    }
+                    else
+                    {
+                        min = cache.min;
+                        max = cache.max;
+                    }
+                }
+                else //Suche sonst nur im newData
+                {
+                    if (newData.Count > 0) //Nur wenn New Data daten hat
+                    {
+                        //Suche nur in neuem
+                        getMinMaxInPrices(ref min, ref max, newData);
+
+                        if (min < cache.min)
+                            cache.min = min;
+                        else
+                            min = cache.min;
+
+                        if (max > cache.max)
+                            cache.max = max;
+                        else
+                            max = cache.max;
+                    }
+                    else //sonst nehme das alte
+                    {
+                        min = cache.min;
+                        max = cache.max;
+                    }
+                }
+            }
+            else //Es gibt keine überschneidungen
+            {
+                data = database.getPrices(timestamp - timeframe, timestamp, instrument);
+                getMinMaxInPrices(ref min, ref max, data);
+
+                cache.tickData = data;
+                cache.min = min;
+                cache.max = max;
+                cache.timestamp = timestamp;
             }
 
-            Tickdata lastTick = data[data.Count - 1];
+            if (data.Count != 0)
+            {
+                Tickdata lastTick = data[data.Count - 1];
+                double now = lastTick.getAvg();
 
-            double now = lastTick.ask;
-
-            return new TimeValueData(lastTick.timestamp, (now - min) / (max - min));
+                return new TimeValueData(lastTick.timestamp, (now - min) / (max - min));
+            }
+            return new TimeValueData(timestamp, 0.5);
         }
 
         public override TimeValueData getIndicator(long timestamp, string dataName, string instrument)
@@ -67,7 +140,7 @@ namespace NinjaTrader_Client.Trader.Indicators
             {
                 List<TimeValueData> newData = database.getDataInRange(cache.timestamp, timestamp, dataName, instrument);
 
-                data = cache.data;
+                data = cache.timeValueData;
                 data.AddRange(newData);
 
                 cache.timestamp = timestamp;
@@ -135,7 +208,7 @@ namespace NinjaTrader_Client.Trader.Indicators
                 data = database.getDataInRange(timestamp - timeframe, timestamp, dataName, instrument);
                 getMinMaxInData(ref min, ref max, data);
 
-                cache.data = data;
+                cache.timeValueData = data;
                 cache.min = min;
                 cache.max = max;
                 cache.timestamp = timestamp;
@@ -149,6 +222,24 @@ namespace NinjaTrader_Client.Trader.Indicators
                 return new TimeValueData(lastTick.timestamp, (now - min) / (max - min));
             }
             return new TimeValueData(timestamp, 0.5);
+        }
+
+        private void getMinMaxInPrices(ref double min, ref double max, List<Tickdata> data)
+        {
+            min = double.MaxValue;
+            max = double.MinValue;
+
+            foreach (Tickdata tick in data)
+            {
+                if (tick.getAvg() > max)
+                    max = tick.getAvg();
+
+                if (tick.getAvg() < min)
+                    min = tick.getAvg();
+            }
+
+            if (data.Count == 0 || min == double.MaxValue || max == double.MinValue)
+                throw new Exception("StochIndicator getMinMaxInData: data.Count == 0 or min/max not set");
         }
 
         private void getMinMaxInData(ref double min, ref double max, List<TimeValueData> data)

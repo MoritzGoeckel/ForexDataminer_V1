@@ -27,12 +27,21 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
         {
             this.now = now;
             foreach (KeyValuePair<string, PairData> pair in pairData)
-                pairData[pair.Key].lastTickData = database.getPrice(now, pair.Key);
+            {
+                Tickdata tickData = database.getPrice(now, pair.Key);
+
+                if (tickData != null)
+                    pairData[pair.Key].lastTickData = tickData;
+            }
         }
 
         public override bool isUptodate(string instrument)
         {
-            return now - pairData[instrument].lastTickData.timestamp < 1000 * 60 * 3;
+            Tickdata data = pairData[instrument].lastTickData;
+            if (data != null)
+                return now - data.timestamp < 1000 * 60 * 3;
+            else
+                return false;
         }
 
         public override bool openLong(string instrument)

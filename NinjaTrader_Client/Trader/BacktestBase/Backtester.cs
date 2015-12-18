@@ -60,8 +60,14 @@ namespace NinjaTrader_Client.Trader.Backtest
                 startBacktest(strat, pair);
         }
 
-        long usedTime = 0;
-        long doneTests = 0;
+        long doneTestsTime = 0;
+        long doneTestsCount = 0;
+
+        long apiSetupCounts = 0;
+        long apiSetupTime = 0;
+
+        long strategyCalcCount = 0;
+        long strategyCalcTime = 0;
 
         private void runBacktest(Strategy strat, string pair, BacktestTradingAPI api)
         {
@@ -88,8 +94,21 @@ namespace NinjaTrader_Client.Trader.Backtest
                         break;
                     }
 
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
                     api.setNow(currentTimestamp);
+                    sw.Stop();
+
+                    apiSetupCounts++;
+                    apiSetupTime += sw.ElapsedMilliseconds;
+
+                    sw.Reset();
+                    sw.Start();
                     strat.doTick(pair);
+                    sw.Stop();
+
+                    strategyCalcCount++;
+                    strategyCalcTime += sw.ElapsedMilliseconds;
 
                     int percent = Convert.ToInt32(Convert.ToDouble(currentTimestamp - startTimestamp) / Convert.ToDouble(endTimestamp - startTimestamp) * 100);
                     progress[name] = percent;
@@ -126,10 +145,8 @@ namespace NinjaTrader_Client.Trader.Backtest
                 result.setResult(strat.getResult());
 
                 watch.Stop();
-                usedTime += watch.ElapsedMilliseconds;
-                doneTests++;
-
-                timePerTest = (double)usedTime / (double)doneTests;
+                doneTestsTime += watch.ElapsedMilliseconds;
+                doneTestsCount++;
 
                 if (backtestResultArrived != null)
                     backtestResultArrived(result);
@@ -164,10 +181,19 @@ namespace NinjaTrader_Client.Trader.Backtest
             return output;
         }
 
-        double timePerTest = 0;
-        public double getAVGTimeTest()
+        public double getMillisecondsAPITimePerTick()
         {
-            return timePerTest;
+            return (double)apiSetupTime / (double)apiSetupCounts;
+        }
+
+        public double getMillisecondsStrategyTimePerTick()
+        {
+            return (double)strategyCalcTime / (double)strategyCalcCount;
+        }
+
+        public double getMillisecondsPerTest()
+        {
+            return (double)doneTestsTime / (double)doneTestsCount;
         }
 
         public int getThreadsCount()

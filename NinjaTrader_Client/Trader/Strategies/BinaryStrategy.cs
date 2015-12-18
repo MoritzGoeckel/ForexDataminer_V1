@@ -33,6 +33,9 @@ namespace NinjaTrader_Client.Trader.Strategies
         {
             percentStoploss = Double.Parse(parameters["sl"]);
             percentTakeprofit = Double.Parse(parameters["tp"]);
+            time = Convert.ToInt32(parameters["time"]);
+            followTrend = Boolean.Parse(parameters["followTrend"]);
+            thresholdPercent = Double.Parse(parameters["threshold"]);
         }
 
         public override Strategy copy()
@@ -77,7 +80,6 @@ namespace NinjaTrader_Client.Trader.Strategies
             double stoploss = api.getAvgPrice(instrument) * percentStoploss / 100d;
             double threshold = api.getAvgPrice(instrument) * thresholdPercent / 100d;
 
-
             Tickdata nowTick = new Tickdata(api.getNow(), 0, api.getBid(instrument), api.getAsk(instrument));
 
             while (old_tickdata.Count != 0 && api.getNow() - old_tickdata[old_tickdata.Count - 1].timestamp > time)
@@ -102,7 +104,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             if (api.getShortPosition(instrument).getDifference() < -stoploss)
                 api.closeShort(instrument);
 
-            if (api.getLongPosition(instrument).getDifference() > -stoploss)
+            if (api.getLongPosition(instrument).getDifference() < -stoploss)
                 api.closeLong(instrument);
 
             if (old_tickdata.Count > 0 && nowTick.timestamp - old_tickdata[old_tickdata.Count - 1].timestamp < time * 0.90)

@@ -83,8 +83,20 @@
     <Reference Include="NinjaTrader.Client">
       <HintPath>C:\Program Files (x86)\NinjaTrader 7\bin\NinjaTrader.Client.dll</HintPath>
     </Reference>
+    <Reference Include="SQLite.Designer">
+      <HintPath>..\DLL\SQLite.Designer.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\DLL\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.EF6">
+      <HintPath>..\DLL\System.Data.SQLite.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.Linq">
+      <HintPath>..\DLL\System.Data.SQLite.Linq.dll</HintPath>
+    </Reference>
     <Reference Include="System.Management" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -156,10 +168,12 @@
     <Compile Include="Trader\Charting\SimpleChart_Stepline.cs" />
     <Compile Include="Trader\Charting\SimpleChart_Scatter.cs" />
     <Compile Include="Trader\Databases\CachedDatabase.cs" />
+    <Compile Include="Trader\Databases\SQLiteDatabase.cs" />
     <Compile Include="Trader\Indicators\Indicator.cs" />
     <Compile Include="Trader\Indicators\StochIndicator.cs" />
     <Compile Include="Trader\Databases\Database.cs" />
     <Compile Include="Trader\Databases\SQLDatabase.cs" />
+    <Compile Include="Trader\Strategies\StochStrategy.cs" />
     <Compile Include="Trader\Strategies\TemplateStrategy.cs" />
     <Compile Include="Trader\Strategies\BinaryStrategy.cs" />
     <Compile Include="Trader\Strategies\FastMovementStrategy.cs" />
