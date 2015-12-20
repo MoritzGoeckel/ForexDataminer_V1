@@ -19,13 +19,15 @@ namespace NinjaTrader_Client.Trader.MainAPIs
         public SQLDatabase()
         {
             MySqlConnection connection = getConnection();
-            MySqlCommand cmd = new MySqlCommand("set net_write_timeout=100; set net_read_timeout=100", connection);
+            MySqlCommand cmd = new MySqlCommand("set net_write_timeout=2000; set net_read_timeout=2000", connection);
             cmd.ExecuteNonQuery();
 
             connection.Close();
         }
 
-        private int timeout = 10;
+        Dictionary<string, long> firstTimestamps = new Dictionary<string, long>();
+
+        private int timeout = 2000;
 
         private MySqlConnection getConnection()
         {
@@ -45,6 +47,12 @@ namespace NinjaTrader_Client.Trader.MainAPIs
             MySqlConnection connection = null;
             Tickdata output = null;
 
+            if (firstTimestamps.ContainsKey(instrument) == false)
+                firstTimestamps.Add(instrument, getFirstTimestampInternal(instrument));
+
+            if (firstTimestamps[instrument] > timestamp)
+                return null;
+
             bool done = false;
             while (done == false)
             {
@@ -52,9 +60,10 @@ namespace NinjaTrader_Client.Trader.MainAPIs
                 {
                     connection = getConnection();
 
-                    MySqlCommand command = new MySqlCommand("SELECT * FROM prices WHERE instrument = @instrument AND timestamp < @timestamp ORDER BY timestamp DESC LIMIT 1", connection);
+                    MySqlCommand command = new MySqlCommand("SELECT * FROM prices WHERE instrument = @instrument AND timestamp < @timestamp AND timestamp > @timestampMin ORDER BY timestamp DESC LIMIT 1", connection);
                     command.Parameters.AddWithValue("@timestamp", timestamp);
                     command.Parameters.AddWithValue("@instrument", instrument);
+                    command.Parameters.AddWithValue("@timestampMin", timestamp - (3 * 60 * 1000));
                     command.Prepare();
 
                     command.CommandTimeout = timeout;
@@ -83,6 +92,12 @@ namespace NinjaTrader_Client.Trader.MainAPIs
         {
             List<Tickdata> output = new List<Tickdata>();
             MySqlConnection connection = null;
+
+            if (firstTimestamps.ContainsKey(instrument) == false)
+                firstTimestamps.Add(instrument, getFirstTimestampInternal(instrument));
+
+            if (firstTimestamps[instrument] > startTimestamp)
+                return null;
 
             bool done = false;
             while (done == false)
@@ -139,10 +154,11 @@ namespace NinjaTrader_Client.Trader.MainAPIs
         {
             MySqlConnection connection = getConnection();
 
-            MySqlCommand command = new MySqlCommand("SELECT * FROM timevaluepair WHERE instrument = @instrument AND name = @name AND timestamp < @timestamp ORDER BY timestamp DESC LIMIT 1", connection);
+            MySqlCommand command = new MySqlCommand("SELECT * FROM timevaluepair WHERE instrument = @instrument AND name = @name AND timestamp < @timestamp AND timestamp > @timestampMin ORDER BY timestamp DESC LIMIT 1", connection);
             command.Parameters.AddWithValue("@timestamp", timestamp);
             command.Parameters.AddWithValue("@name", dataName);
             command.Parameters.AddWithValue("@instrument", instrument);
+            command.Parameters.AddWithValue("@timestampMin", timestamp - (3 * 60 * 1000));
             command.Prepare();
 
             command.CommandTimeout = timeout;
@@ -202,18 +218,26 @@ namespace NinjaTrader_Client.Trader.MainAPIs
 
         public override long getFirstTimestamp()
         {
+            return getFirstTimestampInternal();
+        }
+
+        private long getFirstTimestampInternal(string pair = null)
+        {
             MySqlConnection connection = getConnection();
 
-            MySqlCommand command = new MySqlCommand("SELECT * FROM prices ORDER BY timestamp ASC LIMIT 1", connection);
+            string where = "";
+            if (pair != null)
+                where = "WHERE instrument = '"+ pair + "'";
+
+            MySqlCommand command = new MySqlCommand("SELECT MIN(timestamp) FROM prices " + where, connection);
             command.Prepare();
 
             command.CommandTimeout = timeout;
 
             MySqlDataReader Reader = command.ExecuteReader();
             Reader.Read();
+            long ts = (long)Reader["MIN(timestamp)"];
             Reader.Close();
-
-            long ts = (long)Reader["timestamp"];
 
             connection.Close();
 
@@ -224,14 +248,14 @@ namespace NinjaTrader_Client.Trader.MainAPIs
         {
             MySqlConnection connection = getConnection();
 
-            MySqlCommand command = new MySqlCommand("SELECT * FROM prices ORDER BY timestamp DESC LIMIT 1", connection);
+            MySqlCommand command = new MySqlCommand("SELECT MAX(timestamp) FROM prices", connection);
             command.Prepare();
 
             command.CommandTimeout = timeout;
 
             MySqlDataReader Reader = command.ExecuteReader();
             Reader.Read();
-            long output = (long)Reader["timestamp"];
+            long output = (long)Reader["MAX(timestamp)"];
             Reader.Close();
 
             connection.Close();

@@ -1,6 +1,6 @@
 ﻿namespace NinjaTrader_Client.Trader.Analysis
 {
-    partial class DataDensityFrom
+    partial class DataDensityPerDayForm
     {
         /// <summary>
         /// Required designer variable.

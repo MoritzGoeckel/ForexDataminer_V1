@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace NinjaTrader_Client.Trader.Analysis
 {
-    public partial class DataDensityFrom : Form
+    public partial class DataDensityPerDayForm : Form
     {
         Database database;
         Dictionary<string, DatacountHours> data = new Dictionary<string, DatacountHours>();
@@ -22,7 +22,7 @@ namespace NinjaTrader_Client.Trader.Analysis
             public int datacount, hours;
         }
 
-        public DataDensityFrom(Database database)
+        public DataDensityPerDayForm(Database database)
         {
             this.database = database;
             InitializeComponent();

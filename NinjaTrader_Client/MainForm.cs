@@ -114,7 +114,7 @@ namespace NinjaTrader_Client
 
         private void button7_Click(object sender, EventArgs e)
         {
-            DataDensityFrom ddForm = new DataDensityFrom(main.getDatabase());
+            DataDensityPerDayForm ddForm = new DataDensityPerDayForm(main.getDatabase());
             ddForm.ShowDialog();
         }
 
@@ -157,6 +157,12 @@ namespace NinjaTrader_Client
         {
             TradeHistoryChartForm thcf = new TradeHistoryChartForm();
             thcf.ShowDialog();
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            DataDensityForm f = new DataDensityForm(main.getDatabase(), 1000 * 60 * 60, "AUDUSD");
+            f.Show();
         }
     }
 }

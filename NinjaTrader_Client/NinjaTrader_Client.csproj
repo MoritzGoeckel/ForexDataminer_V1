@@ -114,6 +114,12 @@
     <Compile Include="Trader\Analysis\CorrelationAnalysisForm.Designer.cs">
       <DependentUpon>CorrelationAnalysisForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Trader\Analysis\DataDensityForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Trader\Analysis\DataDensityForm.Designer.cs">
+      <DependentUpon>DataDensityForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Trader\Analysis\TradeHistoryChartForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -150,15 +156,16 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Trader\Analysis\DataDensityFrom.cs">
+    <Compile Include="Trader\Analysis\DataDensityPerDayForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Trader\Analysis\DataDensityFrom.Designer.cs">
-      <DependentUpon>DataDensityFrom.cs</DependentUpon>
+    <Compile Include="Trader\Analysis\DataDensityPerDayForm.Designer.cs">
+      <DependentUpon>DataDensityPerDayForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Trader\BacktestBase\Backtester.cs" />
     <Compile Include="Trader\BacktestBase\BacktestData.cs" />
     <Compile Include="Trader\BacktestBase\BacktestFormatter.cs" />
+    <Compile Include="Trader\BacktestBase\ProgressReport.cs" />
     <Compile Include="Trader\Backtests\RandomStrategyBacktestForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -202,6 +209,9 @@
     <EmbeddedResource Include="Trader\Analysis\CorrelationAnalysisForm.resx">
       <DependentUpon>CorrelationAnalysisForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Trader\Analysis\DataDensityForm.resx">
+      <DependentUpon>DataDensityForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Trader\Analysis\TradeHistoryChartForm.resx">
       <DependentUpon>TradeHistoryChartForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -229,8 +239,8 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Trader\Analysis\DataDensityFrom.resx">
-      <DependentUpon>DataDensityFrom.cs</DependentUpon>
+    <EmbeddedResource Include="Trader\Analysis\DataDensityPerDayForm.resx">
+      <DependentUpon>DataDensityPerDayForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

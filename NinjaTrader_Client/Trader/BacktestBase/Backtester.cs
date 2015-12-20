@@ -22,7 +22,7 @@ namespace NinjaTrader_Client.Trader.Backtest
         public event BacktestResultArrivedHandler backtestResultArrived;
 
         private List<Thread> threads = new List<Thread>();
-        public Dictionary<string, int> progress = new Dictionary<string, int>();
+        public Dictionary<string, ProgressReport> progress = new Dictionary<string, ProgressReport>();
 
         private int maxPositionsPerHour;
 
@@ -60,14 +60,14 @@ namespace NinjaTrader_Client.Trader.Backtest
                 startBacktest(strat, pair);
         }
 
-        long doneTestsTime = 0;
-        long doneTestsCount = 0;
+        double doneTestsTime = 0;
+        double doneTestsCount = 0;
 
-        long apiSetupCounts = 0;
-        long apiSetupTime = 0;
+        double apiSetupCounts = 0;
+        double apiSetupTime = 0;
 
-        long strategyCalcCount = 0;
-        long strategyCalcTime = 0;
+        double strategyCalcCount = 0;
+        double strategyCalcTime = 0;
 
         private void runBacktest(Strategy strat, string pair, BacktestTradingAPI api)
         {
@@ -79,7 +79,7 @@ namespace NinjaTrader_Client.Trader.Backtest
             if (currentTimestamp > startTimestamp)
                 throw new Exception("Backtester runBacktest: currentTimestamp > startTimestamp");
 
-            string name = getUniqueStrategyName(strat.getName());
+            string name = getUniqueStrategyName(strat.getName() + "_" + pair);
 
             bool reportStrategy = true;
             try
@@ -100,7 +100,9 @@ namespace NinjaTrader_Client.Trader.Backtest
                     sw.Stop();
 
                     apiSetupCounts++;
-                    apiSetupTime += sw.ElapsedMilliseconds;
+
+                    double currentAPISetupTime = sw.Elapsed.TotalMilliseconds;
+                    apiSetupTime += currentAPISetupTime;
 
                     sw.Reset();
                     sw.Start();
@@ -108,10 +110,13 @@ namespace NinjaTrader_Client.Trader.Backtest
                     sw.Stop();
 
                     strategyCalcCount++;
-                    strategyCalcTime += sw.ElapsedMilliseconds;
 
-                    int percent = Convert.ToInt32(Convert.ToDouble(currentTimestamp - startTimestamp) / Convert.ToDouble(endTimestamp - startTimestamp) * 100);
-                    progress[name] = percent;
+                    double currentStrategyCalcTime = sw.Elapsed.TotalMilliseconds;
+                    strategyCalcTime += currentStrategyCalcTime;
+
+                    progress[name].apiSetupTime = currentAPISetupTime;
+                    progress[name].strategyCalcTime = currentStrategyCalcTime;
+                    progress[name].percentageDone = Convert.ToInt32(Convert.ToDouble(currentTimestamp - startTimestamp) / Convert.ToDouble(endTimestamp - startTimestamp) * 100);
 
                     currentTimestamp += 1000 * resolutionInSeconds;
                 }
@@ -145,7 +150,7 @@ namespace NinjaTrader_Client.Trader.Backtest
                 result.setResult(strat.getResult());
 
                 watch.Stop();
-                doneTestsTime += watch.ElapsedMilliseconds;
+                doneTestsTime += watch.Elapsed.TotalMilliseconds;
                 doneTestsCount++;
 
                 if (backtestResultArrived != null)
@@ -155,6 +160,16 @@ namespace NinjaTrader_Client.Trader.Backtest
                 backtestResultArrived(null);
         }
 
+        internal double getMillisecondsStrategyTimePerTick()
+        {
+            return strategyCalcTime / strategyCalcCount;
+        }
+
+        internal double getMillisecondsAPITimePerTick()
+        {
+            return apiSetupTime / apiSetupCounts;
+        }
+
         [MethodImpl(MethodImplOptions.Synchronized)]
         private string getUniqueStrategyName(string name)
         {
@@ -162,7 +177,7 @@ namespace NinjaTrader_Client.Trader.Backtest
             while (progress.ContainsKey(name + "_" + namePostfix))
                 namePostfix++;
 
-            progress.Add(name + "_" + namePostfix, 0);
+            progress.Add(name + "_" + namePostfix, new ProgressReport());
 
             return name + "_" + namePostfix;
         }
@@ -173,27 +188,17 @@ namespace NinjaTrader_Client.Trader.Backtest
 
             try
             {
-                foreach (KeyValuePair<string, int> pair in progress)
-                    output += pair.Key + ": " + pair.Value + "%" + Environment.NewLine;
+                foreach (KeyValuePair<string, ProgressReport> pair in progress)
+                    output += pair.Key + ": " + pair.Value.percentageDone + "% | API: " + Math.Round(pair.Value.apiSetupTime, 4) + "ms | Strat: " + Math.Round(pair.Value.strategyCalcTime, 4) + "ms" + Environment.NewLine;
             }
             catch (Exception) { }
 
             return output;
         }
 
-        public double getMillisecondsAPITimePerTick()
-        {
-            return (double)apiSetupTime / (double)apiSetupCounts;
-        }
-
-        public double getMillisecondsStrategyTimePerTick()
-        {
-            return (double)strategyCalcTime / (double)strategyCalcCount;
-        }
-
         public double getMillisecondsPerTest()
         {
-            return (double)doneTestsTime / (double)doneTestsCount;
+            return doneTestsTime / doneTestsCount;
         }
 
         public int getThreadsCount()

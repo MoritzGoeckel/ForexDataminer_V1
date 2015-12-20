@@ -63,15 +63,15 @@ namespace NinjaTrader_Client.Trader.Backtests
                 generateDouble(0.01, 1, 0.02),
                 generateBool());*/
 
-            double sltp = generateDouble(0.05, 1, 0.01);
+            //double sltp = generateDouble(0.05, 1, 0.01);
 
-            strategy = new StochStrategy(database,
+            /*strategy = new StochStrategy(database,
                 sltp,
                 sltp,
                 generateInt(1000 * 60 * 60 * 3, 1000 * 60 * 60 * 48, 1000 * 60 * 60 * 1),
                 generateDouble(0.00, 0.3, 0.05),
                 generateBool()
-                );
+                );*/
 
             /*int r = z.Next(0, 6);
 
@@ -85,13 +85,13 @@ namespace NinjaTrader_Client.Trader.Backtests
                     generateBool()); //againstCrowd
 
             else if (r <= 4)
-                strategy = new FastMovementStrategy(database,
+                */strategy = new FastMovementStrategy(database,
                     generateInt(1000 * 60 * 1, 1000 * 60 * 30, 1000 * 60 * 5),
                     generateInt(1000 * 60 * 10 * 1, 1000 * 60 * 10 * 20, 1000 * 60 * 5),
                     generateDouble(0.01, 0.70, 0.03),
                     generateDouble(0.01, 0.40, 0.02),
                     generateDouble(0.01, 0.40, 0.02),
-                    generateBool());
+                    generateBool());/*
 
             else
                 strategy = new SSIStrategy(database,

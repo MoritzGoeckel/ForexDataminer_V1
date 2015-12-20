@@ -37,6 +37,12 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
 
         public override bool isUptodate(string instrument)
         {
+            if (pairData.ContainsKey(instrument) == false)
+                return false;
+
+            if (pairData[instrument] == null)
+                return false;
+
             Tickdata data = pairData[instrument].lastTickData;
             if (data != null)
                 return now - data.timestamp < 1000 * 60 * 3;
@@ -73,7 +79,7 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
             if (lastLong != null)
             {
                 lastLong.timestampClose = now;
-                lastLong.priceClose = database.getPrice(now, instrument).bid;
+                lastLong.priceClose = getBid(instrument);
                 pairData[instrument].oldPositions.Add(lastLong);
                 pairData[instrument].lastLongPosition = null;
                 return true;
@@ -88,7 +94,7 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
             if (lastShort != null)
             {
                 lastShort.timestampClose = now;
-                lastShort.priceClose = database.getPrice(now, instrument).ask;
+                lastShort.priceClose = getAsk(instrument);
                 pairData[instrument].oldPositions.Add(lastShort);
                 pairData[instrument].lastShortPosition = null;
                 return true;
