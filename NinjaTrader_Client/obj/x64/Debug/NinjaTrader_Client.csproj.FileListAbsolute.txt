@@ -34,3 +34,4 @@ E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\bin\x64\Debug\Micr
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\bin\x64\Debug\EnvDTE.xml
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\x64\Debug\NinjaTrader_Client.Trader.Analysis.DataDensityForm.resources
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\x64\Debug\NinjaTrader_Client.Trader.Analysis.DataDensityPerDayForm.resources
+E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\x64\Debug\NinjaTrader_Client.Trader.Analysis.AnalyseRawTestDataForm.resources

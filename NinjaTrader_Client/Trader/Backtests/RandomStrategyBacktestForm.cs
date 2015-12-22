@@ -60,8 +60,6 @@ namespace NinjaTrader_Client.Trader.Backtests
             instrument = all[z.Next(0, all.Count)];
             continueBacktesting = true;
 
-            double sltp = generateDouble(0.01, 1.5, 0.05);
-
             int r = z.Next(1, 5);
 
             /*if (r == 0)
@@ -74,8 +72,8 @@ namespace NinjaTrader_Client.Trader.Backtests
 
             if (r == 1)
                 strategy = new StochStrategy(database,
-                    sltp,
-                    sltp,
+                    generateDouble(0.01, 1.5, 0.05),
+                    generateDouble(0.01, 1.5, 0.05),
                     generateInt(1000 * 60 * 60 * 1, 1000 * 60 * 60 * 48, 1000 * 60 * 30),
                     generateDouble(0.00, 0.3, 0.02),
                     generateBool()
@@ -83,8 +81,8 @@ namespace NinjaTrader_Client.Trader.Backtests
 
             else if(r == 2)
                 strategy = new SSIStochStrategy(database,
-                    sltp, //TP
-                    sltp, //SL
+                    generateDouble(0.01, 1.5, 0.05), //TP
+                    generateDouble(0.01, 1.5, 0.05), //SL
                     generateDouble(0.05, 0.50, 0.01), //Threshold
                     generateInt(1000 * 60 * 30 * 1, 1000 * 60 * 30 * 8, 1000 * 60 * 5), //To
                     generateInt(1000 * 60 * 60 * 1, 1000 * 60 * 60 * 20, 1000 * 60 * 20), //StochTime
@@ -95,8 +93,8 @@ namespace NinjaTrader_Client.Trader.Backtests
                     generateInt(1000 * 60 * 1, 1000 * 60 * 30, 1000 * 60 * 5),
                     generateInt(1000 * 60 * 10 * 1, 1000 * 60 * 10 * 20, 1000 * 60 * 5),
                     generateDouble(0.01, 0.70, 0.03),
-                    sltp,
-                    sltp,
+                    generateDouble(0.01, 1.5, 0.05),
+                    generateDouble(0.01, 1.5, 0.05),
                     generateBool());
 
             else if (r == 4)

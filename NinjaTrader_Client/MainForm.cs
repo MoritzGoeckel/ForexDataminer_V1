@@ -164,5 +164,11 @@ namespace NinjaTrader_Client
             DataDensityForm f = new DataDensityForm(main.getDatabase(), 1000 * 60 * 60, "AUDUSD");
             f.Show();
         }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            AnalyseRawTestDataForm form = new AnalyseRawTestDataForm();
+            form.ShowDialog();
+        }
     }
 }
