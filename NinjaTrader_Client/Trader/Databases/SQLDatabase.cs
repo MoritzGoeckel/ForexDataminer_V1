@@ -163,9 +163,13 @@ namespace NinjaTrader_Client.Trader.MainAPIs
 
             command.CommandTimeout = timeout;
 
+            TimeValueData output = null;
+
             MySqlDataReader Reader = command.ExecuteReader();
-            Reader.Read();
-            TimeValueData output =  new TimeValueData((long)Reader["timestamp"], (double)Reader["value"]);
+
+            if(Reader.Read())
+                output = new TimeValueData((long)Reader["timestamp"], (double)Reader["value"]);
+
             Reader.Close();
             connection.Close();
 
@@ -274,10 +278,10 @@ namespace NinjaTrader_Client.Trader.MainAPIs
 
             MySqlDataReader Reader = command.ExecuteReader();
             Reader.Read();
-            Reader.Close();
 
             int count = (int)Reader["count"];
 
+            Reader.Close();
             connection.Close();
 
             return count;

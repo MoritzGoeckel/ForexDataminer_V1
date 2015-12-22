@@ -1,5 +1,6 @@
 ﻿using NinjaTrader_Client.Trader.Backtest;
 using NinjaTrader_Client.Trader.MainAPIs;
+using NinjaTrader_Client.Trader.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +49,8 @@ namespace NinjaTrader_Client.Trader.Strategies
             parameters.Add("thresholdClose", thresholdClose.ToString());
             parameters.Add("followTrend", followTrend.ToString());
 
+            parameters.Add("name", getName());
+
             return parameters;
         }
 
@@ -63,7 +66,12 @@ namespace NinjaTrader_Client.Trader.Strategies
             if (api.isUptodate(instrument) == false)
                 return;
 
-            double ssi = database.getData(api.getNow(), "ssi-mt4", instrument).value;
+            TimeValueData ssiValue = database.getData(api.getNow(), "ssi-mt4", instrument);
+
+            if (ssiValue == null)
+                return;
+
+            double ssi = ssiValue.value;
 
             if (ssi > thresholdOpen)
             {

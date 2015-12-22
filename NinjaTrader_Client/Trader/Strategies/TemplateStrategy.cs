@@ -47,6 +47,8 @@ namespace NinjaTrader_Client.Trader.Strategies
             parameters.Add("tp", percentTakeprofit.ToString());
             parameters.Add("sl", percentStoploss.ToString());
 
+            parameters.Add("name", getName());
+
             return parameters;
         }
 

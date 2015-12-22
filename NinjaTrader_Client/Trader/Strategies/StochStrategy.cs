@@ -64,6 +64,8 @@ namespace NinjaTrader_Client.Trader.Strategies
             parameters.Add("threshold", threshold.ToString());
             parameters.Add("followTrend", followTrend.ToString());
 
+            parameters.Add("name", getName());
+
             return parameters;
         }
 

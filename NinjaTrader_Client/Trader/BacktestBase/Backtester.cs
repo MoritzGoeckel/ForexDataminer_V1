@@ -130,7 +130,7 @@ namespace NinjaTrader_Client.Trader.Backtest
                 { 
                     try
                     {
-                        File.AppendAllText(Config.errorLogPath, "Backtest:" + "\t" + e.Source + "->" + e.Message + "\t" + BacktestFormatter.getDictStringCoded(strat.getParameters()) + Environment.NewLine);
+                        File.AppendAllText(Config.errorLogPath, "Backtest:" + "\t" + e.Source + "->" + e.Message + "\t" + BacktestFormatter.getDictStringCoded(strat.getParameters()) + Environment.NewLine + "Trace: " + e.StackTrace + Environment.NewLine);
                         done = true;
                     }
                     catch (Exception) { Thread.Sleep(100); }

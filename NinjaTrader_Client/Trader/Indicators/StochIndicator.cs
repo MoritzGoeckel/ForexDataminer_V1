@@ -106,21 +106,33 @@ namespace NinjaTrader_Client.Trader.Indicators
             else //Es gibt keine überschneidungen
             {
                 data = database.getPrices(timestamp - timeframe, timestamp, instrument);
-                getMinMaxInPrices(ref min, ref max, data);
 
-                cache.tickData = data;
-                cache.min = min;
-                cache.max = max;
-                cache.timestamp = timestamp;
+                if (data != null)
+                {
+                    getMinMaxInPrices(ref min, ref max, data);
+
+                    cache.tickData = data;
+                    cache.min = min;
+                    cache.max = max;
+                    cache.timestamp = timestamp;
+                }
+                else
+                {
+                    min = cache.min;
+                    max = cache.max;
+
+                    return new TimeValueData(timestamp, 0.5);
+                }
             }
 
-            if (data.Count != 0)
+            if (data != null && data.Count != 0)
             {
                 Tickdata lastTick = data[data.Count - 1];
                 double now = lastTick.getAvg();
 
                 return new TimeValueData(lastTick.timestamp, (now - min) / (max - min));
             }
+
             return new TimeValueData(timestamp, 0.5);
         }
 
@@ -206,12 +218,15 @@ namespace NinjaTrader_Client.Trader.Indicators
             else //Es gibt keine überschneidungen
             {
                 data = database.getDataInRange(timestamp - timeframe, timestamp, dataName, instrument);
-                getMinMaxInData(ref min, ref max, data);
+                if (data.Count > 0)
+                {
+                    getMinMaxInData(ref min, ref max, data);
 
-                cache.timeValueData = data;
-                cache.min = min;
-                cache.max = max;
-                cache.timestamp = timestamp;
+                    cache.timeValueData = data;
+                    cache.min = min;
+                    cache.max = max;
+                    cache.timestamp = timestamp;
+                }
             }
 
             if (data.Count != 0)
@@ -239,7 +254,7 @@ namespace NinjaTrader_Client.Trader.Indicators
             }
 
             if (data.Count == 0 || min == double.MaxValue || max == double.MinValue)
-                throw new Exception("StochIndicator getMinMaxInData: data.Count == 0 or min/max not set");
+                throw new Exception("StochIndicator getMinMaxInData<TickData>: data.Count == " + data.Count + " or min->" + (min == double.MaxValue ? "ns" : "okay") + " or max->" + (max == double.MinValue ? "ns" : "okay"));
         }
 
         private void getMinMaxInData(ref double min, ref double max, List<TimeValueData> data)
@@ -257,7 +272,7 @@ namespace NinjaTrader_Client.Trader.Indicators
             }
 
             if (data.Count == 0 || min == double.MaxValue || max == double.MinValue)
-                throw new Exception("StochIndicator getMinMaxInData: data.Count == 0 or min/max not set");
+                throw new Exception("StochIndicator getMinMaxInData<TimeValueData>: data.Count == "+data.Count+" or min->" + (min == double.MaxValue ? "ns":"okay") + " or max->" + (max == double.MinValue ? "ns" : "okay"));
         }
     }
 }

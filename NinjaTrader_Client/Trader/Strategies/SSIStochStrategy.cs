@@ -68,6 +68,8 @@ namespace NinjaTrader_Client.Trader.Strategies
             parameters.Add("sl", stoplossPercent.ToString());
             parameters.Add("againstCrowd", againstCrowd.ToString());
 
+            parameters.Add("name", getName());
+
             return parameters;
         }
 

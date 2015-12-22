@@ -1,7 +1,10 @@
-﻿using NinjaTrader_Client.Trader.MainAPIs;
+﻿using NinjaTrader_Client.Trader.BacktestBase;
+using NinjaTrader_Client.Trader.MainAPIs;
+using NinjaTrader_Client.Trader.Model;
 using NinjaTrader_Client.Trader.Strategies;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +18,7 @@ namespace NinjaTrader_Client.Trader.Backtests
         private List<string> all = new List<string>();
 
         public RandomStrategyBacktestForm(Database database)
-            : base(database, 50 * 24, 30)
+            : base(database, 50 * 24, 10)
         {
             majors.Add("EURUSD");
             majors.Add("GBPUSD");
@@ -41,14 +44,15 @@ namespace NinjaTrader_Client.Trader.Backtests
         private Random z = new Random();
         protected override void backtestResultArrived(Dictionary<string, string> parameters, Dictionary<string, string> result)
         {
-            /*double profit = double.Parse(result["profit"]);
-            string pair = result["pair"];
-            int positions = Convert.ToInt32(result["positions"]);
-
-            if(positions < 1000)
+            while (true)
             {
-                profit stark im minus und strategie umkehrbar -> kehre um und starte
-            }*/
+                try
+                {
+                    File.AppendAllText(Config.startupPath + "/backtestes/raw_test_data.txt", BacktestFormatter.getDictStringCoded(result) + "@" + BacktestFormatter.getDictStringCoded(parameters) + Environment.NewLine);
+                    break;
+                }
+                catch (Exception) { }
+            }
         }
 
         protected override void getNextStrategyToTest(ref Strategy strategy, ref string instrument, ref bool continueBacktesting)
@@ -56,48 +60,50 @@ namespace NinjaTrader_Client.Trader.Backtests
             instrument = all[z.Next(0, all.Count)];
             continueBacktesting = true;
 
-            /*strategy = new BinaryStrategy(database,
-                generateDouble(0.01,0.5, 0.01),
-                generateDouble(0.01, 0.5, 0.01),
-                generateInt(1000 * 60, 1000 * 60 * 60 * 5, 1000 * 60 * 5),
-                generateDouble(0.01, 1, 0.02),
-                generateBool());*/
+            double sltp = generateDouble(0.01, 1.5, 0.05);
 
-            //double sltp = generateDouble(0.05, 1, 0.01);
+            int r = z.Next(1, 5);
 
-            /*strategy = new StochStrategy(database,
-                sltp,
-                sltp,
-                generateInt(1000 * 60 * 60 * 3, 1000 * 60 * 60 * 48, 1000 * 60 * 60 * 1),
-                generateDouble(0.00, 0.3, 0.05),
-                generateBool()
-                );*/
+            /*if (r == 0)
+                strategy = new BinaryStrategy(database,
+                    sltp,
+                    sltp,
+                    generateInt(1000 * 60, 1000 * 60 * 60 * 5, 1000 * 60 * 5),
+                    generateDouble(0.01, 1, 0.02),
+                    generateBool());*/
 
-            /*int r = z.Next(0, 6);
+            if (r == 1)
+                strategy = new StochStrategy(database,
+                    sltp,
+                    sltp,
+                    generateInt(1000 * 60 * 60 * 1, 1000 * 60 * 60 * 48, 1000 * 60 * 30),
+                    generateDouble(0.00, 0.3, 0.02),
+                    generateBool()
+                    );
 
-            if (r <= 2)
+            else if(r == 2)
                 strategy = new SSIStochStrategy(database,
-                    generateDouble(0.01, 0.50, 0.01), //TP
-                    generateDouble(0.01, 0.50, 0.01), //SL
+                    sltp, //TP
+                    sltp, //SL
                     generateDouble(0.05, 0.50, 0.01), //Threshold
                     generateInt(1000 * 60 * 30 * 1, 1000 * 60 * 30 * 8, 1000 * 60 * 5), //To
                     generateInt(1000 * 60 * 60 * 1, 1000 * 60 * 60 * 20, 1000 * 60 * 20), //StochTime
                     generateBool()); //againstCrowd
 
-            else if (r <= 4)
-                */strategy = new FastMovementStrategy(database,
+            else if (r == 3)
+                strategy = new FastMovementStrategy(database,
                     generateInt(1000 * 60 * 1, 1000 * 60 * 30, 1000 * 60 * 5),
                     generateInt(1000 * 60 * 10 * 1, 1000 * 60 * 10 * 20, 1000 * 60 * 5),
                     generateDouble(0.01, 0.70, 0.03),
-                    generateDouble(0.01, 0.40, 0.02),
-                    generateDouble(0.01, 0.40, 0.02),
-                    generateBool());/*
+                    sltp,
+                    sltp,
+                    generateBool());
 
-            else
+            else if (r == 4)
                 strategy = new SSIStrategy(database,
                     generateDouble(0.0, 0.5, 0.01),
                     generateDouble(0.0, 0.5, 0.01),
-                    generateBool());*/
+                    generateBool());
         }
 
         private bool generateBool()

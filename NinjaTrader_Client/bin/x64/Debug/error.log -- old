@@ -1,0 +1,125 @@
+Backtest:	NinjaTrader_Client->StochIndicator getMinMaxInData: data.Count == 0 or min->ns or max->ns	tp:1,46|threshold:0,31|to:10200000|stochT:38400000|sl:1,46|againstCrowd:True|name:SSIStochStrategy_V0
+Trace:    bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getMinMaxInData(Double& min, Double& max, List`1 data) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 272.
+   bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getIndicator(Int64 timestamp, String dataName, String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 223.
+   bei NinjaTrader_Client.Trader.Strategies.SSIStochStrategy.doTick(String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Strategies\SSIStochStrategy.cs:Zeile 94.
+   bei NinjaTrader_Client.Trader.Backtest.Backtester.runBacktest(Strategy strat, String pair, BacktestTradingAPI api) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\BacktestBase\Backtester.cs:Zeile 110.
+
+Backtest:	NinjaTrader_Client->StochIndicator getMinMaxInData: data.Count == 0 or min->ns or max->ns	tp:1,36|threshold:0,46|to:7200000|stochT:62400000|sl:1,36|againstCrowd:False|name:SSIStochStrategy_V0
+Trace:    bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getMinMaxInData(Double& min, Double& max, List`1 data) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 272.
+   bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getIndicator(Int64 timestamp, String dataName, String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 223.
+   bei NinjaTrader_Client.Trader.Strategies.SSIStochStrategy.doTick(String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Strategies\SSIStochStrategy.cs:Zeile 94.
+   bei NinjaTrader_Client.Trader.Backtest.Backtester.runBacktest(Strategy strat, String pair, BacktestTradingAPI api) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\BacktestBase\Backtester.cs:Zeile 110.
+
+Backtest:	NinjaTrader_Client->StochIndicator getMinMaxInData: data.Count == 0 or min->ns or max->ns	tp:0,36|threshold:0,21|to:5100000|stochT:42000000|sl:0,36|againstCrowd:False|name:SSIStochStrategy_V0
+Trace:    bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getMinMaxInData(Double& min, Double& max, List`1 data) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 272.
+   bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getIndicator(Int64 timestamp, String dataName, String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 223.
+   bei NinjaTrader_Client.Trader.Strategies.SSIStochStrategy.doTick(String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Strategies\SSIStochStrategy.cs:Zeile 94.
+   bei NinjaTrader_Client.Trader.Backtest.Backtester.runBacktest(Strategy strat, String pair, BacktestTradingAPI api) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\BacktestBase\Backtester.cs:Zeile 110.
+
+Backtest:	NinjaTrader_Client->StochIndicator getMinMaxInData: data.Count == 0 or min->ns or max->ns	tp:1,21|threshold:0,25|to:3300000|stochT:50400000|sl:1,21|againstCrowd:False|name:SSIStochStrategy_V0
+Trace:    bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getMinMaxInData(Double& min, Double& max, List`1 data) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 272.
+   bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getIndicator(Int64 timestamp, String dataName, String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 223.
+   bei NinjaTrader_Client.Trader.Strategies.SSIStochStrategy.doTick(String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Strategies\SSIStochStrategy.cs:Zeile 94.
+   bei NinjaTrader_Client.Trader.Backtest.Backtester.runBacktest(Strategy strat, String pair, BacktestTradingAPI api) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\BacktestBase\Backtester.cs:Zeile 110.
+
+Backtest:	NinjaTrader_Client->StochIndicator getMinMaxInData: data.Count == 0 or min->ns or max->ns	tp:1,06|threshold:0,33|to:8100000|stochT:40800000|sl:1,06|againstCrowd:True|name:SSIStochStrategy_V0
+Trace:    bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getMinMaxInData(Double& min, Double& max, List`1 data) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 272.
+   bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getIndicator(Int64 timestamp, String dataName, String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 223.
+   bei NinjaTrader_Client.Trader.Strategies.SSIStochStrategy.doTick(String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Strategies\SSIStochStrategy.cs:Zeile 94.
+   bei NinjaTrader_Client.Trader.Backtest.Backtester.runBacktest(Strategy strat, String pair, BacktestTradingAPI api) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\BacktestBase\Backtester.cs:Zeile 110.
+
+Backtest:	NinjaTrader_Client->StochIndicator getMinMaxInData: data.Count == 0 or min->ns or max->ns	tp:1,06|threshold:0,09|to:11100000|stochT:36000000|sl:1,06|againstCrowd:True|name:SSIStochStrategy_V0
+Trace:    bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getMinMaxInData(Double& min, Double& max, List`1 data) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 272.
+   bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getIndicator(Int64 timestamp, String dataName, String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 223.
+   bei NinjaTrader_Client.Trader.Strategies.SSIStochStrategy.doTick(String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Strategies\SSIStochStrategy.cs:Zeile 94.
+   bei NinjaTrader_Client.Trader.Backtest.Backtester.runBacktest(Strategy strat, String pair, BacktestTradingAPI api) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\BacktestBase\Backtester.cs:Zeile 110.
+
+Backtest:	NinjaTrader_Client->StochIndicator getMinMaxInData: data.Count == 0 or min->ns or max->ns	tp:1,21|threshold:0,34|to:10200000|stochT:45600000|sl:1,21|againstCrowd:True|name:SSIStochStrategy_V0
+Trace:    bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getMinMaxInData(Double& min, Double& max, List`1 data) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 272.
+   bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getIndicator(Int64 timestamp, String dataName, String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 223.
+   bei NinjaTrader_Client.Trader.Strategies.SSIStochStrategy.doTick(String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Strategies\SSIStochStrategy.cs:Zeile 94.
+   bei NinjaTrader_Client.Trader.Backtest.Backtester.runBacktest(Strategy strat, String pair, BacktestTradingAPI api) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\BacktestBase\Backtester.cs:Zeile 110.
+
+Backtest:	NinjaTrader_Client->StochIndicator getMinMaxInData: data.Count == 0 or min->ns or max->ns	tp:0,71|threshold:0,38|to:9300000|stochT:4800000|sl:0,71|againstCrowd:True|name:SSIStochStrategy_V0
+Trace:    bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getMinMaxInData(Double& min, Double& max, List`1 data) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 272.
+   bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getIndicator(Int64 timestamp, String dataName, String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 223.
+   bei NinjaTrader_Client.Trader.Strategies.SSIStochStrategy.doTick(String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Strategies\SSIStochStrategy.cs:Zeile 94.
+   bei NinjaTrader_Client.Trader.Backtest.Backtester.runBacktest(Strategy strat, String pair, BacktestTradingAPI api) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\BacktestBase\Backtester.cs:Zeile 110.
+
+Backtest:	NinjaTrader_Client->StochIndicator getMinMaxInData: data.Count == 0 or min->ns or max->ns	tp:0,46|threshold:0,29|to:6600000|stochT:60000000|sl:0,46|againstCrowd:False|name:SSIStochStrategy_V0
+Trace:    bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getMinMaxInData(Double& min, Double& max, List`1 data) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 272.
+   bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getIndicator(Int64 timestamp, String dataName, String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 223.
+   bei NinjaTrader_Client.Trader.Strategies.SSIStochStrategy.doTick(String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Strategies\SSIStochStrategy.cs:Zeile 94.
+   bei NinjaTrader_Client.Trader.Backtest.Backtester.runBacktest(Strategy strat, String pair, BacktestTradingAPI api) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\BacktestBase\Backtester.cs:Zeile 110.
+
+Backtest:	NinjaTrader_Client->StochIndicator getMinMaxInData: data.Count == 0 or min->ns or max->ns	tp:0,31|threshold:0,48|to:8100000|stochT:12000000|sl:0,31|againstCrowd:True|name:SSIStochStrategy_V0
+Trace:    bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getMinMaxInData(Double& min, Double& max, List`1 data) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 272.
+   bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getIndicator(Int64 timestamp, String dataName, String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 223.
+   bei NinjaTrader_Client.Trader.Strategies.SSIStochStrategy.doTick(String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Strategies\SSIStochStrategy.cs:Zeile 94.
+   bei NinjaTrader_Client.Trader.Backtest.Backtester.runBacktest(Strategy strat, String pair, BacktestTradingAPI api) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\BacktestBase\Backtester.cs:Zeile 110.
+
+Backtest:	NinjaTrader_Client->StochIndicator getMinMaxInData: data.Count == 0 or min->ns or max->ns	tp:1,11|threshold:0,43|to:9600000|stochT:33600000|sl:1,11|againstCrowd:True|name:SSIStochStrategy_V0
+Trace:    bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getMinMaxInData(Double& min, Double& max, List`1 data) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 272.
+   bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getIndicator(Int64 timestamp, String dataName, String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 223.
+   bei NinjaTrader_Client.Trader.Strategies.SSIStochStrategy.doTick(String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Strategies\SSIStochStrategy.cs:Zeile 94.
+   bei NinjaTrader_Client.Trader.Backtest.Backtester.runBacktest(Strategy strat, String pair, BacktestTradingAPI api) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\BacktestBase\Backtester.cs:Zeile 110.
+
+Backtest:	NinjaTrader_Client->StochIndicator getMinMaxInData: data.Count == 0 or min->ns or max->ns	tp:1,01|threshold:0,28|to:4500000|stochT:20400000|sl:1,01|againstCrowd:False|name:SSIStochStrategy_V0
+Trace:    bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getMinMaxInData(Double& min, Double& max, List`1 data) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 272.
+   bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getIndicator(Int64 timestamp, String dataName, String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 223.
+   bei NinjaTrader_Client.Trader.Strategies.SSIStochStrategy.doTick(String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Strategies\SSIStochStrategy.cs:Zeile 94.
+   bei NinjaTrader_Client.Trader.Backtest.Backtester.runBacktest(Strategy strat, String pair, BacktestTradingAPI api) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\BacktestBase\Backtester.cs:Zeile 110.
+
+Backtest:	NinjaTrader_Client->StochIndicator getMinMaxInData: data.Count == 0 or min->ns or max->ns	tp:0,51|threshold:0,07|to:12600000|stochT:27600000|sl:0,51|againstCrowd:True|name:SSIStochStrategy_V0
+Trace:    bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getMinMaxInData(Double& min, Double& max, List`1 data) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 272.
+   bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getIndicator(Int64 timestamp, String dataName, String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 223.
+   bei NinjaTrader_Client.Trader.Strategies.SSIStochStrategy.doTick(String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Strategies\SSIStochStrategy.cs:Zeile 94.
+   bei NinjaTrader_Client.Trader.Backtest.Backtester.runBacktest(Strategy strat, String pair, BacktestTradingAPI api) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\BacktestBase\Backtester.cs:Zeile 110.
+
+Backtest:	NinjaTrader_Client->StochIndicator getMinMaxInData: data.Count == 0 or min->ns or max->ns	tp:0,81|threshold:0,16|to:4800000|stochT:21600000|sl:0,81|againstCrowd:True|name:SSIStochStrategy_V0
+Trace:    bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getMinMaxInData(Double& min, Double& max, List`1 data) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 272.
+   bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getIndicator(Int64 timestamp, String dataName, String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 223.
+   bei NinjaTrader_Client.Trader.Strategies.SSIStochStrategy.doTick(String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Strategies\SSIStochStrategy.cs:Zeile 94.
+   bei NinjaTrader_Client.Trader.Backtest.Backtester.runBacktest(Strategy strat, String pair, BacktestTradingAPI api) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\BacktestBase\Backtester.cs:Zeile 110.
+
+Backtest:	NinjaTrader_Client->StochIndicator getMinMaxInData: data.Count == 0 or min->ns or max->ns	tp:1,16|threshold:0,41|to:7200000|stochT:33600000|sl:1,16|againstCrowd:False|name:SSIStochStrategy_V0
+Trace:    bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getMinMaxInData(Double& min, Double& max, List`1 data) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 272.
+   bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getIndicator(Int64 timestamp, String dataName, String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 223.
+   bei NinjaTrader_Client.Trader.Strategies.SSIStochStrategy.doTick(String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Strategies\SSIStochStrategy.cs:Zeile 94.
+   bei NinjaTrader_Client.Trader.Backtest.Backtester.runBacktest(Strategy strat, String pair, BacktestTradingAPI api) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\BacktestBase\Backtester.cs:Zeile 110.
+
+Backtest:	NinjaTrader_Client->StochIndicator getMinMaxInData: data.Count == 0 or min->ns or max->ns	tp:0,36|threshold:0,27|to:12300000|stochT:24000000|sl:0,36|againstCrowd:True|name:SSIStochStrategy_V0
+Trace:    bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getMinMaxInData(Double& min, Double& max, List`1 data) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 272.
+   bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getIndicator(Int64 timestamp, String dataName, String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 223.
+   bei NinjaTrader_Client.Trader.Strategies.SSIStochStrategy.doTick(String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Strategies\SSIStochStrategy.cs:Zeile 94.
+   bei NinjaTrader_Client.Trader.Backtest.Backtester.runBacktest(Strategy strat, String pair, BacktestTradingAPI api) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\BacktestBase\Backtester.cs:Zeile 110.
+
+Backtest:	NinjaTrader_Client->StochIndicator getMinMaxInData: data.Count == 0 or min->ns or max->ns	tp:0,51|threshold:0,28|to:3600000|stochT:8400000|sl:0,51|againstCrowd:True|name:SSIStochStrategy_V0
+Trace:    bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getMinMaxInData(Double& min, Double& max, List`1 data) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 272.
+   bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getIndicator(Int64 timestamp, String dataName, String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 223.
+   bei NinjaTrader_Client.Trader.Strategies.SSIStochStrategy.doTick(String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Strategies\SSIStochStrategy.cs:Zeile 94.
+   bei NinjaTrader_Client.Trader.Backtest.Backtester.runBacktest(Strategy strat, String pair, BacktestTradingAPI api) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\BacktestBase\Backtester.cs:Zeile 110.
+
+Backtest:	NinjaTrader_Client->StochIndicator getMinMaxInData: data.Count == 0 or min->ns or max->ns	tp:1,01|threshold:0,47|to:5700000|stochT:26400000|sl:1,01|againstCrowd:True|name:SSIStochStrategy_V0
+Trace:    bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getMinMaxInData(Double& min, Double& max, List`1 data) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 272.
+   bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getIndicator(Int64 timestamp, String dataName, String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 223.
+   bei NinjaTrader_Client.Trader.Strategies.SSIStochStrategy.doTick(String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Strategies\SSIStochStrategy.cs:Zeile 94.
+   bei NinjaTrader_Client.Trader.Backtest.Backtester.runBacktest(Strategy strat, String pair, BacktestTradingAPI api) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\BacktestBase\Backtester.cs:Zeile 110.
+
+Backtest:	NinjaTrader_Client->StochIndicator getMinMaxInData: data.Count == 0 or min->ns or max->ns	tp:1,31|threshold:0,33|to:2700000|stochT:42000000|sl:1,31|againstCrowd:False|name:SSIStochStrategy_V0
+Trace:    bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getMinMaxInData(Double& min, Double& max, List`1 data) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 272.
+   bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getIndicator(Int64 timestamp, String dataName, String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 223.
+   bei NinjaTrader_Client.Trader.Strategies.SSIStochStrategy.doTick(String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Strategies\SSIStochStrategy.cs:Zeile 94.
+   bei NinjaTrader_Client.Trader.Backtest.Backtester.runBacktest(Strategy strat, String pair, BacktestTradingAPI api) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\BacktestBase\Backtester.cs:Zeile 110.
+
+Backtest:	NinjaTrader_Client->StochIndicator getMinMaxInData: data.Count == 0 or min->ns or max->ns	tp:0,61|threshold:0,49|to:12600000|stochT:54000000|sl:0,61|againstCrowd:True|name:SSIStochStrategy_V0
+Trace:    bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getMinMaxInData(Double& min, Double& max, List`1 data) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 272.
+   bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getIndicator(Int64 timestamp, String dataName, String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 223.
+   bei NinjaTrader_Client.Trader.Strategies.SSIStochStrategy.doTick(String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Strategies\SSIStochStrategy.cs:Zeile 94.
+   bei NinjaTrader_Client.Trader.Backtest.Backtester.runBacktest(Strategy strat, String pair, BacktestTradingAPI api) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\BacktestBase\Backtester.cs:Zeile 110.
+
+Backtest:	NinjaTrader_Client->StochIndicator getMinMaxInData: data.Count == 0 or min->ns or max->ns	tp:1,46|threshold:0,33|to:6000000|stochT:45600000|sl:1,46|againstCrowd:False|name:SSIStochStrategy_V0
+Trace:    bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getMinMaxInData(Double& min, Double& max, List`1 data) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 272.
+   bei NinjaTrader_Client.Trader.Indicators.StochIndicator.getIndicator(Int64 timestamp, String dataName, String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Indicators\StochIndicator.cs:Zeile 223.
+   bei NinjaTrader_Client.Trader.Strategies.SSIStochStrategy.doTick(String instrument) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\Strategies\SSIStochStrategy.cs:Zeile 94.
+   bei NinjaTrader_Client.Trader.Backtest.Backtester.runBacktest(Strategy strat, String pair, BacktestTradingAPI api) in E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\Trader\BacktestBase\Backtester.cs:Zeile 110.

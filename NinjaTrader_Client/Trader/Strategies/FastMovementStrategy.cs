@@ -55,6 +55,8 @@ namespace NinjaTrader_Client.Trader.Strategies
             parameters.Add("sl", stoplossPercent.ToString());
             parameters.Add("followTrend", follow_trend.ToString());
 
+            parameters.Add("name", getName());
+
             return parameters;
         }
 
