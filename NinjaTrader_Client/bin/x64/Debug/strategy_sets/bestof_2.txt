@@ -1,0 +1,38 @@
+//Gut
+pair:AUDJPY|timeframe:1200|strategy:Stoch-Strategy_V0|tp:0,56|sl:0,56|time:30600000|threshold:0,18|followTrend:False|name:Stoch-Strategy_V0
+
+//Gut, kaum tp sl
+pair:EURJPY|timeframe:1200|strategy:SSIStochStrategy_V0|tp:0,86|threshold:0,46|to:6300000|stochT:24000000|sl:0,86|againstCrowd:True|name:SSIStochStrategy_V0
+
+//okay, wenige
+pair:USDJPY|timeframe:1200|strategy:Stoch-Strategy_V0|tp:0,36|sl:0,36|time:52200000|threshold:0,26|followTrend:True|name:Stoch-Strategy_V0
+
+//extreme stddeviationwin... schlechte winratio... sonst okay
+//pair:CHFJPY|timeframe:1200|strategy:Stoch-Strategy_V0|tp:0,22|sl:0,11|time:136800000|threshold:0,04|followTrend:True|name:Stoch-Strategy_V0
+
+//Elephant trade... sonst gut (50%?)
+//pair:EURUSD|timeframe:1200|strategy:Stoch-Strategy_V0|tp:0,41|sl:0,41|time:93600000|threshold:0,28|followTrend:True|name:Stoch-Strategy_V0
+
+//eher nix... genau 50%
+//pair:EURGBP|timeframe:1200|strategy:Stoch-Strategy_V0|tp:0,46|sl:0,46|time:82800000|threshold:0,24|followTrend:True|name:Stoch-Strategy_V0
+
+//Sehr gut
+pair:AUDUSD|timeframe:1200|strategy:Stoch-Strategy_V0|tp:0,31|sl:0,31|time:70200000|threshold:0,02|followTrend:False|name:Stoch-Strategy_V0
+
+//Sehr gut
+pair:GBPUSD|timeframe:1200|strategy:SSIStochStrategy_V0|tp:1,21|threshold:0,21|to:14100000|stochT:61200000|sl:1,21|againstCrowd:True|name:SSIStochStrategy_V0
+
+//Sieht gut aus, kaum SL TP
+pair:USDCAD|timeframe:1200|strategy:SSIStochStrategy_V0|tp:1,31|threshold:0,31|to:7800000|stochT:46800000|sl:1,31|againstCrowd:True|name:SSIStochStrategy_V0
+
+//Ganz gut
+pair:NZDUSD|timeframe:1200|strategy:Stoch-Strategy_V0|tp:0,41|sl:0,41|time:12600000|threshold:0,28|followTrend:False|name:Stoch-Strategy_V0
+
+//Ganz gut
+pair:USDCHF|timeframe:1200|strategy:FastMovement-Strategy_V0|postT:9300000|preT:660000|threshold:0,13|tp:0,51|sl:0,51|followTrend:False|name:FastMovement-Strategy_V0
+
+//Zu wenig...
+//pair:EURCHF|timeframe:1200|strategy:FastMovement-Strategy_V0|postT:9600000|preT:360000|threshold:0,1|tp:1,36|sl:1,36|followTrend:False|name:FastMovement-Strategy_V0
+
+//Nicht so
+//pair:GBPJPY|timeframe:1200|strategy:SSIStochStrategy_V0|tp:0,51|threshold:0,39|to:10500000|stochT:68400000|sl:0,51|againstCrowd:False|name:SSIStochStrategy_V0

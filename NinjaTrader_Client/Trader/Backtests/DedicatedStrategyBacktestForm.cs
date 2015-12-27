@@ -5,6 +5,7 @@ using NinjaTrader_Client.Trader.Strategies;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace NinjaTrader_Client.Trader.Backtests
@@ -15,7 +16,7 @@ namespace NinjaTrader_Client.Trader.Backtests
         int nextStratId = 0;
 
         public DedicatedStrategyBacktestForm(Database database)
-            : base(database, 9 * 24, 10)
+            : base(database, 30 * 24, 1)
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.InitialDirectory = Config.startupPath;
@@ -30,20 +31,20 @@ namespace NinjaTrader_Client.Trader.Backtests
             
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         protected override void getNextStrategyToTest(ref Strategy strategy, ref string instrument, ref bool continueBacktesting)
         {
             if (nextStratId < parameterList.Count)
                 continueBacktesting = true;
             else
             {
-                continueBacktesting = true;
+                continueBacktesting = false;
                 return;
             }
 
             BacktestFormatter.getStrategyFromString(database, parameterList[nextStratId], ref strategy, ref instrument);
 
-            continueBacktesting = (strategy != null);
-
+            continueBacktesting = (strategy != null) && instrument != null;
             nextStratId++;
         }
     }

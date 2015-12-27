@@ -167,7 +167,7 @@ namespace NinjaTrader_Client
 
         private void button12_Click(object sender, EventArgs e)
         {
-            AnalyseRawTestDataForm form = new AnalyseRawTestDataForm();
+            AnalyseRawTestDataForm form = new AnalyseRawTestDataForm(true);
             form.ShowDialog();
         }
     }

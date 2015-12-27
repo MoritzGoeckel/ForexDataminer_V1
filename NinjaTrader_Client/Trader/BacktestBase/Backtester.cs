@@ -201,6 +201,7 @@ namespace NinjaTrader_Client.Trader.Backtest
             return doneTestsTime / doneTestsCount;
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public int getThreadsCount()
         {
             int i = 0;

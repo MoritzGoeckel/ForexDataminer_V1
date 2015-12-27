@@ -170,6 +170,12 @@ namespace NinjaTrader_Client.Trader.BacktestBase
             if (parameterDict["strategy"].StartsWith("SSIStrategy"))
                 strategy = new SSIStrategy(database, parameterDict);
 
+            if (parameterDict["strategy"].StartsWith("Stoch-Strategy"))
+                strategy = new StochStrategy(database, parameterDict);
+
+            if (strategy == null)
+                throw new Exception("Strategy not deserializable: " + parameterDict["strategy"]);
+
             instrument = parameterDict["pair"];
         }
 

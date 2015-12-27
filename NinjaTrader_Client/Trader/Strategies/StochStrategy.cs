@@ -38,7 +38,7 @@ namespace NinjaTrader_Client.Trader.Strategies
         {
             percentStoploss = Double.Parse(parameters["sl"]);
             percentTakeprofit = Double.Parse(parameters["tp"]);
-            stochTimeframe = Convert.ToInt32(parameters["stochTimeframe"]);
+            stochTimeframe = Convert.ToInt32(parameters["time"]);
             followTrend = Boolean.Parse(parameters["followTrend"]);
             threshold = Double.Parse(parameters["threshold"]);
 

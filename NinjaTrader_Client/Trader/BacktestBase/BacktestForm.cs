@@ -54,6 +54,7 @@ namespace NinjaTrader_Client
             timer1.Interval = 1000;
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         private void checkStartNewBacktest()
         {
             while (backtester.getThreadsCount() < maxThreads)
@@ -64,7 +65,10 @@ namespace NinjaTrader_Client
                 
                 getNextStrategyToTest(ref strategy, ref pair, ref continueTesting);
 
-                if (continueTesting && pair != null && strategy != null)
+                if ((pair == null || strategy == null) && continueTesting == true)
+                    throw new Exception("Pair or Strategy eq NULL -> P: " + pair + " S: " + strategy);
+
+                if (continueTesting)
                     backtester.startBacktest(strategy, pair);
                 else
                     break;

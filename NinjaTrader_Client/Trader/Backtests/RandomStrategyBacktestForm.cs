@@ -62,6 +62,12 @@ namespace NinjaTrader_Client.Trader.Backtests
 
             int r = z.Next(1, 5);
 
+            double sl = generateDouble(0.01, 1, 0.05);
+            double tp = sl;
+
+            if (z.Next(1, 3) == 2)
+                tp = tp * 2;
+
             /*if (r == 0)
                 strategy = new BinaryStrategy(database,
                     sltp,
@@ -72,8 +78,8 @@ namespace NinjaTrader_Client.Trader.Backtests
 
             if (r == 1)
                 strategy = new StochStrategy(database,
-                    generateDouble(0.01, 1.5, 0.05),
-                    generateDouble(0.01, 1.5, 0.05),
+                    sl,
+                    tp,
                     generateInt(1000 * 60 * 60 * 1, 1000 * 60 * 60 * 48, 1000 * 60 * 30),
                     generateDouble(0.00, 0.3, 0.02),
                     generateBool()
@@ -81,8 +87,8 @@ namespace NinjaTrader_Client.Trader.Backtests
 
             else if(r == 2)
                 strategy = new SSIStochStrategy(database,
-                    generateDouble(0.01, 1.5, 0.05), //TP
-                    generateDouble(0.01, 1.5, 0.05), //SL
+                    tp, //TP
+                    sl, //SL
                     generateDouble(0.05, 0.50, 0.01), //Threshold
                     generateInt(1000 * 60 * 30 * 1, 1000 * 60 * 30 * 8, 1000 * 60 * 5), //To
                     generateInt(1000 * 60 * 60 * 1, 1000 * 60 * 60 * 20, 1000 * 60 * 20), //StochTime
@@ -93,8 +99,8 @@ namespace NinjaTrader_Client.Trader.Backtests
                     generateInt(1000 * 60 * 1, 1000 * 60 * 30, 1000 * 60 * 5),
                     generateInt(1000 * 60 * 10 * 1, 1000 * 60 * 10 * 20, 1000 * 60 * 5),
                     generateDouble(0.01, 0.70, 0.03),
-                    generateDouble(0.01, 1.5, 0.05),
-                    generateDouble(0.01, 1.5, 0.05),
+                    tp,
+                    sl,
                     generateBool());
 
             else if (r == 4)
