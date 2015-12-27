@@ -15,7 +15,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
         public SQLiteDatabase(string path)
         {
             this.path = path;
-            myConnectionString = "Data Source=" + path + ";Version=3;"; //In memory ????
+            myConnectionString = "Data Source=" + path + ";Version=3;Journal Mode=Off;Synchronous=Off;Cache_Size=100000;Pooling=True;Max Pool Size=100"; //In memory ????
         }
 
         private int timeout = 10;
@@ -55,7 +55,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
                     SQLiteDataReader Reader = command.ExecuteReader();
 
                     if (Reader.Read())
-                        output = new Tickdata((long)Reader["timestamp"], (double)Reader["last"], (double)Reader["bid"], (double)Reader["ask"]);
+                        output = new Tickdata((long)(decimal)Reader["timestamp"], (double)Reader["last"], (double)Reader["bid"], (double)Reader["ask"]);
                     else
                         output = null;
 
@@ -95,7 +95,10 @@ namespace NinjaTrader_Client.Trader.MainAPIs
                     SQLiteDataReader Reader = command.ExecuteReader();
                     while (Reader.Read())
                     {
-                        output.Add(new Tickdata((long)Reader["timestamp"], (double)Reader["last"], (double)Reader["bid"], (double)Reader["ask"]));
+                        long ts = (long)(decimal)Reader["timestamp"];
+                        double bid = (double)Reader["bid"];
+
+                        output.Add(new Tickdata(ts, (double)Reader["last"], bid, (double)Reader["ask"]));
                     }
                     Reader.Close();
                     done = true;
@@ -142,7 +145,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
 
             SQLiteDataReader Reader = command.ExecuteReader();
             Reader.Read();
-            TimeValueData output =  new TimeValueData((long)Reader["timestamp"], (double)Reader["value"]);
+            TimeValueData output =  new TimeValueData((long)(decimal)Reader["timestamp"], (double)Reader["value"]);
             Reader.Close();
             connection.Close();
 
@@ -167,7 +170,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
             SQLiteDataReader Reader = command.ExecuteReader();
             while (Reader.Read())
             {
-                output.Add(new TimeValueData((long)Reader["timestamp"], (double)Reader["value"]));
+                output.Add(new TimeValueData((long)(decimal)Reader["timestamp"], (double)Reader["value"]));
             }
             Reader.Close();
             connection.Close();
@@ -196,17 +199,16 @@ namespace NinjaTrader_Client.Trader.MainAPIs
         public override long getFirstTimestamp()
         {
             SQLiteConnection connection = getConnection();
-
-            SQLiteCommand command = new SQLiteCommand("SELECT * FROM prices ORDER BY timestamp ASC LIMIT 1", connection);
+            
+            SQLiteCommand command = new SQLiteCommand("SELECT MIN(timestamp) FROM prices", connection);
             command.Prepare();
 
             command.CommandTimeout = timeout;
 
             SQLiteDataReader Reader = command.ExecuteReader();
             Reader.Read();
+            long ts = (long)Reader["MIN(timestamp)"];
             Reader.Close();
-
-            long ts = (long)Reader["timestamp"];
 
             connection.Close();
 
@@ -217,14 +219,14 @@ namespace NinjaTrader_Client.Trader.MainAPIs
         {
             SQLiteConnection connection = getConnection();
 
-            SQLiteCommand command = new SQLiteCommand("SELECT * FROM prices ORDER BY timestamp DESC LIMIT 1", connection);
+            SQLiteCommand command = new SQLiteCommand("SELECT MAX(timestamp) FROM prices", connection);
             command.Prepare();
 
             command.CommandTimeout = timeout;
 
             SQLiteDataReader Reader = command.ExecuteReader();
             Reader.Read();
-            long output = (long)Reader["timestamp"];
+            long output = (long)Reader["MAX(timestamp)"];
             Reader.Close();
 
             connection.Close();
@@ -243,10 +245,10 @@ namespace NinjaTrader_Client.Trader.MainAPIs
 
             SQLiteDataReader Reader = command.ExecuteReader();
             Reader.Read();
+
+            long count = (long)Reader["COUNT(*)"];
+
             Reader.Close();
-
-            int count = (int)Reader["count"];
-
             connection.Close();
 
             return count;
@@ -263,5 +265,75 @@ namespace NinjaTrader_Client.Trader.MainAPIs
         }
 
         //Migrate from MySQL ???
+        public Dictionary<string, double> migrateProgress = new Dictionary<string, double>();
+        public void migrate(SQLDatabase sql)
+        {
+            long interval = 60 * 1000;
+
+            long start = sql.getFirstTimestamp();
+            long end = sql.getLastTimestamp();
+
+            List<string> instruments = new List<string>();
+            instruments.Add("EURUSD");
+            instruments.Add("GBPUSD");
+            instruments.Add("USDJPY");
+            instruments.Add("USDCHF");
+
+            instruments.Add("AUDCAD");
+            instruments.Add("AUDJPY");
+            instruments.Add("AUDUSD");
+            instruments.Add("CHFJPY");
+            instruments.Add("EURCHF");
+            instruments.Add("EURGBP");
+            instruments.Add("EURJPY");
+            instruments.Add("GBPCHF");
+            instruments.Add("GBPJPY");
+            instruments.Add("NZDUSD");
+            instruments.Add("USDCAD");
+
+            List<string> dataNames = new List<string>();
+            dataNames.Add("ssi-mt4");
+            dataNames.Add("ssi-win-mt");
+
+            foreach (string instrument in instruments)
+            {
+                Thread thread = new Thread(new ThreadStart(() =>
+                {
+                    migrateProgress.Add(instrument, 0);
+
+                    long now = start;
+                    while (now < end)
+                    {
+                        List<Tickdata> prices = sql.getPrices(now, now + interval - 1, instrument);
+
+                        if (prices != null)
+                            foreach (Tickdata price in prices)
+                                try
+                                {
+                                    setPrice(price, instrument);
+                                }
+                                catch (Exception) { }
+
+                        foreach (string dataName in dataNames)
+                        {
+                            List<TimeValueData> datas = sql.getDataInRange(now, now + interval - 1, dataName, instrument);
+
+                            if (datas != null)
+                                foreach (TimeValueData data in datas)
+                                    try
+                                    {
+                                        setData(data, dataName, instrument);
+                                    }
+                                    catch (Exception) { }
+                        }
+                        now += interval;
+
+                        migrateProgress[instrument] = (Convert.ToDouble(now - start) / Convert.ToDouble(end - start)) * 100d;
+                    }
+                }));
+
+                thread.Start();
+            }
+        }
     }
 }

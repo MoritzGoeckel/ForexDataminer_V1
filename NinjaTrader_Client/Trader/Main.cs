@@ -4,6 +4,7 @@ using NinjaTrader_Client.Trader.Strategies;
 using NinjaTrader_Client.Trader.TradingAPIs;
 using System.Collections.Generic;
 using System.Threading;
+using System;
 
 namespace NinjaTrader_Client.Trader
 {
@@ -38,7 +39,7 @@ namespace NinjaTrader_Client.Trader
             Config.startConfig(startupPath);
             //mongodb = new MongoFacade(Config.mongodbExePath, Config.mongodbDataPath, "nt_trader");
 
-            database = new SQLDatabase();
+            database = new SQLiteDatabase(startupPath + "/priceHistorySQLite.s3db");
 
             //database = new MongoDatabase(mongodb);
             api = new NinjaTraderAPI(instruments);

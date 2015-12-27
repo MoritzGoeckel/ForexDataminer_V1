@@ -2,3 +2,4 @@
 /NinjaTrader_Client/bin/Debug/*
 /Database/*
 /Database/
+*.s3db

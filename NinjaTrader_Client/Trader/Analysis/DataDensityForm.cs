@@ -1,4 +1,6 @@
-﻿using NinjaTrader_Client.Trader.MainAPIs;
+﻿using Microsoft.Office.Interop.Excel;
+using NinjaTrader_Client.Trader.MainAPIs;
+using NinjaTrader_Client.Trader.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -70,6 +72,40 @@ namespace NinjaTrader_Client.Trader.Analysis
                 builder.Append(pair.Key + "\t" + pair.Value + Environment.NewLine);
 
             textBox1.Text = builder.ToString();
+
+            /*Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
+            excel.Visible = true;
+            Workbook wb = excel.Workbooks.Add();
+            Worksheet sh = wb.Sheets.Add();
+            sh.Name = "TestSheet";
+            sh.Cells[1, "A"].Value2 = "Date";
+            sh.Cells[1, "B"].Value2 = "Count";
+
+            int i = 1;
+            foreach(KeyValuePair < string, int > pair in data)
+            {
+                i++;
+                sh.Cells[i, "A"].Value2 = pair.Key.ToString();
+                sh.Cells[i, "B"].Value2 = pair.Value.ToString();
+            }
+
+            var charts = sh.ChartObjects() as
+                Microsoft.Office.Interop.Excel.ChartObjects;
+            var chartObject = charts.Add(60, 10, 900, 300) as
+                Microsoft.Office.Interop.Excel.ChartObject;
+            var chart = chartObject.Chart;
+
+            // Set chart range.
+            var range = sh.get_Range(sh.Cells[1, "A"], sh.Cells[i, "B"]);
+            chart.SetSourceData(range);
+
+            // Set chart properties.
+            chart.ChartType = Microsoft.Office.Interop.Excel.XlChartType.xlLine;
+
+            chart.ChartWizard(Source: range,
+                Title: "Data desity",
+                CategoryTitle: "Date",
+                ValueTitle: "Count");*/
         }
 
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)

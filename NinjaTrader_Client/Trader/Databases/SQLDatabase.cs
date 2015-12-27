@@ -93,8 +93,11 @@ namespace NinjaTrader_Client.Trader.MainAPIs
             List<Tickdata> output = new List<Tickdata>();
             MySqlConnection connection = null;
 
-            if (firstTimestamps.ContainsKey(instrument) == false)
-                firstTimestamps.Add(instrument, getFirstTimestampInternal(instrument));
+            try {
+                if (firstTimestamps.ContainsKey(instrument) == false)
+                    firstTimestamps.Add(instrument, getFirstTimestampInternal(instrument));
+            }
+            catch (Exception) { }
 
             if (firstTimestamps[instrument] > startTimestamp)
                 return null;

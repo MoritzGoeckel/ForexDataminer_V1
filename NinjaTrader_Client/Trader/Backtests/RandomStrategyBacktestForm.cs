@@ -63,10 +63,7 @@ namespace NinjaTrader_Client.Trader.Backtests
             int r = z.Next(1, 5);
 
             double sl = generateDouble(0.01, 1, 0.05);
-            double tp = sl;
-
-            if (z.Next(1, 3) == 2)
-                tp = tp * 2;
+            double tp = sl + generateDouble(0, 0.5, 0.05);
 
             /*if (r == 0)
                 strategy = new BinaryStrategy(database,

@@ -61,25 +61,39 @@ namespace NinjaTrader_Client
         private void button2_Click(object sender, EventArgs e)
         {
             ChartingForm cf = new ChartingForm(main.getDatabase(), null, main.getDatabase().getLastTimestamp() - 1000 * 60 * 60, main.getDatabase().getLastTimestamp());
-            cf.ShowDialog();
+            cf.Show();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            /*if(MessageBox.Show("Wirklich migrieren?", "", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
-                main.getDatabase().megrate(sql);*/
+            if (MessageBox.Show("Wirklich migrieren?", "", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
+            {
+                ((SQLiteDatabase)main.getDatabase()).migrate(new SQLDatabase());
+                timer_migrate_update.Start();
+            }
+        }
+
+        private void timer_migrate_update_Tick(object sender, EventArgs e)
+        {
+            label1.Text = "Migration:" + Environment.NewLine;
+            try
+            {
+                foreach (KeyValuePair<string, double> pair in ((SQLiteDatabase)main.getDatabase()).migrateProgress)
+                    label1.Text += pair.Key + ": " + pair.Value + Environment.NewLine;
+            }
+            catch (Exception) { }
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
             ExportImportForm eiForm = new ExportImportForm(main.getDatabase());
-            eiForm.ShowDialog();
+            eiForm.Show();
         }
 
         private void backtest_btn_Click(object sender, EventArgs e)
         {
             DedicatedStrategyBacktestForm backtestForm = new DedicatedStrategyBacktestForm(main.getDatabase());
-            backtestForm.ShowDialog();
+            backtestForm.Show();
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -109,19 +123,19 @@ namespace NinjaTrader_Client
         private void button6_Click(object sender, EventArgs e)
         {
             LiveTradingForm form = new LiveTradingForm(NTLiveTradingAPI.getTheInstace());
-            form.ShowDialog();
+            form.Show();
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
             DataDensityPerDayForm ddForm = new DataDensityPerDayForm(main.getDatabase());
-            ddForm.ShowDialog();
+            ddForm.Show();
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
             RandomStrategyBacktestForm backtestForm = new RandomStrategyBacktestForm(main.getDatabase());
-            backtestForm.ShowDialog();
+            backtestForm.Show();
         }
 
         private void button9_Click(object sender, EventArgs e)
@@ -150,13 +164,13 @@ namespace NinjaTrader_Client
             all.AddRange(minors);
 
             CorrelationAnalysisForm cf = new CorrelationAnalysisForm(main.getDatabase(), 1000, 31, all);
-            cf.ShowDialog();
+            cf.Show();
         }
 
         private void button10_Click(object sender, EventArgs e)
         {
             TradeHistoryChartForm thcf = new TradeHistoryChartForm();
-            thcf.ShowDialog();
+            thcf.Show();
         }
 
         private void button11_Click(object sender, EventArgs e)
@@ -168,7 +182,12 @@ namespace NinjaTrader_Client
         private void button12_Click(object sender, EventArgs e)
         {
             AnalyseRawTestDataForm form = new AnalyseRawTestDataForm(true);
-            form.ShowDialog();
+            form.Show();
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Main: " + main.getDatabase().getSetsCount());
         }
     }
 }

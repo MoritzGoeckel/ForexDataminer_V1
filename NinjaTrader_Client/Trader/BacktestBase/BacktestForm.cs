@@ -33,7 +33,7 @@ namespace NinjaTrader_Client
         private Dictionary<string, BacktestData> results = new Dictionary<string, BacktestData>();
 
         private int errorTests = 0;
-        private int maxThreads = (Environment.ProcessorCount * 2) - 1; // Threads Count ???
+        private int maxThreads = (Environment.ProcessorCount * 2); // Threads Count
 
         public BacktestForm(Database database, int backtestHours, int resolution)
         {
