@@ -33,7 +33,7 @@ namespace NinjaTrader_Client
         private Dictionary<string, BacktestData> results = new Dictionary<string, BacktestData>();
 
         private int errorTests = 0;
-        private int maxThreads = (Environment.ProcessorCount * 2); // Threads Count
+        private int maxThreads = Environment.ProcessorCount; // Threads Count
 
         public BacktestForm(Database database, int backtestHours, int resolution)
         {
@@ -138,7 +138,7 @@ namespace NinjaTrader_Client
             {
                 BacktestData result = results[listBox_results.SelectedItem.ToString()];
 
-                label_trades.Text = BacktestFormatter.getPositionsText(result);
+                listBox_trades.Items.AddRange(BacktestFormatter.getPositionsText(result).Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries));
                 label_parameters.Text = BacktestFormatter.getParameterText(result);
                 label_result.Text = BacktestFormatter.getResultText(result);
             }

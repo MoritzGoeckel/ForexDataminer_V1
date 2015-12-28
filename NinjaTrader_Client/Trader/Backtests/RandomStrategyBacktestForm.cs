@@ -18,7 +18,7 @@ namespace NinjaTrader_Client.Trader.Backtests
         private List<string> all = new List<string>();
 
         public RandomStrategyBacktestForm(Database database)
-            : base(database, 50 * 24, 10)
+            : base(database, 7 * 24, 1)
         {
             majors.Add("EURUSD");
             majors.Add("GBPUSD");
@@ -62,49 +62,49 @@ namespace NinjaTrader_Client.Trader.Backtests
 
             int r = z.Next(1, 5);
 
-            double sl = generateDouble(0.01, 1, 0.05);
-            double tp = sl + generateDouble(0, 0.5, 0.05);
-
-            /*if (r == 0)
-                strategy = new BinaryStrategy(database,
-                    sltp,
-                    sltp,
-                    generateInt(1000 * 60, 1000 * 60 * 60 * 5, 1000 * 60 * 5),
-                    generateDouble(0.01, 1, 0.02),
-                    generateBool());*/
+            double sl = generateDouble(0.01, 0.3, 0.05);
+            double tp = sl + generateDouble(0, 0.3, 0.05);
 
             if (r == 1)
                 strategy = new StochStrategy(database,
                     sl,
                     tp,
-                    generateInt(1000 * 60 * 60 * 1, 1000 * 60 * 60 * 48, 1000 * 60 * 30),
-                    generateDouble(0.00, 0.3, 0.02),
+                    generateInt(1000 * 60 * 30, 1000 * 60 * 60 * 12, 1000 * 60 * 30), //Stochtimeframe
+                    generateDouble(0.00, 0.3, 0.05), //Threshold
                     generateBool()
                     );
 
-            else if(r == 2)
+            else if (r == 2)
+            {
                 strategy = new SSIStochStrategy(database,
                     tp, //TP
                     sl, //SL
-                    generateDouble(0.05, 0.50, 0.01), //Threshold
-                    generateInt(1000 * 60 * 30 * 1, 1000 * 60 * 30 * 8, 1000 * 60 * 5), //To
-                    generateInt(1000 * 60 * 60 * 1, 1000 * 60 * 60 * 20, 1000 * 60 * 20), //StochTime
+                    generateDouble(0.00, 0.3, 0.05), //Threshold
+                    generateInt(1000 * 60 * 30, 1000 * 60 * 60 * 10, 1000 * 60 * 30), //To
+                    generateInt(1000 * 60 * 60 * 1, 1000 * 60 * 60 * 24, 1000 * 60 * 20), //StochTime
                     generateBool()); //againstCrowd
+
+                instrument = majors[z.Next(0, majors.Count)];
+            }
 
             else if (r == 3)
                 strategy = new FastMovementStrategy(database,
-                    generateInt(1000 * 60 * 1, 1000 * 60 * 30, 1000 * 60 * 5),
-                    generateInt(1000 * 60 * 10 * 1, 1000 * 60 * 10 * 20, 1000 * 60 * 5),
-                    generateDouble(0.01, 0.70, 0.03),
+                    generateInt(1000 * 60 * 1, 1000 * 60 * 60, 1000 * 60 * 1), //Pre time
+                    generateInt(1000 * 60 * 1, 1000 * 60 * 60, 1000 * 60 * 1), //Post time
+                    generateDouble(0.01, 0.7, 0.01), //Threshold
                     tp,
                     sl,
                     generateBool());
 
             else if (r == 4)
+            {
                 strategy = new SSIStrategy(database,
-                    generateDouble(0.0, 0.5, 0.01),
-                    generateDouble(0.0, 0.5, 0.01),
+                    generateDouble(0.0, 0.5, 0.01), //Threshold open
+                    generateDouble(0.0, 0.5, 0.01), //Threshold close
                     generateBool());
+
+                instrument = majors[z.Next(0, majors.Count)];
+            }
         }
 
         private bool generateBool()

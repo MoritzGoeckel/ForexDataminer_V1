@@ -186,12 +186,13 @@
     <Compile Include="Trader\Databases\CachedDatabase.cs" />
     <Compile Include="Trader\Databases\SQLiteDatabase.cs" />
     <Compile Include="Trader\Indicators\Indicator.cs" />
+    <Compile Include="Trader\Indicators\MovingAverage.cs" />
+    <Compile Include="Trader\Indicators\TradingTimeIndicator.cs" />
     <Compile Include="Trader\Indicators\StochIndicator.cs" />
     <Compile Include="Trader\Databases\Database.cs" />
     <Compile Include="Trader\Databases\SQLDatabase.cs" />
     <Compile Include="Trader\Strategies\StochStrategy.cs" />
     <Compile Include="Trader\Strategies\TemplateStrategy.cs" />
-    <Compile Include="Trader\Strategies\BinaryStrategy.cs" />
     <Compile Include="Trader\Strategies\FastMovementStrategy.cs" />
     <Compile Include="Trader\Strategies\SSIStochStrategy.cs" />
     <Compile Include="Trader\Strategies\SSIStrategy.cs" />

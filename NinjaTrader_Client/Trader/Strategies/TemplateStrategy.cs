@@ -1,4 +1,5 @@
 ﻿using NinjaTrader_Client.Trader.Backtest;
+using NinjaTrader_Client.Trader.Indicators;
 using NinjaTrader_Client.Trader.MainAPIs;
 using NinjaTrader_Client.Trader.Model;
 using System;
@@ -17,11 +18,14 @@ namespace NinjaTrader_Client.Trader.Strategies
         //private bool follow_trend;
         private int hitSL = 0, hitTP = 0;
 
+        private Indicator tradingTime;
+
         public TemplateStrategy(Database database, double percentStoploss, double percentTakeprofit)
             : base(database)
         {
             this.percentStoploss = percentStoploss;
             this.percentTakeprofit = percentTakeprofit;
+            this.tradingTime = new TradingTimeIndicator(database);
         }
 
         public TemplateStrategy(Database database, Dictionary<string, string> parameters) 
@@ -66,12 +70,22 @@ namespace NinjaTrader_Client.Trader.Strategies
             if (api.isUptodate(instrument) == false)
                 return;
 
+            double tradingTimeCode = tradingTime.getIndicator(api.getNow(), instrument).value;
+            if (tradingTimeCode == 0)
+            {
+                //Flatten everything
+                api.closePositions(instrument);
+                return;
+            }
+
             double takeprofit = api.getAvgPrice(instrument) * percentTakeprofit / 100d;
             double stoploss = api.getAvgPrice(instrument) * percentStoploss / 100d;
 
             Tickdata nowTick = new Tickdata(api.getNow(), 0, api.getBid(instrument), api.getAsk(instrument));
 
-            if(api.getShortPosition(instrument) == null && api.getLongPosition(instrument) != null)
+            //only open positons on tradingTimeCode == 1
+
+            if (api.getShortPosition(instrument) == null && api.getLongPosition(instrument) != null)
             {
 
             }

@@ -9,6 +9,7 @@ using NinjaTrader_Client.Trader.Analysis;
 using NinjaTrader_Client.Trader.Backtests;
 using NinjaTrader_Client.Trader.BacktestBase;
 using NinjaTrader_Client.Trader.MainAPIs;
+using NinjaTrader_Client.Trader.Utils;
 
 namespace NinjaTrader_Client
 {
@@ -40,11 +41,13 @@ namespace NinjaTrader_Client
                 return;
             }
 
-            label1.Text = "Errors: " + data.dbErrors;
-            label2.Text = "Datasets: " + data.dataSets;
-            label3.Text = "Tradingtick: " + data.tradingTick + Environment.NewLine +
+            label1.Text = "Errors: " + data.dbErrors + Environment.NewLine +
+                "Data collected: " + data.dataSets + Environment.NewLine + 
+                "Tradingtick: " + data.tradingTick + Environment.NewLine +
+                Environment.NewLine +
                 "Positionsize: " + NTLiveTradingAPI.getTheInstace().getPositionSize() + Environment.NewLine +
-                "CV: " + NTLiveTradingAPI.getTheInstace().getCashValue() + " BP: " + NTLiveTradingAPI.getTheInstace().getBuyingPower();
+                "Cash value: " + NTLiveTradingAPI.getTheInstace().getCashValue() + Environment.NewLine + 
+                "Buying power: " + NTLiveTradingAPI.getTheInstace().getBuyingPower();
 
             //setPositionSize(Convert.ToInt32(getCashValue() / 4 / 4));
         }
@@ -181,13 +184,18 @@ namespace NinjaTrader_Client
 
         private void button12_Click(object sender, EventArgs e)
         {
-            AnalyseRawTestDataForm form = new AnalyseRawTestDataForm(true);
+            AnalyseRawTestDataForm form = new AnalyseRawTestDataForm();
             form.Show();
         }
 
         private void button13_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Main: " + main.getDatabase().getSetsCount());
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 }

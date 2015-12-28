@@ -12,7 +12,8 @@ namespace NinjaTrader_Client.Trader.Strategies
 {
     public class SSIStochStrategy : Strategy
     {
-        StochIndicator stochIndicator;
+        private Indicator stochIndicator;
+        private Indicator tradingTime;
         private Dictionary<string, List<TimeValueData>> lastStochTicks = new Dictionary<string, List<TimeValueData>>();
         private double takeprofitPercent, threshold, stoplossPercent;
         private int stochTimeframe, timeout;
@@ -33,6 +34,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             this.againstCrowd = againstCrowd;
 
             stochIndicator = new StochIndicator(database, stochTimeframe);
+            tradingTime = new TradingTimeIndicator(database);
         }
 
         public SSIStochStrategy(Database database, Dictionary<string, string> parameters)
@@ -87,7 +89,15 @@ namespace NinjaTrader_Client.Trader.Strategies
         {
             if (api.isUptodate(instrument) == false)
                 return;
-            
+
+            double tradingTimeCode = tradingTime.getIndicator(api.getNow(), instrument).value;
+            if (tradingTimeCode == 0)
+            {
+                //Flatten everything
+                api.closePositions(instrument);
+                return;
+            }
+
             double takeprofit = api.getAvgPrice(instrument) * takeprofitPercent / 100d;
             double stoploss = api.getAvgPrice(instrument) * stoplossPercent / 100d;
 
@@ -123,7 +133,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             }
 
             //wenn noch keine position besteht
-            if (api.getShortPosition(instrument) == null && api.getLongPosition(instrument) == null)
+            if (api.getShortPosition(instrument) == null && api.getLongPosition(instrument) == null && tradingTimeCode == 1)
             {
                 if (stochMaxInTimeframe > (1 - threshold) && stochNow <= (1 - threshold))
                 {

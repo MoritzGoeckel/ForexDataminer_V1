@@ -1,4 +1,5 @@
-﻿using NinjaTrader_Client.Trader.MainAPIs;
+﻿using NinjaTrader_Client.Trader.Indicators;
+using NinjaTrader_Client.Trader.MainAPIs;
 using NinjaTrader_Client.Trader.Model;
 using NinjaTrader_Client.Trader.TradingAPIs;
 using System;
@@ -15,8 +16,11 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
         private Database database;
         private long now;
 
+        private Indicator tradingTime;
+
         public BacktestTradingAPI(long startTimestamp, Database database, List<string> tradablePairs)
         {
+            tradingTime = new TradingTimeIndicator(database);
             now = startTimestamp;
             this.database = database;
             foreach (string pair in tradablePairs)
@@ -28,10 +32,13 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
             this.now = now;
             foreach (KeyValuePair<string, PairData> pair in pairData)
             {
-                Tickdata tickData = database.getPrice(now, pair.Key);
+                if (tradingTime.getIndicator(now, pair.Key).value != 0) //No calculations on weekends
+                { 
+                    Tickdata tickData = database.getPrice(now, pair.Key);
 
-                if (tickData != null)
-                    pairData[pair.Key].lastTickData = tickData;
+                    if (tickData != null)
+                        pairData[pair.Key].lastTickData = tickData;
+                }
             }
         }
 

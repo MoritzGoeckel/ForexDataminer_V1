@@ -1,5 +1,11 @@
-﻿Übertragung aus ferne
-Charting
-
+﻿Visualisierung
 Indicator: MA
-Handel
+
+Flat on Weekends
+
+Big backtests HFU
+
+Small timeframe strategies
+
+NTF:
+	FXCM API

@@ -39,7 +39,7 @@ namespace NinjaTrader_Client.Trader
             Config.startConfig(startupPath);
             //mongodb = new MongoFacade(Config.mongodbExePath, Config.mongodbDataPath, "nt_trader");
 
-            database = new SQLiteDatabase(startupPath + "/priceHistorySQLite.s3db");
+            database = new SQLiteDatabase(startupPath + "//priceHistorySQLite.s3db");
 
             //database = new MongoDatabase(mongodb);
             api = new NinjaTraderAPI(instruments);
@@ -115,7 +115,6 @@ namespace NinjaTrader_Client.Trader
             database.setPrice(data, instrument);
 
             UIData uiData = new UIData();
-            //uiData.dbErrors = database.errors; ???
             uiData.dataSets = insertedSets++;
             uiData.tradingTick = tradingTick;
 

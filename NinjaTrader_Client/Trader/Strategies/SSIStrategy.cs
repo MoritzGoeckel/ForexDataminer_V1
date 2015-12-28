@@ -1,4 +1,5 @@
 ﻿using NinjaTrader_Client.Trader.Backtest;
+using NinjaTrader_Client.Trader.Indicators;
 using NinjaTrader_Client.Trader.MainAPIs;
 using NinjaTrader_Client.Trader.Model;
 using System;
@@ -16,12 +17,16 @@ namespace NinjaTrader_Client.Trader.Strategies
 
         int version = 0;
 
+        private Indicator tradingTime;
+
         public SSIStrategy(Database database, double thresholdOpen, double thresholdClose, bool followTrend)
             : base(database)
         {
             this.thresholdOpen = thresholdOpen;
             this.thresholdClose = thresholdClose;
             this.followTrend = followTrend;
+
+            this.tradingTime = new TradingTimeIndicator(database);
         }
 
         public SSIStrategy(Database database, Dictionary<string, string> parameters)
@@ -66,6 +71,14 @@ namespace NinjaTrader_Client.Trader.Strategies
             if (api.isUptodate(instrument) == false)
                 return;
 
+            double tradingTimeCode = tradingTime.getIndicator(api.getNow(), instrument).value;
+            if (tradingTimeCode == 0)
+            {
+                //Flatten everything
+                api.closePositions(instrument);
+                return;
+            }
+
             TimeValueData ssiValue = database.getData(api.getNow(), "ssi-mt4", instrument);
 
             if (ssiValue == null)
@@ -73,20 +86,23 @@ namespace NinjaTrader_Client.Trader.Strategies
 
             double ssi = ssiValue.value;
 
-            if (ssi > thresholdOpen)
+            if (tradingTimeCode == 1)
             {
-                if (followTrend && api.getShortPosition(instrument) == null)
-                    api.openShort(instrument);
-                else if (followTrend == false && api.getLongPosition(instrument) == null)
-                    api.openLong(instrument);
-            }
+                if (ssi > thresholdOpen)
+                {
+                    if (followTrend && api.getShortPosition(instrument) == null)
+                        api.openShort(instrument);
+                    else if (followTrend == false && api.getLongPosition(instrument) == null)
+                        api.openLong(instrument);
+                }
 
-            if (ssi < -thresholdOpen)
-            {
-                if (followTrend && api.getLongPosition(instrument) == null)
-                    api.openLong(instrument);
-                else if (followTrend == false && api.getShortPosition(instrument) == null)
-                    api.openShort(instrument);
+                if (ssi < -thresholdOpen)
+                {
+                    if (followTrend && api.getLongPosition(instrument) == null)
+                        api.openLong(instrument);
+                    else if (followTrend == false && api.getShortPosition(instrument) == null)
+                        api.openShort(instrument);
+                }
             }
 
             if (api.getLongPosition(instrument) != null && ((ssi > thresholdClose && followTrend) || (ssi < -thresholdClose && followTrend == false)))

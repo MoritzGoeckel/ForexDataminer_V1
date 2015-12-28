@@ -17,6 +17,7 @@ namespace NinjaTrader_Client
         private void LiveTradingForm_Load(object sender, EventArgs e)
         {
             updateTimer.Start();
+            headline_label.Text = pair;
         }
 
         private void updateTimer_Tick(object sender, EventArgs e)

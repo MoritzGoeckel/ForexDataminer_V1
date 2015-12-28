@@ -1,5 +1,4 @@
 {
-  "mongodbExePath": "E:\\Programmieren\\C# Neu\\NinjaTrader_Client\\Output\\Database\\mongo\\mongod.exe",
-  "mogodbDataPath": "E:\\Programmieren\\C# Neu\\NinjaTrader_Client\\Output\\Database\\data",
-  "errorLogPath": "E:\\Programmieren\\C# Neu\\NinjaTrader_Client\\NinjaTrader_Client\\bin\\x64\\Debug\\error.log"
+  "errorLogPath": "E:\\Programmieren\\C# Neu\\NinjaTrader_Client\\NinjaTrader_Client\\bin\\x64\\Debug\\error.log",
+  "sqlitePath": "E:\\Programmieren\\C# Neu\\NinjaTrader_Client\\NinjaTrader_Client\\bin\\x64\\Debug\\priceHistorySQLite.s3db"
 }

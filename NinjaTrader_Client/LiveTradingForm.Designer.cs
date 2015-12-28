@@ -36,6 +36,7 @@
             this.closeLongBtn = new System.Windows.Forms.Button();
             this.closeShortBtn = new System.Windows.Forms.Button();
             this.closeAllBtn = new System.Windows.Forms.Button();
+            this.headline_label = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // updateTimer
@@ -45,14 +46,16 @@
             // labelInfo
             // 
             this.labelInfo.AutoSize = true;
-            this.labelInfo.Location = new System.Drawing.Point(12, 9);
+            this.labelInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelInfo.Location = new System.Drawing.Point(11, 44);
             this.labelInfo.Name = "labelInfo";
-            this.labelInfo.Size = new System.Drawing.Size(35, 13);
+            this.labelInfo.Size = new System.Drawing.Size(82, 20);
             this.labelInfo.TabIndex = 0;
-            this.labelInfo.Text = "label1";
+            this.labelInfo.Text = "no info yet";
             // 
             // goLongBtn
             // 
+            this.goLongBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.goLongBtn.Location = new System.Drawing.Point(15, 195);
             this.goLongBtn.Name = "goLongBtn";
             this.goLongBtn.Size = new System.Drawing.Size(75, 23);
@@ -63,6 +66,7 @@
             // 
             // goShortBtn
             // 
+            this.goShortBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.goShortBtn.Location = new System.Drawing.Point(197, 195);
             this.goShortBtn.Name = "goShortBtn";
             this.goShortBtn.Size = new System.Drawing.Size(75, 23);
@@ -73,6 +77,7 @@
             // 
             // closeLongBtn
             // 
+            this.closeLongBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.closeLongBtn.Location = new System.Drawing.Point(15, 224);
             this.closeLongBtn.Name = "closeLongBtn";
             this.closeLongBtn.Size = new System.Drawing.Size(75, 23);
@@ -83,6 +88,7 @@
             // 
             // closeShortBtn
             // 
+            this.closeShortBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.closeShortBtn.Location = new System.Drawing.Point(197, 224);
             this.closeShortBtn.Name = "closeShortBtn";
             this.closeShortBtn.Size = new System.Drawing.Size(75, 23);
@@ -93,6 +99,7 @@
             // 
             // closeAllBtn
             // 
+            this.closeAllBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.closeAllBtn.Location = new System.Drawing.Point(106, 224);
             this.closeAllBtn.Name = "closeAllBtn";
             this.closeAllBtn.Size = new System.Drawing.Size(75, 23);
@@ -101,11 +108,22 @@
             this.closeAllBtn.UseVisualStyleBackColor = true;
             this.closeAllBtn.Click += new System.EventHandler(this.closeAllBtn_Click);
             // 
+            // headline_label
+            // 
+            this.headline_label.AutoSize = true;
+            this.headline_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.headline_label.Location = new System.Drawing.Point(10, 9);
+            this.headline_label.Name = "headline_label";
+            this.headline_label.Size = new System.Drawing.Size(48, 25);
+            this.headline_label.TabIndex = 6;
+            this.headline_label.Text = "pair";
+            // 
             // LiveTradingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
+            this.Controls.Add(this.headline_label);
             this.Controls.Add(this.closeAllBtn);
             this.Controls.Add(this.closeShortBtn);
             this.Controls.Add(this.closeLongBtn);
@@ -129,5 +147,6 @@
         private System.Windows.Forms.Button closeLongBtn;
         private System.Windows.Forms.Button closeShortBtn;
         private System.Windows.Forms.Button closeAllBtn;
+        private System.Windows.Forms.Label headline_label;
     }
 }

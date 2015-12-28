@@ -12,5 +12,12 @@ namespace NinjaTrader_Client.Trader.Utils
         {
             return (Int64)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalMilliseconds;
         }
+
+        public static DateTime getDate(long timestamp)
+        {
+            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            dtDateTime = dtDateTime.AddMilliseconds(timestamp).ToLocalTime();
+            return dtDateTime;
+        }
     }
 }

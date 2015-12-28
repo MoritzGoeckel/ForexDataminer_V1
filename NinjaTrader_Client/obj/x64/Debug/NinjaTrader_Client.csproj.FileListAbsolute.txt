@@ -18,7 +18,6 @@ E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\x64\Debug\Ninj
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\x64\Debug\NinjaTrader_Client.csproj.GenerateResource.Cache
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\x64\Debug\NinjaTrader_Client.exe
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\x64\Debug\NinjaTrader_Client.pdb
-E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\x64\Debug\NinjaTrader_Client.csprojResolveAssemblyReference.cache
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\bin\x64\Debug\MySql.Data.dll
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\bin\x64\Debug\SQLite.Designer.dll
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\bin\x64\Debug\System.Data.SQLite.dll
@@ -35,3 +34,4 @@ E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\bin\x64\Debug\EnvD
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\x64\Debug\NinjaTrader_Client.Trader.Analysis.DataDensityForm.resources
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\x64\Debug\NinjaTrader_Client.Trader.Analysis.DataDensityPerDayForm.resources
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\x64\Debug\NinjaTrader_Client.Trader.Analysis.AnalyseRawTestDataForm.resources
+E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\x64\Debug\NinjaTrader_Client.csprojResolveAssemblyReference.cache

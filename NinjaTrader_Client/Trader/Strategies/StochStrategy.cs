@@ -19,7 +19,8 @@ namespace NinjaTrader_Client.Trader.Strategies
         private int stochTimeframe;
         private int hitSL = 0, hitTP = 0;
 
-        private StochIndicator stochIndicator;
+        private Indicator stochIndicator;
+        private Indicator tradingTime;
 
         public StochStrategy(Database database, double percentStoploss, double percentTakeprofit, int stochTimeframe, double threshold, bool followTrend)
             : base(database)
@@ -31,6 +32,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             this.followTrend = followTrend;
 
             stochIndicator = new StochIndicator(database, stochTimeframe);
+            tradingTime = new TradingTimeIndicator(database);
         }
 
         public StochStrategy(Database database, Dictionary<string, string> parameters) 
@@ -85,6 +87,14 @@ namespace NinjaTrader_Client.Trader.Strategies
             if (api.isUptodate(instrument) == false)
                 return;
 
+            double tradingTimeCode = tradingTime.getIndicator(api.getNow(), instrument).value;
+            if (tradingTimeCode == 0)
+            {
+                //Flatten everything
+                api.closePositions(instrument);
+                return;
+            }
+
             double takeprofit = api.getAvgPrice(instrument) * percentTakeprofit / 100d;
             double stoploss = api.getAvgPrice(instrument) * percentStoploss / 100d;
 
@@ -99,7 +109,7 @@ namespace NinjaTrader_Client.Trader.Strategies
                 double oldStochValue = old_Stoch[old_Stoch.Count - 1].value;
                 double stochValue = stochTick.value;
 
-                if (api.getShortPosition(instrument) == null && api.getLongPosition(instrument) == null)
+                if (api.getShortPosition(instrument) == null && api.getLongPosition(instrument) == null && tradingTimeCode == 1)
                 {
                     if (oldStochValue > threshold && stochValue < threshold && followTrend)
                         api.openShort(instrument);

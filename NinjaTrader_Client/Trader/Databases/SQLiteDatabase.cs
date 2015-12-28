@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using System.IO;
 using System.Threading;
 
 namespace NinjaTrader_Client.Trader.MainAPIs
@@ -15,7 +16,10 @@ namespace NinjaTrader_Client.Trader.MainAPIs
         public SQLiteDatabase(string path)
         {
             this.path = path;
-            myConnectionString = "Data Source=" + path + ";Version=3;Journal Mode=Off;Synchronous=Off;Cache_Size=100000;Pooling=True;Max Pool Size=100"; //In memory ????
+            if (File.Exists(path) == false)
+                throw new Exception("Database not found: " + path);
+
+            myConnectionString = "Data Source=" + Config.sqlitePath + ";Version=3;Journal Mode=Off;Synchronous=Off;Cache_Size=100000;Pooling=True;Max Pool Size=100";
         }
 
         private int timeout = 10;

@@ -279,7 +279,7 @@ namespace NinjaTrader_Client.Trader
             }*/
         }
 
-        public void megrate(SQLDatabase sql)
+        public void megrate(Database sql)
         {
             //Implement migrations ???
             /*List<MongoCollection> list = mongodb.getCollections();

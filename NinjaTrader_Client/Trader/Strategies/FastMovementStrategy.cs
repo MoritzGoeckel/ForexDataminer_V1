@@ -1,4 +1,5 @@
 ﻿using NinjaTrader_Client.Trader.Backtest;
+using NinjaTrader_Client.Trader.Indicators;
 using NinjaTrader_Client.Trader.MainAPIs;
 using NinjaTrader_Client.Trader.Model;
 using System;
@@ -13,6 +14,8 @@ namespace NinjaTrader_Client.Trader.Strategies
     {
         int version = 0;
 
+        private Indicator tradingTime;
+
         public FastMovementStrategy(Database database, int preTime, int postTime, double thresholdPercent, double takeprofitPercent, double stoplossPercent, bool follow_trend)
             : base(database)
         {
@@ -22,6 +25,8 @@ namespace NinjaTrader_Client.Trader.Strategies
             this.takeprofitPercent = takeprofitPercent;
             this.stoplossPercent = stoplossPercent;
             this.follow_trend = follow_trend;
+
+            this.tradingTime = new TradingTimeIndicator(database);
         }
 
         public FastMovementStrategy(Database database, Dictionary<string, string> parameters) 
@@ -83,6 +88,14 @@ namespace NinjaTrader_Client.Trader.Strategies
             if (api.isUptodate(instrument) == false)
                 return;
 
+            double tradingTimeCode = tradingTime.getIndicator(api.getNow(), instrument).value;
+            if (tradingTimeCode == 0)
+            {
+                //Flatten everything
+                api.closePositions(instrument);
+                return;
+            }
+
             double threshold = api.getAvgPrice(instrument) * thresholdPercent / 100d;
             double takeprofit = api.getAvgPrice(instrument) * takeprofitPercent / 100d;
             double stoploss = api.getAvgPrice(instrument) * stoplossPercent / 100d;
@@ -108,14 +121,17 @@ namespace NinjaTrader_Client.Trader.Strategies
                     shortSignal = oldLong;
                 }
 
-                //New Orders if movement in preTime is > threshold
-                //Long
-                if (api.getLongPosition(instrument) == null && longSignal)
-                    api.openLong(instrument);
+                if (tradingTimeCode == 1)
+                {
+                    //New Orders if movement in preTime is > threshold
+                    //Long
+                    if (api.getLongPosition(instrument) == null && longSignal)
+                        api.openLong(instrument);
 
-                //Short
-                if (api.getShortPosition(instrument) == null && shortSignal)
-                    api.openShort(instrument);
+                    //Short
+                    if (api.getShortPosition(instrument) == null && shortSignal)
+                        api.openShort(instrument);
+                }
 
                 //Close orders after postTime elapsed
                 //Long

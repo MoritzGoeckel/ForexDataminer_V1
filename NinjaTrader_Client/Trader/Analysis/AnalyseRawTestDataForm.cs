@@ -15,15 +15,12 @@ namespace NinjaTrader_Client.Trader.Analysis
 {
     public partial class AnalyseRawTestDataForm : Form
     {
-        public AnalyseRawTestDataForm(bool onlyParameters)
+        public AnalyseRawTestDataForm()
         {
-            this.onlyParameters = onlyParameters;
             InitializeComponent();
         }
 
         List<SimpleStrategyResult> data = new List<SimpleStrategyResult>();
-
-        bool onlyParameters;
 
         private class SimpleStrategyResult
         {
@@ -42,7 +39,7 @@ namespace NinjaTrader_Client.Trader.Analysis
         private void AnalyseRawTestDataForm_Load(object sender, EventArgs e)
         {
             openFileDialog1.InitialDirectory = Config.startupPath;
-            while (openFileDialog1.ShowDialog() != DialogResult.OK) ;
+            while (openFileDialog1.ShowDialog() != DialogResult.OK);
             string all = File.ReadAllText(openFileDialog1.FileName);
             string[] lines = all.Split(Environment.NewLine.ToCharArray());
             foreach(string line in lines)
@@ -65,7 +62,14 @@ namespace NinjaTrader_Client.Trader.Analysis
             data = data.OrderBy(x => x.score).ToList();
             data.Reverse();
 
+            outputText(false);
+        }
+
+        private void outputText(bool onlyParameters)
+        {
             List<string> foundPairs = new List<string>();
+
+            textBox1.Text = "";
 
             foreach (SimpleStrategyResult result in data)
             {
@@ -108,7 +112,18 @@ namespace NinjaTrader_Client.Trader.Analysis
             return profit > 0
                 && Convert.ToInt16(result["positions"]) >= 30
                 && profit >= Math.Abs(drawdown * 4)
-                && expectedReturn >= 0;
+                && expectedReturn >= 0
+                ;//&& winratio >= 0.5;
+        }
+
+        private void allToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            outputText(false);
+        }
+
+        private void paramsOnlyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            outputText(true);
         }
     }
 }
