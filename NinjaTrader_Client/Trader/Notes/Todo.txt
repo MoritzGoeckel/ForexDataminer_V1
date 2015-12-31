@@ -1,11 +1,11 @@
 ﻿Visualisierung
 Indicator: MA
 
-Flat on Weekends
-
 Big backtests HFU
 
 Small timeframe strategies
 
-NTF:
+More analysis and data mining
+
+Nice to have:
 	FXCM API

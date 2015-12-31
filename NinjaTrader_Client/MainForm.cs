@@ -197,5 +197,11 @@ namespace NinjaTrader_Client
         {
             
         }
+
+        private void button15_Click(object sender, EventArgs e)
+        {
+            StrategyStringGeneratorForm ssgf = new StrategyStringGeneratorForm();
+            ssgf.Show();
+        }
     }
 }

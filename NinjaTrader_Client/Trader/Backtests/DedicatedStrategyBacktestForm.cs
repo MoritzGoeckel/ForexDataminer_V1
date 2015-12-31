@@ -16,7 +16,7 @@ namespace NinjaTrader_Client.Trader.Backtests
         int nextStratId = 0;
 
         public DedicatedStrategyBacktestForm(Database database)
-            : base(database, 30 * 24, 1)
+            : base(database, 3 * 30 * 24, 60)
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.InitialDirectory = Config.startupPath;

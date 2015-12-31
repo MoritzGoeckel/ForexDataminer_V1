@@ -1,0 +1,4 @@
+thresholdOpen:0,5|thresholdClose:-0,1|followCrowd:False|name:SSIStrategy_V0|pair:EURUSD
+thresholdOpen:0,4|thresholdClose:-0,1|followCrowd:False|name:SSIStrategy_V0|pair:EURUSD
+thresholdOpen:0,5|thresholdClose:-0,2|followCrowd:False|name:SSIStrategy_V0|pair:EURUSD
+thresholdOpen:0,6|thresholdClose:-0,2|followCrowd:False|name:SSIStrategy_V0|pair:EURUSD

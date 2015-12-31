@@ -88,7 +88,7 @@ namespace NinjaTrader_Client.Trader.Backtests
             }
 
             else if (r == 3)
-                strategy = new FastMovementStrategy(database,
+                strategy = new MomentumStrategy(database,
                     generateInt(1000 * 60 * 1, 1000 * 60 * 60, 1000 * 60 * 1), //Pre time
                     generateInt(1000 * 60 * 1, 1000 * 60 * 60, 1000 * 60 * 1), //Post time
                     generateDouble(0.01, 0.7, 0.01), //Threshold

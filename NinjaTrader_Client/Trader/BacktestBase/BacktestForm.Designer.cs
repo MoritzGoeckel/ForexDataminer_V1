@@ -87,7 +87,7 @@
             // 
             this.threadsLabel.AutoSize = true;
             this.threadsLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.threadsLabel.Location = new System.Drawing.Point(694, 46);
+            this.threadsLabel.Location = new System.Drawing.Point(879, 46);
             this.threadsLabel.Name = "threadsLabel";
             this.threadsLabel.Size = new System.Drawing.Size(115, 20);
             this.threadsLabel.TabIndex = 5;
@@ -101,7 +101,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(693, 9);
+            this.label1.Location = new System.Drawing.Point(878, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(98, 25);
             this.label1.TabIndex = 9;
@@ -159,7 +159,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1083, 521);
+            this.ClientSize = new System.Drawing.Size(1436, 521);
             this.Controls.Add(this.listBox_trades);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label1);

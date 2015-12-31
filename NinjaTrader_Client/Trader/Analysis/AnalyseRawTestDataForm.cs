@@ -112,8 +112,7 @@ namespace NinjaTrader_Client.Trader.Analysis
             return profit > 0
                 && Convert.ToInt16(result["positions"]) >= 30
                 && profit >= Math.Abs(drawdown * 4)
-                && expectedReturn >= 0
-                ;//&& winratio >= 0.5;
+                && expectedReturn >= 0;
         }
 
         private void allToolStripMenuItem_Click(object sender, EventArgs e)

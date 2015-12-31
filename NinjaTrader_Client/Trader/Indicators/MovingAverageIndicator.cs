@@ -5,23 +5,23 @@ using System.Collections.Generic;
 
 namespace NinjaTrader_Client.Trader.Indicators
 {
-    class MovingAverage : Indicator
+    class MovingAverageIndicator : Indicator
     {
         private long timeframe;
 
-        public MovingAverage(Database database, long timeframe) : base(database)
+        public MovingAverageIndicator(Database database, long timeframe) : base(database)
         {
             this.timeframe = timeframe;
         }
 
         public override TimeValueData getIndicator(long timestamp, string instrument)
         {
-            return new TimeValueData(timestamp, 0.5);
+            throw new NotImplementedException();
         }
 
         public override TimeValueData getIndicator(long timestamp, string dataName, string instrument)
         {
-            return new TimeValueData(timestamp, 0.5);
+            throw new NotImplementedException();
         }
     }
 }

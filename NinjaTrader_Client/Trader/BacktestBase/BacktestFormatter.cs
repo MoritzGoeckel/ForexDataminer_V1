@@ -161,22 +161,31 @@ namespace NinjaTrader_Client.Trader.BacktestBase
         {
             Dictionary<string, string> parameterDict = convertStringCodedToParameters(parameters);
 
-            if (parameterDict["strategy"].StartsWith("SSIStochStrategy"))
+            string name = null;
+            if (parameterDict.ContainsKey("strategy"))
+                name = parameterDict["strategy"];
+            else
+                name = parameterDict["name"];
+
+            if (name.StartsWith("SSIStochStrategy"))
                 strategy = new SSIStochStrategy(database, parameterDict);
 
-            if (parameterDict["strategy"].StartsWith("FastMovement-Strategy"))
-                strategy = new FastMovementStrategy(database, parameterDict);
+            if (name.StartsWith("MomentumStrategy"))
+                strategy = new MomentumStrategy(database, parameterDict);
 
-            if (parameterDict["strategy"].StartsWith("SSIStrategy"))
+            if (name.StartsWith("SSIStrategy"))
                 strategy = new SSIStrategy(database, parameterDict);
 
-            if (parameterDict["strategy"].StartsWith("Stoch-Strategy"))
+            if (name.StartsWith("StochStrategy"))
                 strategy = new StochStrategy(database, parameterDict);
 
             if (strategy == null)
-                throw new Exception("Strategy not deserializable: " + parameterDict["strategy"]);
+                throw new Exception("Strategy not deserializable: " + name);
 
-            instrument = parameterDict["pair"];
+            instrument = null;
+
+            if(parameterDict.ContainsKey("pair"))
+                instrument = parameterDict["pair"];
         }
 
         public static Dictionary<string, string> convertStringCodedToParameters(string str)

@@ -186,16 +186,23 @@
     <Compile Include="Trader\Databases\CachedDatabase.cs" />
     <Compile Include="Trader\Databases\SQLiteDatabase.cs" />
     <Compile Include="Trader\Indicators\Indicator.cs" />
-    <Compile Include="Trader\Indicators\MovingAverage.cs" />
+    <Compile Include="Trader\Indicators\AverageChangeIndicator.cs" />
+    <Compile Include="Trader\Indicators\MovingAverageIndicator.cs" />
     <Compile Include="Trader\Indicators\TradingTimeIndicator.cs" />
     <Compile Include="Trader\Indicators\StochIndicator.cs" />
     <Compile Include="Trader\Databases\Database.cs" />
     <Compile Include="Trader\Databases\SQLDatabase.cs" />
     <Compile Include="Trader\Strategies\StochStrategy.cs" />
     <Compile Include="Trader\Strategies\TemplateStrategy.cs" />
-    <Compile Include="Trader\Strategies\FastMovementStrategy.cs" />
+    <Compile Include="Trader\Strategies\MomentumStrategy.cs" />
     <Compile Include="Trader\Strategies\SSIStochStrategy.cs" />
     <Compile Include="Trader\Strategies\SSIStrategy.cs" />
+    <Compile Include="Trader\StrategyStringGeneratorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Trader\StrategyStringGeneratorForm.Designer.cs">
+      <DependentUpon>StrategyStringGeneratorForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Trader\TradingAPIs\BacktestTradingAPI.cs" />
     <Compile Include="Trader\Model\TradePosition.cs" />
     <Compile Include="Trader\StrategyBase\Strategy.cs" />
@@ -254,6 +261,9 @@
     </Compile>
     <EmbeddedResource Include="Trader\Analysis\DataDensityPerDayForm.resx">
       <DependentUpon>DataDensityPerDayForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Trader\StrategyStringGeneratorForm.resx">
+      <DependentUpon>StrategyStringGeneratorForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

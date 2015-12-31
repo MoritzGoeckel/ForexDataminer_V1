@@ -81,7 +81,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
                 catch(Exception) { minorErrorOccurred(); }
                 finally
                 {
-                    try { connection.Close(); } catch (Exception e) { }
+                    try { connection.Close(); } catch (Exception) { }
                 }
             }
 

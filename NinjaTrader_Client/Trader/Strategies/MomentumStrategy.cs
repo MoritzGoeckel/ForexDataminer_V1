@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace NinjaTrader_Client.Trader.Strategies
 {
-    public class FastMovementStrategy : Strategy
+    public class MomentumStrategy : Strategy
     {
         int version = 0;
 
         private Indicator tradingTime;
 
-        public FastMovementStrategy(Database database, int preTime, int postTime, double thresholdPercent, double takeprofitPercent, double stoplossPercent, bool follow_trend)
+        public MomentumStrategy(Database database, int preTime, int postTime, double thresholdPercent, double takeprofitPercent, double stoplossPercent, bool follow_trend)
             : base(database)
         {
             this.thresholdPercent = thresholdPercent;
@@ -29,7 +29,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             this.tradingTime = new TradingTimeIndicator(database);
         }
 
-        public FastMovementStrategy(Database database, Dictionary<string, string> parameters) 
+        public MomentumStrategy(Database database, Dictionary<string, string> parameters) 
             : base(database)
         {
             preTime = Convert.ToInt32(parameters["preT"]);
@@ -42,12 +42,12 @@ namespace NinjaTrader_Client.Trader.Strategies
 
         public override Strategy copy()
         {
-            return new FastMovementStrategy(database, preTime, postTime, thresholdPercent, takeprofitPercent, stoplossPercent, follow_trend);
+            return new MomentumStrategy(database, preTime, postTime, thresholdPercent, takeprofitPercent, stoplossPercent, follow_trend);
         }
 
         public override string getName()
         {
-            return "FastMovement-Strategy" + "_V" + version;
+            return "MomentumStrategy" + "_V" + version;
         }
 
         public override Dictionary<string, string> getParameters()

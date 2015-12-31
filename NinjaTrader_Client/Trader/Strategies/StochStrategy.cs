@@ -54,7 +54,7 @@ namespace NinjaTrader_Client.Trader.Strategies
 
         public override string getName()
         {
-            return "Stoch-Strategy" + "_V" + version;
+            return "StochStrategy" + "_V" + version;
         }
 
         public override Dictionary<string, string> getParameters()

@@ -47,6 +47,7 @@
             this.button13 = new System.Windows.Forms.Button();
             this.headline_label = new System.Windows.Forms.Label();
             this.button14 = new System.Windows.Forms.Button();
+            this.button15 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -239,11 +240,23 @@
             this.button14.UseVisualStyleBackColor = true;
             this.button14.Click += new System.EventHandler(this.button14_Click);
             // 
+            // button15
+            // 
+            this.button15.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button15.Location = new System.Drawing.Point(240, 109);
+            this.button15.Name = "button15";
+            this.button15.Size = new System.Drawing.Size(158, 23);
+            this.button15.TabIndex = 17;
+            this.button15.Text = "Generate strategy";
+            this.button15.UseVisualStyleBackColor = true;
+            this.button15.Click += new System.EventHandler(this.button15_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(578, 538);
+            this.Controls.Add(this.button15);
             this.Controls.Add(this.button14);
             this.Controls.Add(this.headline_label);
             this.Controls.Add(this.button13);
@@ -290,6 +303,7 @@
         private System.Windows.Forms.Button button13;
         private System.Windows.Forms.Label headline_label;
         private System.Windows.Forms.Button button14;
+        private System.Windows.Forms.Button button15;
     }
 }
 

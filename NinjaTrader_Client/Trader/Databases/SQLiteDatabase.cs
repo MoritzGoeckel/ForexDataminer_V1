@@ -19,7 +19,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
             if (File.Exists(path) == false)
                 throw new Exception("Database not found: " + path);
 
-            myConnectionString = "Data Source=" + Config.sqlitePath + ";Version=3;Journal Mode=Off;Synchronous=Off;Cache_Size=100000;Pooling=True;Max Pool Size=100";
+            myConnectionString = "Data Source=" + Config.sqlitePath + ";Version=3;Journal Mode=Off;Synchronous=Off;Cache_Size=1000000;Pooling=True;Max Pool Size=100";
         }
 
         private int timeout = 10;
@@ -69,7 +69,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
                 catch(Exception) { minorErrorOccurred(); }
                 finally
                 {
-                    try { connection.Close(); } catch (Exception e) { }
+                    try { connection.Close(); } catch (Exception) { }
                 }
             }
 

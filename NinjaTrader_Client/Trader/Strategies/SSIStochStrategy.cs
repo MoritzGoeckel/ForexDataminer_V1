@@ -101,15 +101,15 @@ namespace NinjaTrader_Client.Trader.Strategies
             double takeprofit = api.getAvgPrice(instrument) * takeprofitPercent / 100d;
             double stoploss = api.getAvgPrice(instrument) * stoplossPercent / 100d;
 
-            TimeValueData stockTick = stochIndicator.getIndicator(api.getNow(), "ssi-mt4", instrument);
+            TimeValueData stochTick = stochIndicator.getIndicator(api.getNow(), "ssi-mt4", instrument);
             
-            if (stockTick == null)
+            if (stochTick == null)
                 return;
 
             if (lastStochTicks.ContainsKey(instrument) == false)
                 lastStochTicks.Add(instrument, new List<TimeValueData>());
 
-            lastStochTicks[instrument].Add(stockTick);
+            lastStochTicks[instrument].Add(stochTick);
 
             //Liste x Minuten in die Vergangenheit um zu sehen ob gerade eine grenze überschritten wurde
             while (api.getNow() - lastStochTicks[instrument][0].timestamp > 1000 * 60 * 5)

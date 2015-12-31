@@ -1,30 +1,26 @@
-﻿using NinjaTrader_Client.Trader.Backtest;
-using NinjaTrader_Client.Trader.Indicators;
+﻿using NinjaTrader_Client.Trader.Indicators;
 using NinjaTrader_Client.Trader.MainAPIs;
 using NinjaTrader_Client.Trader.Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NinjaTrader_Client.Trader.Strategies
 {
     public class SSIStrategy : Strategy
     {
         double thresholdOpen, thresholdClose;
-        bool followTrend;
+        bool followCrowd;
 
-        int version = 0;
+        int version = 1;
 
         private Indicator tradingTime;
 
-        public SSIStrategy(Database database, double thresholdOpen, double thresholdClose, bool followTrend)
+        public SSIStrategy(Database database, double thresholdOpen, double thresholdClose, bool followCrowd)
             : base(database)
         {
             this.thresholdOpen = thresholdOpen;
             this.thresholdClose = thresholdClose;
-            this.followTrend = followTrend;
+            this.followCrowd = followCrowd;
 
             this.tradingTime = new TradingTimeIndicator(database);
         }
@@ -34,12 +30,12 @@ namespace NinjaTrader_Client.Trader.Strategies
         {
             thresholdOpen = Double.Parse(parameters["thresholdOpen"]);
             thresholdClose = Double.Parse(parameters["thresholdClose"]);
-            followTrend = Boolean.Parse(parameters["followTrend"]);
+            followCrowd = Boolean.Parse(parameters["followCrowd"]);
         }
 
         public override Strategy copy()
         {
-            return new SSIStrategy(database, thresholdOpen, thresholdClose, followTrend);
+            return new SSIStrategy(database, thresholdOpen, thresholdClose, followCrowd);
         }
 
         public override string getName()
@@ -52,7 +48,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             Dictionary<string, string> parameters = new Dictionary<string, string>();
             parameters.Add("thresholdOpen", thresholdOpen.ToString());
             parameters.Add("thresholdClose", thresholdClose.ToString());
-            parameters.Add("followTrend", followTrend.ToString());
+            parameters.Add("followCrowd", followCrowd.ToString());
 
             parameters.Add("name", getName());
 
@@ -65,7 +61,6 @@ namespace NinjaTrader_Client.Trader.Strategies
             return result;
         }
 
-        //private long pauseTil = 0;
         public override void doTick(string instrument)
         {
             if (api.isUptodate(instrument) == false)
@@ -88,28 +83,52 @@ namespace NinjaTrader_Client.Trader.Strategies
 
             if (tradingTimeCode == 1)
             {
+                //SSI im long
                 if (ssi > thresholdOpen)
                 {
-                    if (followTrend && api.getShortPosition(instrument) == null)
+                    if (followCrowd == false && api.getShortPosition(instrument) == null)
                         api.openShort(instrument);
-                    else if (followTrend == false && api.getLongPosition(instrument) == null)
+
+                    if (followCrowd && api.getLongPosition(instrument) == null)
                         api.openLong(instrument);
                 }
 
+                //SSI im short
                 if (ssi < -thresholdOpen)
                 {
-                    if (followTrend && api.getLongPosition(instrument) == null)
+                    if (followCrowd == false && api.getLongPosition(instrument) == null)
                         api.openLong(instrument);
-                    else if (followTrend == false && api.getShortPosition(instrument) == null)
+
+                    if (followCrowd && api.getShortPosition(instrument) == null)
                         api.openShort(instrument);
                 }
             }
 
-            if (api.getLongPosition(instrument) != null && ((ssi > thresholdClose && followTrend) || (ssi < -thresholdClose && followTrend == false)))
-                api.closePositions(instrument);
+            //bin im Long
+            if (api.getLongPosition(instrument) != null)
+                if (followCrowd == false)
+                {
+                    if(ssi > -thresholdClose)
+                        api.closePositions(instrument);
+                }
+                else
+                {
+                    if(ssi < thresholdClose)
+                        api.closePositions(instrument);
+                }
 
-            if (api.getShortPosition(instrument) != null && ((ssi > thresholdClose && followTrend == false) || (ssi < -thresholdClose && followTrend)))
-                api.closePositions(instrument);
+            //Bin im short
+            if (api.getShortPosition(instrument) != null)
+                if (followCrowd == false)
+                {
+                    if(ssi < thresholdClose)
+                        api.closePositions(instrument);
+                }
+                else
+                {
+                    if(ssi > -thresholdClose)
+                        api.closePositions(instrument);
+                }
         }
     }
 }

@@ -138,7 +138,9 @@ namespace NinjaTrader_Client
             {
                 BacktestData result = results[listBox_results.SelectedItem.ToString()];
 
+                listBox_trades.Items.Clear();
                 listBox_trades.Items.AddRange(BacktestFormatter.getPositionsText(result).Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries));
+
                 label_parameters.Text = BacktestFormatter.getParameterText(result);
                 label_result.Text = BacktestFormatter.getResultText(result);
             }
