@@ -25,8 +25,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             this.tradingTime = new TradingTimeIndicator(database);
         }
 
-        public SSIStrategy(Database database, Dictionary<string, string> parameters)
-            : base(database)
+        public SSIStrategy(Database database, Dictionary<string, string> parameters) : base(database)
         {
             thresholdOpen = Double.Parse(parameters["thresholdOpen"]);
             thresholdClose = Double.Parse(parameters["thresholdClose"]);

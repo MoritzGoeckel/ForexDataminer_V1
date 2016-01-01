@@ -20,14 +20,13 @@ namespace NinjaTrader_Client
 {
     public abstract partial class BacktestForm : Form
     {
-        protected abstract void getNextStrategyToTest(ref Strategy strategy, ref String instrument, ref bool continueBacktesting);
+        protected abstract void getNextStrategyToTest(ref Strategy strategy, ref String instrument, ref long resolutionInSeconds, ref bool continueBacktesting);
         protected abstract void backtestResultArrived(Dictionary<string, string> parameters, Dictionary<string, string> result);
 
         private Backtester backtester;
         protected Database database;
 
         private long endTimestamp, startTimestamp;
-        private int resolution;
 
         private int testsCount = 0;
         private Dictionary<string, BacktestData> results = new Dictionary<string, BacktestData>();
@@ -35,19 +34,18 @@ namespace NinjaTrader_Client
         private int errorTests = 0;
         private int maxThreads = Environment.ProcessorCount; // Threads Count
 
-        public BacktestForm(Database database, int backtestHours, int resolution)
+        public BacktestForm(Database database, int backtestHours)
         {
             InitializeComponent();
             this.database = database;
 
             this.endTimestamp = database.getLastTimestamp();
             this.startTimestamp = endTimestamp - (backtestHours * 60L * 60L * 1000L);
-            this.resolution = resolution;
         }
 
         private void BacktestForm_Load(object sender, EventArgs e)
         {
-            backtester = new Backtester(database, resolution, startTimestamp, endTimestamp, 30);
+            backtester = new Backtester(database, startTimestamp, endTimestamp, 30);
             backtester.backtestResultArrived += backtester_backtestResultArrived;
 
             timer1.Start();
@@ -62,14 +60,16 @@ namespace NinjaTrader_Client
                 bool continueTesting = false;
                 string pair = null;
                 Strategy strategy = null;
-                
-                getNextStrategyToTest(ref strategy, ref pair, ref continueTesting);
 
-                if ((pair == null || strategy == null) && continueTesting == true)
+                long resolutionInSeconds = -1;
+
+                getNextStrategyToTest(ref strategy, ref pair, ref resolutionInSeconds, ref continueTesting);
+
+                if ((pair == null || strategy == null || resolutionInSeconds == -1) && continueTesting == true)
                     throw new Exception("Pair or Strategy eq NULL -> P: " + pair + " S: " + strategy);
 
                 if (continueTesting)
-                    backtester.startBacktest(strategy, pair);
+                    backtester.startBacktest(strategy, pair, resolutionInSeconds);
                 else
                     break;
             }

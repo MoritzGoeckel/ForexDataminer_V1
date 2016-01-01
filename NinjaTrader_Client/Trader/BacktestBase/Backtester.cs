@@ -15,7 +15,6 @@ namespace NinjaTrader_Client.Trader.Backtest
     class Backtester
     {
         private Database database;
-        private int resolutionInSeconds;
         private long startTimestamp, endTimestamp;
 
         public delegate void BacktestResultArrivedHandler(BacktestData result);
@@ -26,10 +25,9 @@ namespace NinjaTrader_Client.Trader.Backtest
 
         private int maxPositionsPerHour;
 
-        public Backtester(Database database, int resolutionInSeconds, long startTimestamp, long endTimestamp, int maxPositionsPerHour)
+        public Backtester(Database database, long startTimestamp, long endTimestamp, int maxPositionsPerHour)
         {
             this.database = database;
-            this.resolutionInSeconds = resolutionInSeconds;
             this.startTimestamp = startTimestamp;
             this.endTimestamp = endTimestamp;
             this.maxPositionsPerHour = maxPositionsPerHour;
@@ -38,7 +36,7 @@ namespace NinjaTrader_Client.Trader.Backtest
                 throw new Exception("BacktestConstructor: startTimestamp > endTimestamp");
         }
 
-        public void startBacktest(Strategy strat, string pair)
+        public void startBacktest(Strategy strat, string pair, long resolutionInSeconds)
         {
             List<string> pairs = new List<string>();
             pairs.Add(pair);
@@ -48,16 +46,16 @@ namespace NinjaTrader_Client.Trader.Backtest
             Strategy dedicatedStrategy = strat.copy();
             dedicatedStrategy.setAPI(dedicatedAPI); //Todo: Nicht schön, nicht sicher
 
-            Thread thread = new Thread(() => runBacktest(dedicatedStrategy, pair, dedicatedAPI));
+            Thread thread = new Thread(() => runBacktest(dedicatedStrategy, pair, resolutionInSeconds, dedicatedAPI));
             thread.Start();
 
             threads.Add(thread);
         }
 
-        public void startBacktest(List<Strategy> strats, string pair)
+        public void startBacktest(List<Strategy> strats, string pair, long resolutionInSeconds)
         {
             foreach (Strategy strat in strats)
-                startBacktest(strat, pair);
+                startBacktest(strat, pair, resolutionInSeconds);
         }
 
         double doneTestsTime = 0;
@@ -69,7 +67,7 @@ namespace NinjaTrader_Client.Trader.Backtest
         double strategyCalcCount = 0;
         double strategyCalcTime = 0;
 
-        private void runBacktest(Strategy strat, string pair, BacktestTradingAPI api)
+        private void runBacktest(Strategy strat, string pair, long resolutionInSeconds, BacktestTradingAPI api)
         {
             Stopwatch watch = new Stopwatch();
             watch.Start();

@@ -18,7 +18,7 @@ namespace NinjaTrader_Client.Trader.Backtests
         private List<string> all = new List<string>();
 
         public RandomStrategyBacktestForm(Database database)
-            : base(database, 7 * 24, 1)
+            : base(database, 90 * 24)
         {
             majors.Add("EURUSD");
             majors.Add("GBPUSD");
@@ -55,12 +55,16 @@ namespace NinjaTrader_Client.Trader.Backtests
             }
         }
 
-        protected override void getNextStrategyToTest(ref Strategy strategy, ref string instrument, ref bool continueBacktesting)
+        protected override void getNextStrategyToTest(ref Strategy strategy, ref string instrument, ref long resolutionInSeconds, ref bool continueBacktesting)
         {
             instrument = all[z.Next(0, all.Count)];
             continueBacktesting = true;
 
+            resolutionInSeconds = 10; //Normalerweise 10er res, bei SSI 60er res
+
             int r = z.Next(1, 5);
+
+            r = 4; //Nur SSI :) ???
 
             double sl = generateDouble(0.01, 0.3, 0.05);
             double tp = sl + generateDouble(0, 0.3, 0.05);
@@ -98,10 +102,14 @@ namespace NinjaTrader_Client.Trader.Backtests
 
             else if (r == 4)
             {
-                strategy = new SSIStrategy(database,
-                    generateDouble(0.0, 0.5, 0.01), //Threshold open
-                    generateDouble(0.0, 0.5, 0.01), //Threshold close
+                double open = generateDouble(0.0, 0.6, 0.05);
+
+                strategy = new SSIStrategy(database, 
+                    open,  //Open
+                    open - generateDouble(0.0, 0.8, 0.05), //Close
                     generateBool());
+
+                resolutionInSeconds = 60;
 
                 instrument = majors[z.Next(0, majors.Count)];
             }

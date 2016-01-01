@@ -16,7 +16,7 @@ namespace NinjaTrader_Client.Trader.Backtests
         int nextStratId = 0;
 
         public DedicatedStrategyBacktestForm(Database database)
-            : base(database, 3 * 30 * 24, 60)
+            : base(database, 3 * 30 * 24)
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.InitialDirectory = Config.startupPath;
@@ -32,8 +32,10 @@ namespace NinjaTrader_Client.Trader.Backtests
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        protected override void getNextStrategyToTest(ref Strategy strategy, ref string instrument, ref bool continueBacktesting)
+        protected override void getNextStrategyToTest(ref Strategy strategy, ref string instrument, ref long resolutionInSeconds, ref bool continueBacktesting)
         {
+            resolutionInSeconds = 1;
+
             if (nextStratId < parameterList.Count)
                 continueBacktesting = true;
             else
