@@ -130,8 +130,13 @@ namespace NinjaTrader_Client.Trader.Charting
             {
                 foreach (TradePosition position in history)
                 {
+                    int fourthOfHeight = bmp.Height / 4;
+
                     Pen lineColor = (position.getDifference() > 0 ? Pens.Green : Pens.Red);
                     g.DrawLine(lineColor, getXTime(position.timestampOpen), getYValue(position.priceOpen), getXTime(position.timestampClose), getYValue(position.priceClose));
+
+                    //g.DrawLine(Pens.Gray, getXTime(position.timestampOpen), fourthOfHeight, getXTime(position.timestampOpen), bmp.Height - fourthOfHeight);
+                    //g.DrawLine(lineColor, getXTime(position.timestampClose), fourthOfHeight, getXTime(position.timestampClose), bmp.Height - fourthOfHeight);
                 }
             }
 
@@ -143,7 +148,7 @@ namespace NinjaTrader_Client.Trader.Charting
             return height;
         }
 
-        private int getYValue(double value)
+        public int getYValue(double value)
         {
             int output = Convert.ToInt32((1 - ((value - min_value) / (max_value - min_value))) * height);
 
@@ -153,7 +158,7 @@ namespace NinjaTrader_Client.Trader.Charting
             return output;
         }
 
-        private int getXTime(long time)
+        public int getXTime(long time)
         {
             return Convert.ToInt32((Convert.ToDouble(time - min_time) / Convert.ToDouble(max_time - min_time)) * Convert.ToDouble(width));
         }

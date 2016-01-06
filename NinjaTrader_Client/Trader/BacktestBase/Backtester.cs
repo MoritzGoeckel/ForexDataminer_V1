@@ -37,7 +37,7 @@ namespace NinjaTrader_Client.Trader.Backtest
                 throw new Exception("BacktestConstructor: startTimestamp > endTimestamp");
         }
 
-        public void startBacktest(Strategy strat, string pair, long resolutionInSeconds)
+        public void startBacktest(Strategy strat, string pair, long resolutionInSeconds, int chartResolution)
         {
             List<string> pairs = new List<string>();
             pairs.Add(pair);
@@ -47,16 +47,16 @@ namespace NinjaTrader_Client.Trader.Backtest
             Strategy dedicatedStrategy = strat.copy();
             dedicatedStrategy.setAPI(dedicatedAPI); //Todo: Nicht schön, nicht sicher
 
-            Thread thread = new Thread(() => runBacktest(dedicatedStrategy, pair, resolutionInSeconds, 2000, dedicatedAPI));
+            Thread thread = new Thread(() => runBacktest(dedicatedStrategy, pair, resolutionInSeconds, chartResolution, dedicatedAPI));
             thread.Start();
 
             threads.Add(thread);
         }
 
-        public void startBacktest(List<Strategy> strats, string pair, long resolutionInSeconds)
+        public void startBacktest(List<Strategy> strats, string pair, long resolutionInSeconds, int chartResolution)
         {
             foreach (Strategy strat in strats)
-                startBacktest(strat, pair, resolutionInSeconds);
+                startBacktest(strat, pair, resolutionInSeconds, chartResolution);
         }
 
         double doneTestsTime = 0;

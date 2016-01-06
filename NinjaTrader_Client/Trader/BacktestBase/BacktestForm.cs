@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -34,6 +35,8 @@ namespace NinjaTrader_Client
 
         private int errorTests = 0;
         private int maxThreads = 1; //Environment.ProcessorCount; // Threads Count
+
+        private int chartResolution = 3000;
 
         public BacktestForm(Database database, int backtestHours)
         {
@@ -70,7 +73,7 @@ namespace NinjaTrader_Client
                     throw new Exception("Pair or Strategy eq NULL -> P: " + pair + " S: " + strategy);
 
                 if (continueTesting)
-                    backtester.startBacktest(strategy, pair, resolutionInSeconds);
+                    backtester.startBacktest(strategy, pair, resolutionInSeconds, chartResolution);
                 else
                     break;
             }
@@ -150,8 +153,14 @@ namespace NinjaTrader_Client
             BacktestData result = results[listBox_results.SelectedItem.ToString()];
             //ChartingForm chartingForm = new ChartingForm(database, result.getPositions(), startTimestamp, endTimestamp);
             //chartingForm.Show(); //caching! ???
-            ShowImageForm form = new ShowImageForm(BacktestDataVisualizer.getImageFromBacktestData(result, 2000, 150));
-            form.Show();
+
+            Image img = BacktestDataVisualizer.getImageFromBacktestData(result, 3000, 150);
+            img.Save(Config.startupPath + "/tmp.png");
+
+            Process.Start(Config.startupPath + "/tmp.png");
+
+            //ShowImageForm form = new ShowImageForm();
+            //form.Show();
         }
 
         private void timer1_Tick(object sender, EventArgs e)

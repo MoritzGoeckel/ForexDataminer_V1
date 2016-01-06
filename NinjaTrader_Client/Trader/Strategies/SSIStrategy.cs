@@ -65,13 +65,20 @@ namespace NinjaTrader_Client.Trader.Strategies
             return result;
         }
 
-        private BacktestVisualizationDataComponent price_vi, thresholdClose_vi, thresholdOpen_vi, uptodate_vi, tradingTimeCode_vi, ssi_vi;
+        private BacktestVisualizationDataComponent price_vi, uptodate_vi, tradingTimeCode_vi, ssi_vi;
 
         public override void setupVisualizationData()
         {
             price_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("price", BacktestVisualizationDataComponent.VisualizationType.OnChart, 0));
-            thresholdClose_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("thresholdClose", BacktestVisualizationDataComponent.VisualizationType.OneToMinusOne, 1, thresholdClose));
-            thresholdOpen_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("thresholdOpen", BacktestVisualizationDataComponent.VisualizationType.OneToMinusOne, 1, thresholdOpen));
+
+            visualizationData.addComponent(new BacktestVisualizationDataComponent("thresholdClose", BacktestVisualizationDataComponent.VisualizationType.OneToMinusOne, 1, thresholdClose));
+            visualizationData.addComponent(new BacktestVisualizationDataComponent("thresholdOpen", BacktestVisualizationDataComponent.VisualizationType.OneToMinusOne, 1,  thresholdOpen));
+
+            visualizationData.addComponent(new BacktestVisualizationDataComponent("thresholdClose_Lower", BacktestVisualizationDataComponent.VisualizationType.OneToMinusOne, 1,-thresholdClose));
+            visualizationData.addComponent(new BacktestVisualizationDataComponent("thresholdOpen_Lower", BacktestVisualizationDataComponent.VisualizationType.OneToMinusOne, 1, -thresholdOpen));
+
+            visualizationData.addComponent(new BacktestVisualizationDataComponent("NULL", BacktestVisualizationDataComponent.VisualizationType.OneToMinusOne, 1, 0));
+
             uptodate_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("uptodate", BacktestVisualizationDataComponent.VisualizationType.TrafficLight, 2));
             tradingTimeCode_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("tradingTimeCode", BacktestVisualizationDataComponent.VisualizationType.TrafficLight, 3));
             ssi_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("ssi", BacktestVisualizationDataComponent.VisualizationType.OneToMinusOne, 1));

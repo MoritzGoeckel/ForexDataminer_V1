@@ -1,4 +1,9 @@
 ﻿Visualisierung
+	Farbcoderiung
+	Namensgebung
+	Speichern (direkt öffnen)
+
+	Analyse der einzelnen Strategien (Seltsame history teilweise)
 
 Inverter
 
