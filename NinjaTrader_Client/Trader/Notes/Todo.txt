@@ -1,9 +1,10 @@
 ﻿Visualisierung
-Indicator: MA
+
+Inverter
 
 Big backtests HFU
 
-Small timeframe strategies
+Indicator: MA
 
 More analysis and data mining
 

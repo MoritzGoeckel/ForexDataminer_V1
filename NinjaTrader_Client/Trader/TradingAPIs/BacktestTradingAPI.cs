@@ -32,12 +32,16 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
             this.now = now;
             foreach (KeyValuePair<string, PairData> pair in pairData)
             {
-                if (tradingTime.getIndicator(now, pair.Key).value != 0) //No calculations on weekends
+                if (tradingTime.getIndicator(now, pair.Key).value != 0)  //No calculations on weekends ???
                 { 
                     Tickdata tickData = database.getPrice(now, pair.Key);
 
                     if (tickData != null)
                         pairData[pair.Key].lastTickData = tickData;
+                }
+                else
+                {
+                    pairData[pair.Key].lastTickData.timestamp = now;
                 }
             }
         }

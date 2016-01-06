@@ -1,4 +1,5 @@
-﻿using NinjaTrader_Client.Trader.Indicators;
+﻿using NinjaTrader_Client.Trader.BacktestBase.Visualization;
+using NinjaTrader_Client.Trader.Indicators;
 using NinjaTrader_Client.Trader.MainAPIs;
 using NinjaTrader_Client.Trader.Model;
 using System;
@@ -23,6 +24,8 @@ namespace NinjaTrader_Client.Trader.Strategies
             this.followCrowd = followCrowd;
 
             this.tradingTime = new TradingTimeIndicator(database);
+
+            setupVisualizationData();
         }
 
         public SSIStrategy(Database database, Dictionary<string, string> parameters) : base(database)
@@ -30,6 +33,8 @@ namespace NinjaTrader_Client.Trader.Strategies
             thresholdOpen = Double.Parse(parameters["thresholdOpen"]);
             thresholdClose = Double.Parse(parameters["thresholdClose"]);
             followCrowd = Boolean.Parse(parameters["followCrowd"]);
+
+            setupVisualizationData();
         }
 
         public override Strategy copy()
@@ -60,12 +65,30 @@ namespace NinjaTrader_Client.Trader.Strategies
             return result;
         }
 
+        private BacktestVisualizationDataComponent price_vi, thresholdClose_vi, thresholdOpen_vi, uptodate_vi, tradingTimeCode_vi, ssi_vi;
+
+        public override void setupVisualizationData()
+        {
+            price_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("price", BacktestVisualizationDataComponent.VisualizationType.OnChart, 0));
+            thresholdClose_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("thresholdClose", BacktestVisualizationDataComponent.VisualizationType.OneToMinusOne, 1, thresholdClose));
+            thresholdOpen_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("thresholdOpen", BacktestVisualizationDataComponent.VisualizationType.OneToMinusOne, 1, thresholdOpen));
+            uptodate_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("uptodate", BacktestVisualizationDataComponent.VisualizationType.TrafficLight, 2));
+            tradingTimeCode_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("tradingTimeCode", BacktestVisualizationDataComponent.VisualizationType.TrafficLight, 3));
+            ssi_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("ssi", BacktestVisualizationDataComponent.VisualizationType.OneToMinusOne, 1));
+        }
+
         public override void doTick(string instrument)
         {
-            if (api.isUptodate(instrument) == false)
+            price_vi.value = api.getAvgPrice(instrument);
+
+            bool isUpToDate = api.isUptodate(instrument);
+            uptodate_vi.value = isUpToDate ? 1 : 0;
+            if (isUpToDate == false)
                 return;
 
             double tradingTimeCode = tradingTime.getIndicator(api.getNow(), instrument).value;
+            tradingTimeCode_vi.value = tradingTimeCode;
+
             if (tradingTimeCode == 0)
             {
                 //Flatten everything
@@ -74,11 +97,11 @@ namespace NinjaTrader_Client.Trader.Strategies
             }
 
             TimeValueData ssiValue = database.getData(api.getNow(), "ssi-mt4", instrument);
+            double ssi = ssiValue.value;
+            ssi_vi.value = ssi;
 
             if (ssiValue == null)
                 return;
-
-            double ssi = ssiValue.value;
 
             if (tradingTimeCode == 1)
             {

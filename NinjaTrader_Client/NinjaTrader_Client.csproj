@@ -175,12 +175,15 @@
     <Compile Include="Trader\BacktestBase\BacktestData.cs" />
     <Compile Include="Trader\BacktestBase\BacktestFormatter.cs" />
     <Compile Include="Trader\BacktestBase\ProgressReport.cs" />
+    <Compile Include="Trader\BacktestBase\Visualization\BacktestDataVisualizer.cs" />
+    <Compile Include="Trader\BacktestBase\Visualization\BacktestVisualizationData.cs" />
     <Compile Include="Trader\Backtests\RandomStrategyBacktestForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Trader\Backtests\DedicatedStrategyBacktestForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Trader\Charting\CustomChart.cs" />
     <Compile Include="Trader\Charting\SimpleChart_Stepline.cs" />
     <Compile Include="Trader\Charting\SimpleChart_Scatter.cs" />
     <Compile Include="Trader\Databases\CachedDatabase.cs" />
@@ -192,8 +195,13 @@
     <Compile Include="Trader\Indicators\StochIndicator.cs" />
     <Compile Include="Trader\Databases\Database.cs" />
     <Compile Include="Trader\Databases\SQLDatabase.cs" />
+    <Compile Include="Trader\ShowImageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Trader\ShowImageForm.Designer.cs">
+      <DependentUpon>ShowImageForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Trader\Strategies\StochStrategy.cs" />
-    <Compile Include="Trader\Strategies\TemplateStrategy.cs" />
     <Compile Include="Trader\Strategies\MomentumStrategy.cs" />
     <Compile Include="Trader\Strategies\SSIStochStrategy.cs" />
     <Compile Include="Trader\Strategies\SSIStrategy.cs" />
@@ -261,6 +269,9 @@
     </Compile>
     <EmbeddedResource Include="Trader\Analysis\DataDensityPerDayForm.resx">
       <DependentUpon>DataDensityPerDayForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Trader\ShowImageForm.resx">
+      <DependentUpon>ShowImageForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Trader\StrategyStringGeneratorForm.resx">
       <DependentUpon>StrategyStringGeneratorForm.cs</DependentUpon>

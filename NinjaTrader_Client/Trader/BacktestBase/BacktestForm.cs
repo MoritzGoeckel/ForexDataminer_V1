@@ -1,6 +1,7 @@
 ﻿using NinjaTrader_Client.Trader;
 using NinjaTrader_Client.Trader.Backtest;
 using NinjaTrader_Client.Trader.BacktestBase;
+using NinjaTrader_Client.Trader.BacktestBase.Visualization;
 using NinjaTrader_Client.Trader.MainAPIs;
 using NinjaTrader_Client.Trader.Model;
 using NinjaTrader_Client.Trader.Strategies;
@@ -32,7 +33,7 @@ namespace NinjaTrader_Client
         private Dictionary<string, BacktestData> results = new Dictionary<string, BacktestData>();
 
         private int errorTests = 0;
-        private int maxThreads = Environment.ProcessorCount; // Threads Count
+        private int maxThreads = 1; //Environment.ProcessorCount; // Threads Count
 
         public BacktestForm(Database database, int backtestHours)
         {
@@ -45,7 +46,7 @@ namespace NinjaTrader_Client
 
         private void BacktestForm_Load(object sender, EventArgs e)
         {
-            backtester = new Backtester(database, startTimestamp, endTimestamp, 30);
+            backtester = new Backtester(database, startTimestamp, endTimestamp, 10);
             backtester.backtestResultArrived += backtester_backtestResultArrived;
 
             timer1.Start();
@@ -126,9 +127,7 @@ namespace NinjaTrader_Client
                 Environment.NewLine +
                 backtester.getProgressText() +
                 Environment.NewLine +
-                //"Cacheing: " + database.getCacheingAccessPercent() + "%" +
                 Environment.NewLine;
-                //"Cache filled: " + database.getCacheFilledPercent() + "%";
         }
 
         //UI stuff
@@ -149,8 +148,10 @@ namespace NinjaTrader_Client
         private void openChartBtn_Click(object sender, EventArgs e)
         {
             BacktestData result = results[listBox_results.SelectedItem.ToString()];
-            ChartingForm chartingForm = new ChartingForm(database, result.getPositions(), startTimestamp, endTimestamp);
-            chartingForm.Show(); //caching! ???
+            //ChartingForm chartingForm = new ChartingForm(database, result.getPositions(), startTimestamp, endTimestamp);
+            //chartingForm.Show(); //caching! ???
+            ShowImageForm form = new ShowImageForm(BacktestDataVisualizer.getImageFromBacktestData(result, 2000, 150));
+            form.Show();
         }
 
         private void timer1_Tick(object sender, EventArgs e)

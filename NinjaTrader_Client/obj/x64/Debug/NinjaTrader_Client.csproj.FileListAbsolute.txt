@@ -36,3 +36,4 @@ E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\x64\Debug\Ninj
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\x64\Debug\NinjaTrader_Client.Trader.Analysis.AnalyseRawTestDataForm.resources
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\x64\Debug\NinjaTrader_Client.csprojResolveAssemblyReference.cache
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\x64\Debug\NinjaTrader_Client.Trader.StrategyStringGeneratorForm.resources
+E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\x64\Debug\NinjaTrader_Client.Trader.ShowImageForm.resources

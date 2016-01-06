@@ -1,4 +1,5 @@
 ﻿using NinjaTrader_Client.Trader.Backtest;
+using NinjaTrader_Client.Trader.BacktestBase.Visualization;
 using NinjaTrader_Client.Trader.Indicators;
 using NinjaTrader_Client.Trader.MainAPIs;
 using NinjaTrader_Client.Trader.Model;
@@ -33,6 +34,8 @@ namespace NinjaTrader_Client.Trader.Strategies
 
             stochIndicator = new StochIndicator(database, stochTimeframe);
             tradingTime = new TradingTimeIndicator(database);
+
+            setupVisualizationData();
         }
 
         public StochStrategy(Database database, Dictionary<string, string> parameters) 
@@ -45,6 +48,23 @@ namespace NinjaTrader_Client.Trader.Strategies
             threshold = Double.Parse(parameters["threshold"]);
 
             stochIndicator = new StochIndicator(database, stochTimeframe);
+
+            setupVisualizationData();
+        }
+
+        private BacktestVisualizationDataComponent stochUpperBorder_vi, stochLowerBorder_vi, price_vi, uptodate_vi, tradingTimeCode_vi, stoch_vi, sl_vi, tp_vi;
+
+        public override void setupVisualizationData()
+        {
+            stochUpperBorder_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("stochUpperBorder", BacktestVisualizationDataComponent.VisualizationType.ZeroToOne, 1, 1 - threshold));
+            stochLowerBorder_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("stochLowerBorder", BacktestVisualizationDataComponent.VisualizationType.ZeroToOne, 1, threshold));
+            price_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("price", BacktestVisualizationDataComponent.VisualizationType.OnChart, 0));
+            uptodate_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("uptodate", BacktestVisualizationDataComponent.VisualizationType.TrafficLight, 2));
+            tradingTimeCode_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("tradingTimeCode", BacktestVisualizationDataComponent.VisualizationType.TrafficLight, 3));
+            stoch_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("stoch", BacktestVisualizationDataComponent.VisualizationType.ZeroToOne, 1));
+
+            //sl_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("sl", BacktestVisualizationDataComponent.VisualizationType.OnChart, 0)); //??? Wird nicht gesetzt ???
+            //tp_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("tp", BacktestVisualizationDataComponent.VisualizationType.OnChart, 0));
         }
 
         public override Strategy copy()
@@ -84,10 +104,16 @@ namespace NinjaTrader_Client.Trader.Strategies
 
         public override void doTick(string instrument)
         {
-            if (api.isUptodate(instrument) == false)
+            Tickdata nowTick = new Tickdata(api.getNow(), 0, api.getBid(instrument), api.getAsk(instrument));
+            price_vi.value = nowTick.getAvg();
+            
+            bool isUptodate = api.isUptodate(instrument);
+            uptodate_vi.value = isUptodate ? 1 : 0;
+            if (isUptodate == false)
                 return;
 
             double tradingTimeCode = tradingTime.getIndicator(api.getNow(), instrument).value;
+            tradingTimeCode_vi.value = tradingTimeCode;
             if (tradingTimeCode == 0)
             {
                 //Flatten everything
@@ -99,7 +125,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             double stoploss = api.getAvgPrice(instrument) * percentStoploss / 100d;
 
             TimeValueData stochTick = stochIndicator.getIndicator(api.getNow(), instrument);
-            Tickdata nowTick = new Tickdata(api.getNow(), 0, api.getBid(instrument), api.getAsk(instrument));
+            stoch_vi.value = stochTick.value;
 
             while (old_Stoch.Count != 0 && api.getNow() - old_Stoch[old_Stoch.Count - 1].timestamp > 1000 * 60 * 3)
                 old_Stoch.RemoveAt(old_Stoch.Count - 1);

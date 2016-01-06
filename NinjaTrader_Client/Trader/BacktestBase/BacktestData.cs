@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NinjaTrader_Client.Trader.BacktestBase.Visualization;
 
 namespace NinjaTrader_Client.Trader.Backtest
 {
@@ -178,6 +179,17 @@ namespace NinjaTrader_Client.Trader.Backtest
         public Dictionary<string, string> getParameters()
         {
             return parameterSet;
+        }
+
+        private List<KeyValuePair<long, BacktestVisualizationData>> visualizationData;
+        public void setVisualizationData(List<KeyValuePair<long, BacktestVisualizationData>> visualizationData)
+        {
+            this.visualizationData = visualizationData;
+        }
+
+        public List<KeyValuePair<long, BacktestVisualizationData>> getVisualizationData()
+        {
+            return visualizationData;
         }
 
         public void setResult(string key, string value)

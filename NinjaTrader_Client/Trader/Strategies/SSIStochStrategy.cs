@@ -1,4 +1,5 @@
 ﻿using NinjaTrader_Client.Trader.Backtest;
+using NinjaTrader_Client.Trader.BacktestBase.Visualization;
 using NinjaTrader_Client.Trader.Indicators;
 using NinjaTrader_Client.Trader.MainAPIs;
 using NinjaTrader_Client.Trader.Model;
@@ -35,6 +36,8 @@ namespace NinjaTrader_Client.Trader.Strategies
 
             stochIndicator = new StochIndicator(database, stochTimeframe);
             tradingTime = new TradingTimeIndicator(database);
+
+            setupVisualizationData();
         }
 
         public SSIStochStrategy(Database database, Dictionary<string, string> parameters)
@@ -48,6 +51,8 @@ namespace NinjaTrader_Client.Trader.Strategies
             againstCrowd = Boolean.Parse(parameters["againstCrowd"]);
 
             stochIndicator = new StochIndicator(database, stochTimeframe);
+
+            setupVisualizationData();
         }
 
         public override Strategy copy()
@@ -85,12 +90,33 @@ namespace NinjaTrader_Client.Trader.Strategies
             return result;
         }
 
+        private BacktestVisualizationDataComponent price_vi, uptodate_vi, tradingTimeCode_vi, ssi_vi, ssiStoch_vi, upperThreshold_vi, lowerThreshold_vi, sl_vi, tp_vi;
+
+        public override void setupVisualizationData()
+        {
+            price_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("price", BacktestVisualizationDataComponent.VisualizationType.OnChart, 0));
+            uptodate_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("uptodate", BacktestVisualizationDataComponent.VisualizationType.TrafficLight, 2));
+            tradingTimeCode_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("tradingTimeCode", BacktestVisualizationDataComponent.VisualizationType.TrafficLight, 3));
+            ssi_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("ssi", BacktestVisualizationDataComponent.VisualizationType.OneToMinusOne, 5));
+            ssiStoch_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("ssiStoch", BacktestVisualizationDataComponent.VisualizationType.ZeroToOne, 4));
+            upperThreshold_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("upperThreshold", BacktestVisualizationDataComponent.VisualizationType.ZeroToOne, 4, 1 - threshold));
+            lowerThreshold_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("lowerThreshold", BacktestVisualizationDataComponent.VisualizationType.ZeroToOne, 4, threshold));
+
+            //sl_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("sl", BacktestVisualizationDataComponent.VisualizationType.OnChart, 0)); //??? Wird nicht gesetzt ???
+            //tp_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("tp", BacktestVisualizationDataComponent.VisualizationType.OnChart, 0));
+        }
+
         public override void doTick(string instrument)
         {
-            if (api.isUptodate(instrument) == false)
+            price_vi.value = api.getAvgPrice(instrument);
+
+            bool isUpToDate = api.isUptodate(instrument);
+            uptodate_vi.value = isUpToDate ? 1 : 0;
+            if (isUpToDate == false)
                 return;
 
             double tradingTimeCode = tradingTime.getIndicator(api.getNow(), instrument).value;
+            tradingTimeCode_vi.value = tradingTimeCode;
             if (tradingTimeCode == 0)
             {
                 //Flatten everything
@@ -101,10 +127,15 @@ namespace NinjaTrader_Client.Trader.Strategies
             double takeprofit = api.getAvgPrice(instrument) * takeprofitPercent / 100d;
             double stoploss = api.getAvgPrice(instrument) * stoplossPercent / 100d;
 
-            TimeValueData stochTick = stochIndicator.getIndicator(api.getNow(), "ssi-mt4", instrument);
+            TimeValueData ssiValue = database.getData(api.getNow(), "ssi-mt4", instrument);
+            ssi_vi.value = ssiValue.value;
             
+            TimeValueData stochTick = stochIndicator.getIndicator(api.getNow(), "ssi-mt4", instrument);
+
             if (stochTick == null)
                 return;
+
+            ssiStoch_vi.value = stochTick.value;
 
             if (lastStochTicks.ContainsKey(instrument) == false)
                 lastStochTicks.Add(instrument, new List<TimeValueData>());

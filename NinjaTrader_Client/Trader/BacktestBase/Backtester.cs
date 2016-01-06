@@ -1,4 +1,5 @@
 ﻿using NinjaTrader_Client.Trader.BacktestBase;
+using NinjaTrader_Client.Trader.BacktestBase.Visualization;
 using NinjaTrader_Client.Trader.MainAPIs;
 using NinjaTrader_Client.Trader.Model;
 using NinjaTrader_Client.Trader.Strategies;
@@ -46,7 +47,7 @@ namespace NinjaTrader_Client.Trader.Backtest
             Strategy dedicatedStrategy = strat.copy();
             dedicatedStrategy.setAPI(dedicatedAPI); //Todo: Nicht schön, nicht sicher
 
-            Thread thread = new Thread(() => runBacktest(dedicatedStrategy, pair, resolutionInSeconds, dedicatedAPI));
+            Thread thread = new Thread(() => runBacktest(dedicatedStrategy, pair, resolutionInSeconds, 2000, dedicatedAPI));
             thread.Start();
 
             threads.Add(thread);
@@ -67,7 +68,7 @@ namespace NinjaTrader_Client.Trader.Backtest
         double strategyCalcCount = 0;
         double strategyCalcTime = 0;
 
-        private void runBacktest(Strategy strat, string pair, long resolutionInSeconds, BacktestTradingAPI api)
+        private void runBacktest(Strategy strat, string pair, long resolutionInSeconds, int visualizationSteps, BacktestTradingAPI api)
         {
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -79,12 +80,16 @@ namespace NinjaTrader_Client.Trader.Backtest
 
             string name = getUniqueStrategyName(strat.getName() + "_" + pair);
 
+            List<KeyValuePair<long, BacktestVisualizationData>> visualizationData = new List<KeyValuePair<long, BacktestVisualizationData>>(visualizationSteps + 1);
+
             bool reportStrategy = true;
             try
             {
+                double nextVisualizationRatio = 0.01;
                 while (currentTimestamp < endTimestamp)
                 {
                     long doneHours = (currentTimestamp - startTimestamp) / 1000 / 60 / 60;
+                    double doneRatio = Convert.ToDouble(currentTimestamp - startTimestamp) / Convert.ToDouble(endTimestamp - startTimestamp);
 
                     if (doneHours >= 1 && api.getHistory(pair).Count / doneHours > maxPositionsPerHour)
                     {
@@ -107,6 +112,12 @@ namespace NinjaTrader_Client.Trader.Backtest
                     strat.doTick(pair);
                     sw.Stop();
 
+                    if (doneRatio >= nextVisualizationRatio)
+                    {
+                        visualizationData.Add(new KeyValuePair<long, BacktestVisualizationData>(currentTimestamp, strat.getVisualizationData()));
+                        nextVisualizationRatio = doneRatio + (1 / visualizationSteps);
+                    }
+
                     strategyCalcCount++;
 
                     double currentStrategyCalcTime = sw.Elapsed.TotalMilliseconds;
@@ -114,7 +125,7 @@ namespace NinjaTrader_Client.Trader.Backtest
 
                     progress[name].apiSetupTime = currentAPISetupTime;
                     progress[name].strategyCalcTime = currentStrategyCalcTime;
-                    progress[name].percentageDone = Convert.ToInt32(Convert.ToDouble(currentTimestamp - startTimestamp) / Convert.ToDouble(endTimestamp - startTimestamp) * 100);
+                    progress[name].percentageDone = Convert.ToInt32(doneRatio * 100);
 
                     currentTimestamp += 1000 * resolutionInSeconds;
                 }
@@ -146,6 +157,7 @@ namespace NinjaTrader_Client.Trader.Backtest
                 result.setPositions(api.getHistory(pair));
                 result.setParameter(strat.getParameters());
                 result.setResult(strat.getResult());
+                result.setVisualizationData(visualizationData);
 
                 watch.Stop();
                 doneTestsTime += watch.Elapsed.TotalMilliseconds;

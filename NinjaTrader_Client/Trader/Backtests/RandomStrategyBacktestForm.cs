@@ -109,7 +109,7 @@ namespace NinjaTrader_Client.Trader.Backtests
                     open - generateDouble(0.0, 0.8, 0.05), //Close
                     generateBool());
 
-                resolutionInSeconds = 60;
+                resolutionInSeconds = 240;
 
                 instrument = majors[z.Next(0, majors.Count)];
             }

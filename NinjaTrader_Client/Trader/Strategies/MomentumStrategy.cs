@@ -1,4 +1,5 @@
 ﻿using NinjaTrader_Client.Trader.Backtest;
+using NinjaTrader_Client.Trader.BacktestBase.Visualization;
 using NinjaTrader_Client.Trader.Indicators;
 using NinjaTrader_Client.Trader.MainAPIs;
 using NinjaTrader_Client.Trader.Model;
@@ -27,6 +28,8 @@ namespace NinjaTrader_Client.Trader.Strategies
             this.follow_trend = follow_trend;
 
             this.tradingTime = new TradingTimeIndicator(database);
+
+            setupVisualizationData();
         }
 
         public MomentumStrategy(Database database, Dictionary<string, string> parameters) 
@@ -38,6 +41,8 @@ namespace NinjaTrader_Client.Trader.Strategies
             takeprofitPercent = Double.Parse(parameters["tp"]);
             stoplossPercent = Double.Parse(parameters["sl"]);
             follow_trend = Boolean.Parse(parameters["followTrend"]);
+
+            setupVisualizationData();
         }
 
         public override Strategy copy()
@@ -75,6 +80,24 @@ namespace NinjaTrader_Client.Trader.Strategies
             return result;
         }
 
+        private BacktestVisualizationDataComponent price_vi, uptodate_vi, tradingTimeCode_vi, longDistance_vi, longThreshold_vi, shortDistance_vi, shortThreshold_vi, sl_vi, tp_vi;
+
+        public override void setupVisualizationData()
+        {
+            price_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("price", BacktestVisualizationDataComponent.VisualizationType.OnChart, 0));
+            uptodate_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("uptodate", BacktestVisualizationDataComponent.VisualizationType.TrafficLight, 1));
+            tradingTimeCode_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("tradingTimeCode", BacktestVisualizationDataComponent.VisualizationType.TrafficLight, 2));
+
+            longDistance_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("longDistance", BacktestVisualizationDataComponent.VisualizationType.OnChart, 3));
+            longThreshold_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("longThreshold", BacktestVisualizationDataComponent.VisualizationType.OnChart, 3));
+
+            shortDistance_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("longDistance", BacktestVisualizationDataComponent.VisualizationType.OnChart, 4));
+            shortThreshold_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("shortThreshold", BacktestVisualizationDataComponent.VisualizationType.OnChart, 4));
+
+            //sl_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("sl", BacktestVisualizationDataComponent.VisualizationType.OnChart, 0)); //??? Wird nicht gesetzt ???
+            //tp_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("tp", BacktestVisualizationDataComponent.VisualizationType.OnChart, 0));
+        }
+
         private List<Tickdata> old_tickdata = new List<Tickdata>();
 
         private double thresholdPercent;
@@ -85,10 +108,15 @@ namespace NinjaTrader_Client.Trader.Strategies
 
         public override void doTick(string instrument)
         {
-            if (api.isUptodate(instrument) == false)
+            price_vi.value = api.getAvgPrice(instrument);
+
+            bool isUpToDate = api.isUptodate(instrument);
+            uptodate_vi.value = isUpToDate ? 1 : 0;
+            if (isUpToDate == false)
                 return;
 
             double tradingTimeCode = tradingTime.getIndicator(api.getNow(), instrument).value;
+            tradingTimeCode_vi.value = tradingTimeCode;
             if (tradingTimeCode == 0)
             {
                 //Flatten everything
@@ -97,6 +125,10 @@ namespace NinjaTrader_Client.Trader.Strategies
             }
 
             double threshold = api.getAvgPrice(instrument) * thresholdPercent / 100d;
+
+            longThreshold_vi.value = threshold;
+            shortThreshold_vi.value = threshold;
+
             double takeprofit = api.getAvgPrice(instrument) * takeprofitPercent / 100d;
             double stoploss = api.getAvgPrice(instrument) * stoplossPercent / 100d;
 
@@ -113,12 +145,18 @@ namespace NinjaTrader_Client.Trader.Strategies
                 bool longSignal = nowTick.bid - pastTick.ask > threshold;
                 bool shortSignal = pastTick.bid - nowTick.ask > threshold;
 
+                longDistance_vi.value = nowTick.bid - pastTick.ask;
+                shortDistance_vi.value = pastTick.bid - nowTick.ask;
+
                 if (follow_trend == false)
                 {
                     bool oldLong = longSignal;
-
                     longSignal = shortSignal;
                     shortSignal = oldLong;
+
+                    double oldLongDistance = longDistance_vi.value;
+                    longDistance_vi.value = shortDistance_vi.value;
+                    shortDistance_vi.value = oldLongDistance;
                 }
 
                 if (tradingTimeCode == 1)

@@ -10,6 +10,7 @@ using NinjaTrader_Client.Trader.Backtests;
 using NinjaTrader_Client.Trader.BacktestBase;
 using NinjaTrader_Client.Trader.MainAPIs;
 using NinjaTrader_Client.Trader.Utils;
+using NinjaTrader_Client.Trader.Indicators;
 
 namespace NinjaTrader_Client
 {
@@ -195,7 +196,9 @@ namespace NinjaTrader_Client
 
         private void button14_Click(object sender, EventArgs e)
         {
-            
+            double tradingTimeCode = new TradingTimeIndicator(main.getDatabase()).getIndicator(Timestamp.getNow(), "EURUSD").value;
+            DateTime dt = Timestamp.getDate(Timestamp.getNow());
+            MessageBox.Show(dt.ToString());
         }
 
         private void button15_Click(object sender, EventArgs e)

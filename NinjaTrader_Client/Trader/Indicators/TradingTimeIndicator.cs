@@ -20,10 +20,10 @@ namespace NinjaTrader_Client.Trader.Indicators
             if (dt.DayOfWeek == DayOfWeek.Saturday || dt.DayOfWeek == DayOfWeek.Sunday)
                 return new TimeValueData(timestamp, 0); //Kein trading
 
-            if (dt.DayOfWeek == DayOfWeek.Friday && dt.Hour >= 22)
+            if (dt.DayOfWeek == DayOfWeek.Friday && dt.Hour >= 21)
                 return new TimeValueData(timestamp, 0); //Kein trading
 
-            if (dt.DayOfWeek == DayOfWeek.Friday && dt.Hour >= 20)
+            if (dt.DayOfWeek == DayOfWeek.Friday && dt.Hour >= 19)
                 return new TimeValueData(timestamp, 0.5); //Do not open positions
 
             return new TimeValueData(timestamp, 1); //Happy trading :)

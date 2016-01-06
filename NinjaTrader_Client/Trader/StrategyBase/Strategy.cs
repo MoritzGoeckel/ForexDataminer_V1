@@ -1,4 +1,5 @@
 ﻿using NinjaTrader_Client.Trader.Backtest;
+using NinjaTrader_Client.Trader.BacktestBase.Visualization;
 using NinjaTrader_Client.Trader.MainAPIs;
 using NinjaTrader_Client.Trader.TradingAPIs;
 using System;
@@ -16,6 +17,14 @@ namespace NinjaTrader_Client.Trader.Strategies
         public Strategy(Database database)
         {
             this.database = database;
+        }
+
+        public abstract void setupVisualizationData();
+
+        protected BacktestVisualizationData visualizationData = new BacktestVisualizationData();
+        public BacktestVisualizationData getVisualizationData()
+        {
+            return visualizationData.Copy();
         }
 
         public abstract void doTick(string instrument);
