@@ -25,6 +25,9 @@ namespace NinjaTrader_Client.Trader.Strategies
 
             this.tradingTime = new TradingTimeIndicator(database);
 
+            if (thresholdClose >= thresholdOpen)
+                throw new Exception("thresholdClose has to be < thresholdOpen");
+
             setupVisualizationData();
         }
 
@@ -33,6 +36,9 @@ namespace NinjaTrader_Client.Trader.Strategies
             thresholdOpen = Double.Parse(parameters["thresholdOpen"]);
             thresholdClose = Double.Parse(parameters["thresholdClose"]);
             followCrowd = Boolean.Parse(parameters["followCrowd"]);
+            
+            if (thresholdClose >= thresholdOpen)
+                throw new Exception("thresholdClose has to be < thresholdOpen");
 
             setupVisualizationData();
         }

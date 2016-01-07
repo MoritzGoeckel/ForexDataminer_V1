@@ -1,0 +1,1 @@
+pair:USDJPY|thresholdOpen:0,25|thresholdClose:-0,25|followCrowd:False|name:SSIStrategy_V1

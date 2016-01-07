@@ -91,7 +91,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             longDistance_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("longDistance", BacktestVisualizationDataComponent.VisualizationType.OnChart, 3));
             longThreshold_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("longThreshold", BacktestVisualizationDataComponent.VisualizationType.OnChart, 3));
 
-            shortDistance_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("longDistance", BacktestVisualizationDataComponent.VisualizationType.OnChart, 4));
+            shortDistance_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("shortDistance", BacktestVisualizationDataComponent.VisualizationType.OnChart, 4));
             shortThreshold_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("shortThreshold", BacktestVisualizationDataComponent.VisualizationType.OnChart, 4));
 
             //sl_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("sl", BacktestVisualizationDataComponent.VisualizationType.OnChart, 0)); //??? Wird nicht gesetzt ???

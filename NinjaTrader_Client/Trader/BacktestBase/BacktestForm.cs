@@ -34,7 +34,7 @@ namespace NinjaTrader_Client
         private Dictionary<string, BacktestData> results = new Dictionary<string, BacktestData>();
 
         private int errorTests = 0;
-        private int maxThreads = 1; //Environment.ProcessorCount; // Threads Count
+        private int maxThreads = Environment.ProcessorCount; // Threads Count
 
         private int chartResolution = 3000;
 

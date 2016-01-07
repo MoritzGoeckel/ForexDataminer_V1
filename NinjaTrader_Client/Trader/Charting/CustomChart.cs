@@ -75,7 +75,7 @@ namespace NinjaTrader_Client.Trader.Charting
 
             Bitmap bmp = new Bitmap(width, height);
             Graphics g = Graphics.FromImage(bmp);
-            g.FillRectangle(Brushes.Black, 0, 0, bmp.Width, bmp.Height);
+            //g.FillRectangle(Brushes.White, 0, 0, bmp.Width, bmp.Height);
 
             foreach (KeyValuePair<string, List<KeyValuePair<long, double>>> dataComponent in data)
             {
@@ -85,43 +85,49 @@ namespace NinjaTrader_Client.Trader.Charting
                     long time = timeValuePair.Key;
                     double value = timeValuePair.Value;
 
-                    int x = getXTime(time);
+                    try {
+                        if (double.IsNaN(value) == false)
+                        {
+                            int x = getXTime(time);
 
-                    if (x == bmp.Width)
-                        x = bmp.Width - 1;
+                            if (x == bmp.Width)
+                                x = bmp.Width - 1;
 
-                    if (x == 0)
-                        x = 1;
+                            if (x == 0)
+                                x = 1;
 
-                    double y = value;
+                            double y = value;
 
-                    if (trafficLightMode == false)
-                    {
-                        value += valueOffset;
+                            if (trafficLightMode == false)
+                            {
+                                value += valueOffset;
 
-                        y = getYValue(value);
+                                y = getYValue(value);
 
-                        if (y == 0)
-                            y = 1;
+                                if (y == 0)
+                                    y = 1;
 
-                        if (y == bmp.Height)
-                            y = bmp.Height - 1;
+                                if (y == bmp.Height)
+                                    y = bmp.Height - 1;
+                            }
+
+                            if (x < 0 || y < 0 || y > bmp.Height || x > bmp.Width)
+                                throw new Exception("Out of bounds! X: " + x + " Y: " + y + " min: " + min_value);
+
+                            if (trafficLightMode)
+                            {
+                                if (y == 0)
+                                    g.FillRectangle(Brushes.LightPink, x, 0, 1, bmp.Height);
+                                else if (y == 1)
+                                    g.FillRectangle(Brushes.LightGreen, x, 0, 1, bmp.Height);
+                                else if (y == 0.5)
+                                    g.FillRectangle(Brushes.LightYellow, x, 0, 1, bmp.Height);
+                            }
+                            else
+                                bmp.SetPixel(x, Convert.ToInt32(y), Color.Black); //??? Color?
+                        }
                     }
-
-                    if (x < 0 || y < 0 || y > bmp.Height || x > bmp.Width)
-                        throw new Exception("Out of bounds! X: " + x + " Y: " + y + " min: " + min_value);
-
-                    if (trafficLightMode)
-                    {
-                        if (y == 0)
-                            g.FillRectangle(Brushes.Red, x, 0, 1, bmp.Height);
-                        else if (y == 1)
-                            g.FillRectangle(Brushes.Green, x, 0, 1, bmp.Height);
-                        else if (y == 0.5)
-                            g.FillRectangle(Brushes.Yellow, x, 0, 1, bmp.Height);
-                    }
-                    else
-                        bmp.SetPixel(x, Convert.ToInt32(y), Color.White); //??? Color?
+                    catch (Exception) { }
                 }
             }
 
@@ -150,12 +156,12 @@ namespace NinjaTrader_Client.Trader.Charting
 
         public int getYValue(double value)
         {
-            int output = Convert.ToInt32((1 - ((value - min_value) / (max_value - min_value))) * height);
+            double devisor = max_value - min_value;
 
-            if (output < 0 )
-                throw new Exception("output: " + output + " min: " + min_value + " max: " + max_value);
+            if (devisor == 0)
+                throw new Exception("Devide by 0");
 
-            return output;
+            return Convert.ToInt32((1 - ((value - min_value) / devisor)) * height);
         }
 
         public int getXTime(long time)

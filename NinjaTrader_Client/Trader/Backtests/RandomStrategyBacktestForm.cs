@@ -106,7 +106,7 @@ namespace NinjaTrader_Client.Trader.Backtests
 
                 strategy = new SSIStrategy(database, 
                     open,  //Open
-                    open - generateDouble(0.0, 0.8, 0.05), //Close
+                    open - generateDouble(0.1, 0.8, 0.05), //Close
                     generateBool());
 
                 resolutionInSeconds = 240;
