@@ -49,9 +49,10 @@ namespace NinjaTrader_Client.Trader.MainAPIs
                 {
                     connection = getConnection();
 
-                    SQLiteCommand command = new SQLiteCommand("SELECT * FROM prices WHERE instrument = @instrument AND timestamp < @timestamp ORDER BY timestamp DESC LIMIT 1", connection);
+                    SQLiteCommand command = new SQLiteCommand("SELECT * FROM prices WHERE instrument = @instrument AND timestamp < @timestamp AND timestamp > @timestampMin ORDER BY timestamp DESC LIMIT 1", connection);
                     command.Parameters.AddWithValue("@timestamp", timestamp);
                     command.Parameters.AddWithValue("@instrument", instrument);
+                    command.Parameters.AddWithValue("@timestampMin", timestamp - (3 * 60 * 1000));
                     command.Prepare();
 
                     command.CommandTimeout = timeout;
@@ -139,10 +140,11 @@ namespace NinjaTrader_Client.Trader.MainAPIs
         {
             SQLiteConnection connection = getConnection();
 
-            SQLiteCommand command = new SQLiteCommand("SELECT * FROM timevaluepair WHERE instrument = @instrument AND name = @name AND timestamp < @timestamp ORDER BY timestamp DESC LIMIT 1", connection);
+            SQLiteCommand command = new SQLiteCommand("SELECT * FROM timevaluepair WHERE instrument = @instrument AND name = @name AND timestamp < @timestamp AND timestamp > @timestampMin ORDER BY timestamp DESC LIMIT 1", connection);
             command.Parameters.AddWithValue("@timestamp", timestamp);
             command.Parameters.AddWithValue("@name", dataName);
             command.Parameters.AddWithValue("@instrument", instrument);
+            command.Parameters.AddWithValue("@timestampMin", timestamp - (3 * 60 * 1000));
             command.Prepare();
 
             command.CommandTimeout = timeout;

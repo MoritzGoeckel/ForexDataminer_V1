@@ -105,7 +105,7 @@ namespace NinjaTrader_Client.Trader
         {
             var collection = mongodb.getCollection(instrument + "_" + dataName);
 
-            var docsDarunter = collection.FindAs<BsonDocument>(Query.LT("timestamp", timestamp + 1L)).SetSortOrder(SortBy.Descending("timestamp")).SetLimit(1);
+            var docsDarunter = collection.FindAs<BsonDocument>(Query.And(Query.LT("timestamp", timestamp + 1), Query.GT("timestamp", timestamp - (3 * 60 * 1000)))).SetSortOrder(SortBy.Descending("timestamp")).SetLimit(1);
             BsonDocument darunter = docsDarunter.ToList<BsonDocument>()[0]; //Will throw interrupt when the timestamp is to early in history. Should be handled ???
 
             return new TimeValueData(darunter["timestamp"].AsInt64, darunter["value"].AsDouble);
@@ -181,8 +181,6 @@ namespace NinjaTrader_Client.Trader
             mongodb.shutdown();
         }
 
-
-
         //##Not in interface
 
 
@@ -207,7 +205,7 @@ namespace NinjaTrader_Client.Trader
         {
             var collection = mongodb.getCollection(instrument);
 
-            var docsDarunter = collection.FindAs<BsonDocument>(Query.LT("timestamp", timestamp + 1)).SetSortOrder(SortBy.Descending("timestamp")).SetLimit(1);
+            var docsDarunter = collection.FindAs<BsonDocument>(Query.And(Query.LT("timestamp", timestamp + 1), Query.GT("timestamp", timestamp - (3 * 60 * 1000)))).SetSortOrder(SortBy.Descending("timestamp")).SetLimit(1);
             BsonDocument darunter = docsDarunter.ToList<BsonDocument>()[0];
 
             return new Tickdata(darunter["timestamp"].AsInt64, darunter["last"].AsDouble, darunter["bid"].AsDouble, darunter["ask"].AsDouble);

@@ -1,11 +1,12 @@
 ﻿Visualisierung
 	Farbcoderiung
-	Namensgebung
-	Speichern (direkt öffnen)
 
 	Analyse der einzelnen Strategien (Seltsame history teilweise)
 
-Inverter
+Decition Components
+Riskmanagement Components
+
+Inverter for components
 
 Big backtests HFU
 
