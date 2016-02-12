@@ -3,3 +3,137 @@
 /Database/*
 /Database/
 *.s3db
+NinjaTrader_Client/Trader/Analysis/DataminingForm.cs
+NinjaTrader_Client/Trader/Analysis/DataminingForm.resx
+NinjaTrader_Client/Trader/Datamining/CorrelationCondition.cs
+NinjaTrader_Client/Trader/Datamining/DataminingDatabase.cs
+NinjaTrader_Client/Trader/Datamining/MongoDataminingDB.cs
+NinjaTrader_Client/Trader/Utils/ProgressDict.cs
+NinjaTrader_Client/bin/x64/Debug/MongoDB/data/dataminingDb.0
+NinjaTrader_Client/bin/x64/Debug/MongoDB/data/dataminingDb.1
+NinjaTrader_Client/bin/x64/Debug/MongoDB/data/dataminingDb.2
+NinjaTrader_Client/bin/x64/Debug/MongoDB/data/dataminingDb.3
+NinjaTrader_Client/bin/x64/Debug/MongoDB/data/dataminingDb.ns
+NinjaTrader_Client/bin/x64/Debug/MongoDB/data/journal/j._3
+NinjaTrader_Client/bin/x64/Debug/MongoDB/data/journal/lsn
+NinjaTrader_Client/bin/x64/Debug/MongoDB/data/local.0
+NinjaTrader_Client/bin/x64/Debug/MongoDB/data/local.ns
+NinjaTrader_Client/bin/x64/Debug/MongoDB/data/mongod.lock
+NinjaTrader_Client/bin/x64/Debug/MongoDB/data/nt_trader.0
+NinjaTrader_Client/bin/x64/Debug/MongoDB/data/nt_trader.ns
+NinjaTrader_Client/bin/x64/Debug/MongoDB/mongod.exe - Verknüpfung.lnk
+NinjaTrader_Client/obj/x64/Debug/NinjaTrader_Client.Trader.Analysis.DataminingForm.resources
+Output -- old/Database/data.zip
+Output -- old/Database/data/local.0
+Output -- old/Database/data/local.ns
+Output -- old/Database/data/mongod.lock
+Output -- old/Database/data/nt_trader.0
+Output -- old/Database/data/nt_trader.1
+Output -- old/Database/data/nt_trader.2
+Output -- old/Database/data/nt_trader.3
+Output -- old/Database/data/nt_trader.4
+Output -- old/Database/data/nt_trader.5
+Output -- old/Database/data/nt_trader.ns
+Output -- old/Database/mongo - Kopie/mongod.exe - Verknüpfung.lnk
+Output -- old/Database/mongo/mongod.exe - Verknüpfung.lnk
+Output -- old/Database/old/Database.rar
+Output -- old/Database/old/data (2).zip
+Output -- old/Database/old/data (3).zip
+Output -- old/Database/old/data (4).zip
+Output -- old/Database/old/data--ooold/local.0
+Output -- old/Database/old/data--ooold/local.ns
+Output -- old/Database/old/data--ooold/mongod.lock
+Output -- old/Database/old/data--ooold/nt_trader.0
+Output -- old/Database/old/data--ooold/nt_trader.1
+Output -- old/Database/old/data--ooold/nt_trader.2
+Output -- old/Database/old/data--ooold/nt_trader.3
+Output -- old/Database/old/data--ooold/nt_trader.4
+Output -- old/Database/old/data--ooold/nt_trader.ns
+Output -- old/Database/old/data-14-11-2015/local.0
+Output -- old/Database/old/data-14-11-2015/local.ns
+Output -- old/Database/old/data-14-11-2015/mongod.lock
+Output -- old/Database/old/data-14-11-2015/nt_trader.0
+Output -- old/Database/old/data-14-11-2015/nt_trader.1
+Output -- old/Database/old/data-14-11-2015/nt_trader.2
+Output -- old/Database/old/data-14-11-2015/nt_trader.3
+Output -- old/Database/old/data-14-11-2015/nt_trader.4
+Output -- old/Database/old/data-14-11-2015/nt_trader.5
+Output -- old/Database/old/data-14-11-2015/nt_trader.ns
+Output -- old/Database/old/data-old/local.0
+Output -- old/Database/old/data-old/local.ns
+Output -- old/Database/old/data-old/mongod.lock
+Output -- old/Database/old/data-old/nt_trader.0
+Output -- old/Database/old/data-old/nt_trader.1
+Output -- old/Database/old/data-old/nt_trader.2
+Output -- old/Database/old/data-old/nt_trader.3
+Output -- old/Database/old/data-old/nt_trader.4
+Output -- old/Database/old/data-old/nt_trader.5
+Output -- old/Database/old/data-old/nt_trader.ns
+Output -- old/Database/old/data.zip
+Output -- old/Database/old/data/local.0
+Output -- old/Database/old/data/local.ns
+Output -- old/Database/old/data/mongod.lock
+Output -- old/Database/old/data/nt_trader.0
+Output -- old/Database/old/data/nt_trader.1
+Output -- old/Database/old/data/nt_trader.2
+Output -- old/Database/old/data/nt_trader.3
+Output -- old/Database/old/data/nt_trader.4
+Output -- old/Database/old/data/nt_trader.5
+Output -- old/Database/old/data/nt_trader.ns
+Output -- old/Database/old/mongo - Kopie.zip
+Output -- old/Database/old/old_exports/data-10-10.zip
+Output -- old/Database/old/old_exports/data_2015-09-25/journal/j._0
+Output -- old/Database/old/old_exports/data_2015-09-25/local.0
+Output -- old/Database/old/old_exports/data_2015-09-25/local.ns
+Output -- old/Database/old/old_exports/data_2015-09-25/mongod.lock
+Output -- old/Database/old/old_exports/data_2015-09-25/nt_trader.0
+Output -- old/Database/old/old_exports/data_2015-09-25/nt_trader.1
+Output -- old/Database/old/old_exports/data_2015-09-25/nt_trader.2
+Output -- old/Database/old/old_exports/data_2015-09-25/nt_trader.ns
+Output -- old/Database/old/old_exports/data_2015-10-10 - kaputt/journal/j._0
+Output -- old/Database/old/old_exports/data_2015-10-10 - kaputt/local.0
+Output -- old/Database/old/old_exports/data_2015-10-10 - kaputt/local.ns
+Output -- old/Database/old/old_exports/data_2015-10-10 - kaputt/mongod.lock
+Output -- old/Database/old/old_exports/data_2015-10-10 - kaputt/nt_trader.0
+Output -- old/Database/old/old_exports/data_2015-10-10 - kaputt/nt_trader.1
+Output -- old/Database/old/old_exports/data_2015-10-10 - kaputt/nt_trader.2
+Output -- old/Database/old/old_exports/data_2015-10-10 - kaputt/nt_trader.3
+Output -- old/Database/old/old_exports/data_2015-10-10 - kaputt/nt_trader.ns
+Output -- old/Database/old/old_exports/database_2015-09-25_1443139148863_1443201431336.json
+Output -- old/Database/old/old_exports/database_2015-09-27_1443201431336_1443309693627.json
+Output -- old/Database/old/old_exports/database_2015-09-29_1443214749156_1443479084431.json
+Output -- old/Database/old/old_exports/database_2015-09-29_1443479068143_1443521089081.json
+Output -- old/Historical Data/AUDCAD ask.txt
+Output -- old/Historical Data/AUDCAD bid.txt
+Output -- old/Historical Data/AUDJPY ask.txt
+Output -- old/Historical Data/AUDJPY bid.txt
+Output -- old/Historical Data/AUDNZD ask.txt
+Output -- old/Historical Data/AUDNZD bid.txt
+Output -- old/Historical Data/AUDUSD ask.txt
+Output -- old/Historical Data/AUDUSD bid.txt
+Output -- old/Historical Data/CHFJPY ask.txt
+Output -- old/Historical Data/CHFJPY bid.txt
+Output -- old/Historical Data/EURCHF ask.txt
+Output -- old/Historical Data/EURCHF bid.txt
+Output -- old/Historical Data/EURGBP ask.txt
+Output -- old/Historical Data/EURGBP bid.txt
+Output -- old/Historical Data/EURJPY ask.txt
+Output -- old/Historical Data/EURJPY bid.txt
+Output -- old/Historical Data/EURUSD ask.txt
+Output -- old/Historical Data/EURUSD bid.txt
+Output -- old/Historical Data/GBPCHF ask.txt
+Output -- old/Historical Data/GBPCHF bid.txt
+Output -- old/Historical Data/GBPJPY ask.txt
+Output -- old/Historical Data/GBPJPY bid.txt
+Output -- old/Historical Data/GBPUSD ask.txt
+Output -- old/Historical Data/GBPUSD bid.txt
+Output -- old/Historical Data/NZDUSD ask.txt
+Output -- old/Historical Data/NZDUSD bid.txt
+Output -- old/Historical Data/USDCAD ask.txt
+Output -- old/Historical Data/USDCAD bid.txt
+Output -- old/Historical Data/USDCHF ask.txt
+Output -- old/Historical Data/USDCHF bid.txt
+Output -- old/Historical Data/USDJPY ask.txt
+Output -- old/Historical Data/USDJPY bid.txt
+Output -- old/Last stable build/config.json
+Output -- old/Last stable build/netchartdir.xml
