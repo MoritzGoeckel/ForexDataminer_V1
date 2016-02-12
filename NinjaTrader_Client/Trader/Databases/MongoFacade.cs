@@ -17,8 +17,6 @@ namespace NinjaTrader_Client.Trader
         private MongoClient client;
         private Process serverProcess = null;
 
-        private Dictionary<string, MongoCollection> collections;
-
         public MongoFacade(string exePath, string dataPath, string dbName)
         {
             //If mongod not running
@@ -38,26 +36,16 @@ namespace NinjaTrader_Client.Trader
             database = server.GetDatabase(dbName);
         }
 
-        public MongoDB.Driver.MongoDatabase getDatabase()
+        public MongoDB.Driver.MongoDatabase getDB()
         {
             return database;
-        }
-
-        public MongoCollection getCollection(String name){
-            if(collections == null)
-                collections = new Dictionary<string, MongoCollection>();
-
-            if(collections.ContainsKey(name) == false)
-                collections.Add(name, database.GetCollection(name));
-
-            return collections[name];
         }
 
         public List<MongoCollection> getCollections()
         {
             List<MongoCollection> list = new List<MongoCollection>();
             foreach(string collectionName in database.GetCollectionNames())
-                list.Add(getCollection(collectionName));
+                list.Add(database.GetCollection(collectionName));
 
             return list;
         }

@@ -16,51 +16,25 @@ namespace NinjaTrader_Client.Trader
     {
         public int errors = 0;
         MongoFacade mongodb;
+        MongoCollection<BsonDocument> pricesCollection, dataCollection;
+
         public MongoDatabase(MongoFacade mongoDbFacade)
         {
             mongodb = mongoDbFacade;
+
+            pricesCollection = mongodb.getDB().GetCollection("prices");
+            dataCollection = mongodb.getDB().GetCollection("data");
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public override Tickdata getPrice(long timestamp, string instrument, bool caching = true)
+        public Tickdata getPrice(long timestamp, string instrument, bool caching = true)
         {
-            access++;
-            if (caching)
-            {
-                if (cachedPrices.Count > maxCacheSize)
-                {
-                    int i = 0;
-                    while(i < 1000 * 100)
-                    {
-                        string key = cachedPrices.First().Key;
-                        cachedPrices.Remove(key);
-                        i++;
-                    }
-                }
-
-                if (cachedPrices.ContainsKey(timestamp + instrument)) //Simple Caching (Nicht schön... oder?)
-                {
-                    accessCacheing++;
-                    return cachedPrices[timestamp + instrument];
-                }
-                else
-                {
-                    Tickdata data = getPriceInternal(timestamp, instrument);
-                    cachedPrices.Add(timestamp + instrument, data);
-                    return data;
-                }
-            }
-            else
-            {
-                return getPriceInternal(timestamp, instrument);
-            }
+            return getPriceInternal(timestamp, instrument);
         }
 
-        //Chache too?
-        public override List<Tickdata> getPrices(long startTimestamp, long endTimestamp, string instrument)
+        public List<Tickdata> getPrices(long startTimestamp, long endTimestamp, string instrument)
         {
-            var collection = mongodb.getCollection(instrument);
-            var docs = collection.FindAs<BsonDocument>(Query.And(Query.LT("timestamp", endTimestamp + 1), Query.GT("timestamp", startTimestamp - 1))).SetSortOrder(SortBy.Ascending("timestamp"));
+            var docs = pricesCollection.FindAs<BsonDocument>(Query.And(Query.EQ("instrument", instrument), Query.LT("timestamp", endTimestamp + 1), Query.GT("timestamp", startTimestamp - 1))).SetSortOrder(SortBy.Ascending("timestamp"));
 
             List<Tickdata> output = new List<Tickdata>();
             foreach (BsonDocument doc in docs)
@@ -71,50 +45,48 @@ namespace NinjaTrader_Client.Trader
             return output;
         }
 
-        public override void setPrice(Tickdata td, string instrument)
+        public void setPrice(Tickdata td, string instrument)
         {
             try
             {
                 BsonDocument input = new BsonDocument();
-                input.Set("_id", td.timestamp + "_" + instrument);
                 input.Set("timestamp", td.timestamp);
                 input.Set("last", td.last);
                 input.Set("bid", td.bid);
                 input.Set("ask", td.ask);
+                input.Set("instrument", instrument);
 
-                mongodb.getCollection(instrument).Insert(input);
+                pricesCollection.Insert(input);
             }
             catch { errors++; }
         }
 
-        public override void setData(TimeValueData data, string dataName, string instrument) 
+        public void setData(TimeValueData data, string dataName, string instrument) 
         {
             try
             {
                 BsonDocument input = new BsonDocument();
                 input.SetElement(new BsonElement("timestamp", data.timestamp));
                 input.SetElement(new BsonElement("value", data.value));
+                input.SetElement(new BsonElement("dataName", dataName));
 
-                mongodb.getCollection(instrument + "_" + dataName).Insert(input);
+
+                dataCollection.Insert(input);
             }
             catch { errors++; }
         }
 
-        //cache it too?
-        public override TimeValueData getData(long timestamp, string dataName, string instrument)
+        public TimeValueData getData(long timestamp, string dataName, string instrument)
         {
-            var collection = mongodb.getCollection(instrument + "_" + dataName);
-
-            var docsDarunter = collection.FindAs<BsonDocument>(Query.And(Query.LT("timestamp", timestamp + 1), Query.GT("timestamp", timestamp - (3 * 60 * 1000)))).SetSortOrder(SortBy.Descending("timestamp")).SetLimit(1);
+            var docsDarunter = dataCollection.FindAs<BsonDocument>(Query.And(Query.EQ("dataName", dataName), Query.LT("timestamp", timestamp + 1), Query.GT("timestamp", timestamp - (3 * 60 * 1000)))).SetSortOrder(SortBy.Descending("timestamp")).SetLimit(1);
             BsonDocument darunter = docsDarunter.ToList<BsonDocument>()[0]; //Will throw interrupt when the timestamp is to early in history. Should be handled ???
 
             return new TimeValueData(darunter["timestamp"].AsInt64, darunter["value"].AsDouble);
         }
 
-        public override List<TimeValueData> getDataInRange(long startTimestamp, long endTimestamp, string dataName, string instrument)
+        public List<TimeValueData> getDataInRange(long startTimestamp, long endTimestamp, string dataName, string instrument)
         {
-            var collection = mongodb.getCollection(instrument + "_" + dataName);
-            var docs = collection.FindAs<BsonDocument>(Query.And(Query.LT("timestamp", endTimestamp + 1L), Query.GT("timestamp", startTimestamp - 1L))).SetSortOrder(SortBy.Ascending("timestamp"));
+            var docs = dataCollection.FindAs<BsonDocument>(Query.And(Query.EQ("dataName", dataName), Query.LT("timestamp", endTimestamp + 1L), Query.GT("timestamp", startTimestamp - 1L))).SetSortOrder(SortBy.Ascending("timestamp"));
 
             List<TimeValueData> output = new List<TimeValueData>();
             foreach (BsonDocument doc in docs)
@@ -125,7 +97,7 @@ namespace NinjaTrader_Client.Trader
             return output;
         }
 
-        public override long getSetsCount()
+        public long getSetsCount()
         {
             long all = 0;
             foreach (MongoCollection<BsonDocument> collection in mongodb.getCollections())
@@ -134,78 +106,30 @@ namespace NinjaTrader_Client.Trader
             return all;
         }
 
-        public override long getLastTimestamp()
+        public long getLastTimestamp()
         {
-            long lastTimestamp = 0;
-            //List<MongoCollection<BsonDocument>> list = mongodb.getCollections();
+            var cursor = pricesCollection.FindAs<BsonDocument>(Query.Exists("timestamp")).SetSortOrder(SortBy.Descending("timestamp")).SetLimit(1); //Does not limit! ???
+            BsonDocument doc = cursor.First<BsonDocument>();
 
-            foreach (var collection in mongodb.getCollections())
-            {
-                string collectionName = collection.Name;
-                if (collectionName.Length == 6 && collectionName.Contains("system.indexes") == false && collectionName.Contains("_") == false)
-                {
-                    var cursor = mongodb.getDatabase().GetCollection<BsonDocument>(collectionName).FindAs<BsonDocument>(Query.Exists("timestamp")).SetSortOrder(SortBy.Descending("timestamp")).SetLimit(1); //Does not limit! ???
-                    BsonDocument doc = cursor.First<BsonDocument>();
-
-                    long currentTs = doc["timestamp"].AsInt64;
-
-                    if (currentTs > lastTimestamp)
-                        lastTimestamp = currentTs;
-                }
-            }
-
-            return lastTimestamp;
+            return doc["timestamp"].AsInt64;
         }
 
-        public override long getFirstTimestamp()
+        public long getFirstTimestamp()
         {
-            long firstTimestamp = long.MaxValue;
-            List<MongoCollection> list = mongodb.getCollections();
-            foreach (MongoCollection collection in list)
-            {
-                if (collection.Name.Contains("system.indexes") == false && collection.Name.Contains("_") == false)
-                {
-                    var docs = collection.FindAs<BsonDocument>(Query.Exists("timestamp")).SetSortOrder(SortBy.Ascending("timestamp")).SetLimit(1);
-                    long currentTs = docs.ToList<BsonDocument>()[0]["timestamp"].AsInt64;
-
-                    if (currentTs < firstTimestamp)
-                        firstTimestamp = currentTs;
-                }
-            }
-
-            return firstTimestamp;
+                var docs = pricesCollection.FindAs<BsonDocument>(Query.Exists("timestamp")).SetSortOrder(SortBy.Ascending("timestamp")).SetLimit(1);
+                return docs.ToList<BsonDocument>()[0]["timestamp"].AsInt64;
         }
 
-        public override void shutdown()
+        public void shutdown()
         {
             mongodb.shutdown();
         }
 
         //##Not in interface
-
-
-        private Dictionary<string, Tickdata> cachedPrices = new Dictionary<string, Tickdata>();
-        private long accessCacheing = 0, access = 0;
-        private long maxCacheSize = 1000 * 1000 * 20;
-
-        public int getCacheingAccessPercent()
-        {
-            if (access != 0)
-                return Convert.ToInt32(Convert.ToDouble(accessCacheing) / Convert.ToDouble(access) * 100d);
-            else
-                return -1;
-        }
-
-        public int getCacheFilledPercent()
-        {
-            return Convert.ToInt32(Convert.ToDouble(cachedPrices.Count()) / Convert.ToDouble(maxCacheSize) * 100d);
-        }
-
+        
         private Tickdata getPriceInternal(long timestamp, string instrument)
         {
-            var collection = mongodb.getCollection(instrument);
-
-            var docsDarunter = collection.FindAs<BsonDocument>(Query.And(Query.LT("timestamp", timestamp + 1), Query.GT("timestamp", timestamp - (3 * 60 * 1000)))).SetSortOrder(SortBy.Descending("timestamp")).SetLimit(1);
+            var docsDarunter = pricesCollection.FindAs<BsonDocument>(Query.And(Query.EQ("instrument", instrument), Query.LT("timestamp", timestamp + 1), Query.GT("timestamp", timestamp - (3 * 60 * 1000)))).SetSortOrder(SortBy.Descending("timestamp")).SetLimit(1);
             BsonDocument darunter = docsDarunter.ToList<BsonDocument>()[0];
 
             return new Tickdata(darunter["timestamp"].AsInt64, darunter["last"].AsDouble, darunter["bid"].AsDouble, darunter["ask"].AsDouble);
@@ -259,7 +183,7 @@ namespace NinjaTrader_Client.Trader
             {
                 try
                 {
-                    var result = mongodb.getCollection(name).InsertBatch(doc[name].AsBsonArray, options);
+                    var result = mongodb.getDB().GetCollection(name).InsertBatch(doc[name].AsBsonArray, options);
                 }
                 catch { errors++; }
                 //.Insert(doc[name].AsBsonArray); //Untested
@@ -304,7 +228,7 @@ namespace NinjaTrader_Client.Trader
                     {
                         try
                         {
-                            var cursor = mongodb.getDatabase().GetCollection<BsonDocument>(collectionName).FindAs<BsonDocument>(Query.And(Query.GT("timestamp", now - step), Query.LT("timestamp", now)));
+                            var cursor = mongodb.getDB().GetCollection<BsonDocument>(collectionName).FindAs<BsonDocument>(Query.And(Query.GT("timestamp", now - step), Query.LT("timestamp", now)));
                             List<BsonDocument> docs = cursor.ToList<BsonDocument>();
                             foreach (BsonDocument doc in docs)
                             {

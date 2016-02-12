@@ -7,7 +7,7 @@ using System.Text;
 
 namespace NinjaTrader_Client.Trader.Indicators
 {
-    abstract class Indicator
+    public abstract class Indicator
     {
         public Database database;
 

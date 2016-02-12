@@ -42,7 +42,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
             Thread.Sleep(500);
         }
 
-        public override Tickdata getPrice(long timestamp, string instrument, bool caching = true)
+        public Tickdata getPrice(long timestamp, string instrument, bool caching = true)
         {
             MySqlConnection connection = null;
             Tickdata output = null;
@@ -88,7 +88,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
             return output;
         }
 
-        public override List<Tickdata> getPrices(long startTimestamp, long endTimestamp, string instrument)
+        public List<Tickdata> getPrices(long startTimestamp, long endTimestamp, string instrument)
         {
             List<Tickdata> output = new List<Tickdata>();
             MySqlConnection connection = null;
@@ -135,7 +135,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
             return output;
         }
 
-        public override void setPrice(Tickdata td, string instrument)
+        public void setPrice(Tickdata td, string instrument)
         {
             MySqlConnection connection = getConnection();
 
@@ -153,7 +153,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
             connection.Close();
         }
 
-        public override TimeValueData getData(long timestamp, string dataName, string instrument)
+        public TimeValueData getData(long timestamp, string dataName, string instrument)
         {
             MySqlConnection connection = getConnection();
 
@@ -179,7 +179,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
             return output;
         }
 
-        public override List<TimeValueData> getDataInRange(long startTimestamp, long endTimestamp, string dataName, string instrument)
+        public List<TimeValueData> getDataInRange(long startTimestamp, long endTimestamp, string dataName, string instrument)
         {
             MySqlConnection connection = getConnection();
 
@@ -205,7 +205,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
             return output;
         }
 
-        public override void setData(TimeValueData data, string dataName, string instrument)
+        public void setData(TimeValueData data, string dataName, string instrument)
         {
             MySqlConnection connection = getConnection();
 
@@ -223,7 +223,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
             connection.Close();
         }
 
-        public override long getFirstTimestamp()
+        public long getFirstTimestamp()
         {
             return getFirstTimestampInternal();
         }
@@ -251,7 +251,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
             return ts;
         }
 
-        public override long getLastTimestamp()
+        public long getLastTimestamp()
         {
             MySqlConnection connection = getConnection();
 
@@ -270,7 +270,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
             return output;
         }
 
-        public override long getSetsCount()
+        public long getSetsCount()
         {
             MySqlConnection connection = getConnection();
 
@@ -295,7 +295,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
             return d.ToString().Replace(',', '.');
         }
 
-        public override void shutdown()
+        public void shutdown()
         {
             
         }

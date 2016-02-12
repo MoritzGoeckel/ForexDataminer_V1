@@ -206,5 +206,16 @@ namespace NinjaTrader_Client
             StrategyStringGeneratorForm ssgf = new StrategyStringGeneratorForm();
             ssgf.Show();
         }
+
+        private void button16_Click(object sender, EventArgs e)
+        {
+            MongoFacade facade = new MongoFacade(Application.StartupPath + "\\MongoDB\\mongod.exe", Application.StartupPath + "\\MongoDB\\data", "dataminingDb");
+            MongoDataminingDB dataminingDb = new MongoDataminingDB(facade);
+            DataminingForm df = new DataminingForm(
+                dataminingDb,
+                main.getDatabase()
+            );
+            df.ShowDialog();
+        }
     }
 }

@@ -129,6 +129,12 @@
     <Compile Include="Trader\Analysis\DataDensityForm.Designer.cs">
       <DependentUpon>DataDensityForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Trader\Analysis\DataminingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Trader\Analysis\DataminingForm.Designer.cs">
+      <DependentUpon>DataminingForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Trader\Analysis\TradeHistoryChartForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -188,6 +194,9 @@
     <Compile Include="Trader\Charting\SimpleChart_Scatter.cs" />
     <Compile Include="Trader\Databases\CachedDatabase.cs" />
     <Compile Include="Trader\Databases\SQLiteDatabase.cs" />
+    <Compile Include="Trader\Datamining\CorrelationCondition.cs" />
+    <Compile Include="Trader\Datamining\DataminingDatabase.cs" />
+    <Compile Include="Trader\Datamining\MongoDataminingDB.cs" />
     <Compile Include="Trader\Indicators\Indicator.cs" />
     <Compile Include="Trader\Indicators\AverageChangeIndicator.cs" />
     <Compile Include="Trader\Indicators\MovingAverageIndicator.cs" />
@@ -229,6 +238,7 @@
     <Compile Include="Trader\TradingAPIs\NTLiveTradingAPI.cs" />
     <Compile Include="Trader\TradingAPIs\PairData.cs" />
     <Compile Include="Trader\Utils\HexColorCodes.cs" />
+    <Compile Include="Trader\Utils\ProgressDict.cs" />
     <Compile Include="Trader\Utils\StringCompressor.cs" />
     <Compile Include="Trader\Utils\Timestamp.cs" />
     <EmbeddedResource Include="Trader\Analysis\AnalyseRawTestDataForm.resx">
@@ -239,6 +249,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Trader\Analysis\DataDensityForm.resx">
       <DependentUpon>DataDensityForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Trader\Analysis\DataminingForm.resx">
+      <DependentUpon>DataminingForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Trader\Analysis\TradeHistoryChartForm.resx">
       <DependentUpon>TradeHistoryChartForm.cs</DependentUpon>

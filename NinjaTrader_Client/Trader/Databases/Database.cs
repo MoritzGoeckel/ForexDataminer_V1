@@ -3,19 +3,19 @@ using System.Collections.Generic;
 
 namespace NinjaTrader_Client.Trader.MainAPIs
 {
-    public abstract class Database
+    public interface Database
     {
-        public abstract Tickdata getPrice(long timestamp, string instrument, bool caching = true);
-        public abstract List<Tickdata> getPrices(long startTimestamp, long endTimestamp, string instrument);
-        public abstract void setPrice(Tickdata td, string instrument);
-        public abstract void setData(TimeValueData data, string dataName, string instrument);
-        public abstract TimeValueData getData(long timestamp, string dataName, string instrument);
-        public abstract List<TimeValueData> getDataInRange(long startTimestamp, long endTimestamp, string dataName, string instrument);
-        public abstract long getSetsCount();
-        public abstract long getLastTimestamp();
-        public abstract long getFirstTimestamp();
+        Tickdata getPrice(long timestamp, string instrument, bool caching = true);
+        List<Tickdata> getPrices(long startTimestamp, long endTimestamp, string instrument);
+        void setPrice(Tickdata td, string instrument);
+        void setData(TimeValueData data, string dataName, string instrument);
+        TimeValueData getData(long timestamp, string dataName, string instrument);
+        List<TimeValueData> getDataInRange(long startTimestamp, long endTimestamp, string dataName, string instrument);
+        long getSetsCount();
+        long getLastTimestamp();
+        long getFirstTimestamp();
 
-        public abstract void shutdown();
+        void shutdown();
 
         //public abstract int getCacheingAccessPercent();
         //public abstract int getCacheFilledPercent();
