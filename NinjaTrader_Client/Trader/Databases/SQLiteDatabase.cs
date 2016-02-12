@@ -144,7 +144,7 @@ namespace NinjaTrader_Client.Trader.MainAPIs
             command.Parameters.AddWithValue("@timestamp", timestamp);
             command.Parameters.AddWithValue("@name", dataName);
             command.Parameters.AddWithValue("@instrument", instrument);
-            command.Parameters.AddWithValue("@timestampMin", timestamp - (3 * 60 * 1000));
+            command.Parameters.AddWithValue("@timestampMin", timestamp - (30 * 60 * 1000));
             command.Prepare();
 
             command.CommandTimeout = timeout;
