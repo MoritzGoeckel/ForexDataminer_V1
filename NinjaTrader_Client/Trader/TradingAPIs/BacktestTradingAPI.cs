@@ -16,11 +16,11 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
         private Database database;
         private long now;
 
-        private Indicator tradingTime;
+        private WalkerIndicator tradingTime;
 
         public BacktestTradingAPI(long startTimestamp, Database database, List<string> tradablePairs)
         {
-            tradingTime = new TradingTimeIndicator(database);
+            tradingTime = new TradingTimeIndicator();
             now = startTimestamp;
             this.database = database;
             foreach (string pair in tradablePairs)
@@ -32,7 +32,7 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
             this.now = now;
             foreach (KeyValuePair<string, PairData> pair in pairData)
             {
-                if (tradingTime.getIndicator(now, pair.Key).value != 0)  //No calculations on weekends ???
+                if (tradingTime.getIndicator(now, 0).value != 0)  //No calculations on weekends ???
                 { 
                     Tickdata tickData = database.getPrice(now, pair.Key);
 

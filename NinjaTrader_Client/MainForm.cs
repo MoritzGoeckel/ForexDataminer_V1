@@ -196,7 +196,7 @@ namespace NinjaTrader_Client
 
         private void button14_Click(object sender, EventArgs e)
         {
-            double tradingTimeCode = new TradingTimeIndicator(main.getDatabase()).getIndicator(Timestamp.getNow(), "EURUSD").value;
+            double tradingTimeCode = new TradingTimeIndicator().getIndicator(Timestamp.getNow(), 0).value;
             DateTime dt = Timestamp.getDate(Timestamp.getNow());
             MessageBox.Show(dt.ToString());
         }

@@ -197,8 +197,7 @@
     <Compile Include="Trader\Datamining\CorrelationCondition.cs" />
     <Compile Include="Trader\Datamining\DataminingDatabase.cs" />
     <Compile Include="Trader\Datamining\MongoDataminingDB.cs" />
-    <Compile Include="Trader\Indicators\Indicator.cs" />
-    <Compile Include="Trader\Indicators\AverageChangeIndicator.cs" />
+    <Compile Include="Trader\Indicators\WalkerIndicator.cs" />
     <Compile Include="Trader\Indicators\MovingAverageIndicator.cs" />
     <Compile Include="Trader\Indicators\TradingTimeIndicator.cs" />
     <Compile Include="Trader\Indicators\StochIndicator.cs" />

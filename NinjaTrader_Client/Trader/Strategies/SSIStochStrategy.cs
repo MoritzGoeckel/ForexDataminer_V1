@@ -13,8 +13,8 @@ namespace NinjaTrader_Client.Trader.Strategies
 {
     public class SSIStochStrategy : Strategy
     {
-        private Indicator stochIndicator;
-        private Indicator tradingTime;
+        private WalkerIndicator stochIndicator;
+        private WalkerIndicator tradingTime;
         private Dictionary<string, List<TimeValueData>> lastStochTicks = new Dictionary<string, List<TimeValueData>>();
         private double takeprofitPercent, threshold, stoplossPercent;
         private int stochTimeframe, timeout;
@@ -34,8 +34,8 @@ namespace NinjaTrader_Client.Trader.Strategies
             this.stoplossPercent = stoplossPercent;
             this.againstCrowd = againstCrowd;
 
-            stochIndicator = new StochIndicator(database, stochTimeframe);
-            tradingTime = new TradingTimeIndicator(database);
+            stochIndicator = new StochIndicator(stochTimeframe);
+            tradingTime = new TradingTimeIndicator();
 
             setupVisualizationData();
         }
@@ -50,7 +50,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             stoplossPercent = Double.Parse(parameters["sl"]);
             againstCrowd = Boolean.Parse(parameters["againstCrowd"]);
 
-            stochIndicator = new StochIndicator(database, stochTimeframe);
+            stochIndicator = new StochIndicator(stochTimeframe);
 
             setupVisualizationData();
         }
@@ -115,7 +115,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             if (isUpToDate == false)
                 return;
 
-            double tradingTimeCode = tradingTime.getIndicator(api.getNow(), instrument).value;
+            double tradingTimeCode = tradingTime.getIndicator(api.getNow(), 0).value;
             tradingTimeCode_vi.value = tradingTimeCode;
             if (tradingTimeCode == 0)
             {
@@ -129,8 +129,9 @@ namespace NinjaTrader_Client.Trader.Strategies
 
             TimeValueData ssiValue = database.getData(api.getNow(), "ssi-mt4", instrument);
             ssi_vi.value = ssiValue.value;
-            
-            TimeValueData stochTick = stochIndicator.getIndicator(api.getNow(), "ssi-mt4", instrument);
+
+            TimeValueData ssi = database.getData(api.getNow(), "ssi-mt4", instrument);
+            TimeValueData stochTick = stochIndicator.getIndicator(api.getNow(), ssi.value);
 
             if (stochTick == null)
                 return;

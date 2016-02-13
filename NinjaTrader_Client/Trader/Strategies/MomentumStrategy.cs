@@ -15,7 +15,7 @@ namespace NinjaTrader_Client.Trader.Strategies
     {
         int version = 0;
 
-        private Indicator tradingTime;
+        private WalkerIndicator tradingTime;
 
         public MomentumStrategy(Database database, int preTime, int postTime, double thresholdPercent, double takeprofitPercent, double stoplossPercent, bool follow_trend)
             : base(database)
@@ -27,7 +27,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             this.stoplossPercent = stoplossPercent;
             this.follow_trend = follow_trend;
 
-            this.tradingTime = new TradingTimeIndicator(database);
+            this.tradingTime = new TradingTimeIndicator();
 
             setupVisualizationData();
         }
@@ -115,7 +115,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             if (isUpToDate == false)
                 return;
 
-            double tradingTimeCode = tradingTime.getIndicator(api.getNow(), instrument).value;
+            double tradingTimeCode = tradingTime.getIndicator(api.getNow(), 0).value;
             tradingTimeCode_vi.value = tradingTimeCode;
             if (tradingTimeCode == 0)
             {

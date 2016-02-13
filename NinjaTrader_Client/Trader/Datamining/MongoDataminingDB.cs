@@ -195,27 +195,6 @@ namespace NinjaTrader_Client.Trader
             }
         }
 
-        void DataminingDatabase.addIndicator(Indicator indicator, string id)
-        {
-            //Fast Walker!
-            throw new NotImplementedException();
-        }
-
-        void DataminingDatabase.addMetaIndicator(string[] ids, double[] weights, string id)
-        {
-            throw new NotImplementedException();
-        }
-
-        void DataminingDatabase.getCorrelation(string indicatorId, int outcomeTimeframe, CorrelationCondition condition)
-        {
-            throw new NotImplementedException();
-        }
-
-        void DataminingDatabase.getCorrelationTable()
-        {
-            throw new NotImplementedException();
-        }
-
         string DataminingDatabase.getOutcomeIndicatorSampling(double min, double max, int steps, string fieldId, int outcomeTimeframeSeconds, string instument)
         {
             string seperator = "\t";
@@ -278,6 +257,56 @@ namespace NinjaTrader_Client.Trader
         ProgressDict DataminingDatabase.getProgress()
         {
             return progress;
+        }
+
+        void DataminingDatabase.addIndicator(WalkerIndicator indicator, string instrument, string fieldId)
+        {
+            var collection = mongodb.getDB().GetCollection("prices");
+
+            long start = database.getFirstTimestamp();
+            long end = database.getLastTimestamp();
+
+            string name = "Indicator " + instrument + " " + fieldId;
+            progress.setProgress(name, 0);
+            int done = 0;
+            long count = 0;
+
+            new Thread(delegate ()
+            {
+                var docs = collection.FindAs<BsonDocument>(Query.And(Query.Exists(fieldId), Query.LT("timestamp", end), Query.GTE("timestamp", start))).SetSortOrder(SortBy.Ascending("timestamp"));
+                docs.SetFlags(QueryFlags.NoCursorTimeout);
+                count = docs.Count();
+
+                foreach(var doc in docs)
+                {
+                    progress.setProgress(name, Convert.ToInt32(Convert.ToDouble(done) / Convert.ToDouble(count) * 100d));
+                    done++;
+
+                    indicator.setNextData(doc["timestamp"].AsInt64, doc[fieldId].AsDouble);
+
+                    collection.FindAndModify(new FindAndModifyArgs()
+                    {
+                        Query = Query.EQ("_id", doc["_id"]),
+                        Update = Update.Set(indicator.getName() + "_" + fieldId, indicator.getIndicator().value)
+                    });
+                }
+
+            }).Start();
+        }
+
+        void DataminingDatabase.addMetaIndicator(string[] ids, double[] weights, string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        void DataminingDatabase.getCorrelation(string indicatorId, int outcomeTimeframe, CorrelationCondition condition)
+        {
+            throw new NotImplementedException();
+        }
+
+        void DataminingDatabase.getCorrelationTable()
+        {
+            throw new NotImplementedException();
         }
     }
 }

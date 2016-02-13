@@ -6,32 +6,39 @@ using System.Collections.Generic;
 
 namespace NinjaTrader_Client.Trader.Indicators
 {
-    class TradingTimeIndicator : Indicator
+    class TradingTimeIndicator : WalkerIndicator
     {
-        public TradingTimeIndicator(Database database) : base(database)
+        public TradingTimeIndicator()
         {
             
         }
 
-        public override TimeValueData getIndicator(long timestamp, string instrument)
+        long currentTime = 0;
+
+        public override TimeValueData getIndicator()
         {
-            DateTime dt = Timestamp.getDate(timestamp);
+            DateTime dt = Timestamp.getDate(currentTime);
 
             if (dt.DayOfWeek == DayOfWeek.Saturday || dt.DayOfWeek == DayOfWeek.Sunday)
-                return new TimeValueData(timestamp, 0); //Kein trading
+                return new TimeValueData(currentTime, 0); //Kein trading
 
             if (dt.DayOfWeek == DayOfWeek.Friday && dt.Hour >= 21)
-                return new TimeValueData(timestamp, 0); //Kein trading
+                return new TimeValueData(currentTime, 0); //Kein trading
 
             if (dt.DayOfWeek == DayOfWeek.Friday && dt.Hour >= 19)
-                return new TimeValueData(timestamp, 0.5); //Do not open positions
+                return new TimeValueData(currentTime, 0.5); //Do not open positions
 
-            return new TimeValueData(timestamp, 1); //Happy trading :)
+            return new TimeValueData(currentTime, 1); //Happy trading :)
         }
 
-        public override TimeValueData getIndicator(long timestamp, string dataName, string instrument)
+        public override void setNextData(long timestamp, double value)
         {
-            throw new Exception("Not implemented in TradingTimeIndicator; Use -> getIndicator(long timestamp, string instrument)");
+            currentTime = timestamp;
+        }
+
+        public override string getName()
+        {
+            return "TradingTime";
         }
     }
 }

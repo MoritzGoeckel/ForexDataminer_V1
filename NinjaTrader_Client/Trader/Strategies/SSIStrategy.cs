@@ -14,7 +14,7 @@ namespace NinjaTrader_Client.Trader.Strategies
 
         int version = 1;
 
-        private Indicator tradingTime;
+        private WalkerIndicator tradingTime;
 
         public SSIStrategy(Database database, double thresholdOpen, double thresholdClose, bool followCrowd)
             : base(database)
@@ -23,7 +23,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             this.thresholdClose = thresholdClose;
             this.followCrowd = followCrowd;
 
-            this.tradingTime = new TradingTimeIndicator(database);
+            this.tradingTime = new TradingTimeIndicator();
 
             if (thresholdClose >= thresholdOpen)
                 throw new Exception("thresholdClose has to be < thresholdOpen");
@@ -99,7 +99,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             if (isUpToDate == false)
                 return;
 
-            double tradingTimeCode = tradingTime.getIndicator(api.getNow(), instrument).value;
+            double tradingTimeCode = tradingTime.getIndicator(api.getNow(), 0).value;
             tradingTimeCode_vi.value = tradingTimeCode;
 
             if (tradingTimeCode == 0)

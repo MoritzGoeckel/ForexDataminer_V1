@@ -13,7 +13,7 @@ namespace NinjaTrader_Client.Trader.Datamining
     {
         void importPair(string pair, long start, long end, Database database);
         void addOutcome(long timeframeSeconds);
-        void addIndicator(Indicator indicator, string id);
+        void addIndicator(WalkerIndicator indicator, string instrument, string id);
         void addData(string dataname, Database database);
         void addMetaIndicator(string[] ids, double[] weights, string id);
         void getCorrelation(string indicatorId, int outcomeTimeframe, CorrelationCondition condition);

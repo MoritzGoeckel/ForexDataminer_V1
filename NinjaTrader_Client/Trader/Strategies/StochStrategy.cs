@@ -20,8 +20,8 @@ namespace NinjaTrader_Client.Trader.Strategies
         private int stochTimeframe;
         private int hitSL = 0, hitTP = 0;
 
-        private Indicator stochIndicator;
-        private Indicator tradingTime;
+        private WalkerIndicator stochIndicator;
+        private WalkerIndicator tradingTime;
 
         public StochStrategy(Database database, double percentStoploss, double percentTakeprofit, int stochTimeframe, double threshold, bool followTrend)
             : base(database)
@@ -32,8 +32,8 @@ namespace NinjaTrader_Client.Trader.Strategies
             this.threshold = threshold;
             this.followTrend = followTrend;
 
-            stochIndicator = new StochIndicator(database, stochTimeframe);
-            tradingTime = new TradingTimeIndicator(database);
+            stochIndicator = new StochIndicator(stochTimeframe);
+            tradingTime = new TradingTimeIndicator();
 
             setupVisualizationData();
         }
@@ -47,7 +47,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             followTrend = Boolean.Parse(parameters["followTrend"]);
             threshold = Double.Parse(parameters["threshold"]);
 
-            stochIndicator = new StochIndicator(database, stochTimeframe);
+            stochIndicator = new StochIndicator(stochTimeframe);
 
             setupVisualizationData();
         }
@@ -112,7 +112,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             if (isUptodate == false)
                 return;
 
-            double tradingTimeCode = tradingTime.getIndicator(api.getNow(), instrument).value;
+            double tradingTimeCode = tradingTime.getIndicator(api.getNow(), 0).value;
             tradingTimeCode_vi.value = tradingTimeCode;
             if (tradingTimeCode == 0)
             {
@@ -124,7 +124,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             double takeprofit = api.getAvgPrice(instrument) * percentTakeprofit / 100d;
             double stoploss = api.getAvgPrice(instrument) * percentStoploss / 100d;
 
-            TimeValueData stochTick = stochIndicator.getIndicator(api.getNow(), instrument);
+            TimeValueData stochTick = stochIndicator.getIndicator(api.getNow(), nowTick.getAvg());
             stoch_vi.value = stochTick.value;
 
             while (old_Stoch.Count != 0 && api.getNow() - old_Stoch[old_Stoch.Count - 1].timestamp > 1000 * 60 * 3)
