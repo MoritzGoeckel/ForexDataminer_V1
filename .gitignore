@@ -1,14 +1,8 @@
-/Output/*
+﻿/Output/*
 /NinjaTrader_Client/bin/Debug/*
 /Database/*
 /Database/
 *.s3db
-NinjaTrader_Client/Trader/Analysis/DataminingForm.cs
-NinjaTrader_Client/Trader/Analysis/DataminingForm.resx
-NinjaTrader_Client/Trader/Datamining/CorrelationCondition.cs
-NinjaTrader_Client/Trader/Datamining/DataminingDatabase.cs
-NinjaTrader_Client/Trader/Datamining/MongoDataminingDB.cs
-NinjaTrader_Client/Trader/Utils/ProgressDict.cs
 NinjaTrader_Client/bin/x64/Debug/MongoDB/data/dataminingDb.0
 NinjaTrader_Client/bin/x64/Debug/MongoDB/data/dataminingDb.1
 NinjaTrader_Client/bin/x64/Debug/MongoDB/data/dataminingDb.2
