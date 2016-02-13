@@ -1,4 +1,5 @@
 ﻿using NinjaTrader_Client.Trader.Datamining;
+using NinjaTrader_Client.Trader.Indicators;
 using NinjaTrader_Client.Trader.MainAPIs;
 using System;
 using System.Collections.Generic;
@@ -57,7 +58,13 @@ namespace NinjaTrader_Client.Trader.Analysis
 
         private void button5_Click(object sender, EventArgs e)
         {
-            textBox1.Text = dataminingDb.getOutcomeIndicatorSampling(-1, 1, 60, "ssi-win-mt", 60 * 30, "EURUSD");
+            //textBox1.Text = dataminingDb.getOutcomeIndicatorSampling(-1, 1, 60, "ssi-win-mt", 60 * 30, "EURUSD");
+            textBox1.Text = dataminingDb.getOutcomeIndicatorSampling(-0.3, 0.3, 60, "MA_10800000_last", 60 * 30, "EURUSD");
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            dataminingDb.addIndicator(new MovingAverageIndicator(1000 * 60 * 60 * 3), "EURUSD", "last");
         }
     }
 }

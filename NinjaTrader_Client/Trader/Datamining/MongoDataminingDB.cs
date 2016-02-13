@@ -195,7 +195,7 @@ namespace NinjaTrader_Client.Trader
             }
         }
 
-        string DataminingDatabase.getOutcomeIndicatorSampling(double min, double max, int steps, string fieldId, int outcomeTimeframeSeconds, string instument)
+        string DataminingDatabase.getOutcomeIndicatorSampling(double min, double max, int steps, string indicatorId, int outcomeTimeframeSeconds, string instument)
         {
             string seperator = "\t";
 
@@ -213,7 +213,7 @@ namespace NinjaTrader_Client.Trader
                 {
                     instument = null;
 
-                    IMongoQuery query = Query.And(Query.Exists(fieldId), Query.Exists("last"), Query.Exists("outcome_max_" + outcomeTimeframeSeconds), Query.Exists("outcome_min_" + outcomeTimeframeSeconds), Query.LT(fieldId, valueMax), Query.GTE(fieldId, valueMin));
+                    IMongoQuery query = Query.And(Query.Exists(indicatorId), Query.Exists("last"), Query.Exists("outcome_max_" + outcomeTimeframeSeconds), Query.Exists("outcome_min_" + outcomeTimeframeSeconds), Query.LT(indicatorId, valueMax), Query.GTE(indicatorId, valueMin));
                     if (instument != null)
                         query = Query.And(query, Query.EQ("instrument", instument));
 
@@ -245,6 +245,7 @@ namespace NinjaTrader_Client.Trader
             while (returnedValues.Count < steps)
                 Thread.Sleep(300);
 
+            //Create Graphics -> Todo!! ????
             string output = "MinValue"+ seperator + "MaxValue"+ seperator + "Count"+ seperator + "AvgMax"+ seperator + "AvgMin" + Environment.NewLine;
             foreach(string entry in returnedValues)
             {
@@ -273,7 +274,7 @@ namespace NinjaTrader_Client.Trader
 
             new Thread(delegate ()
             {
-                var docs = collection.FindAs<BsonDocument>(Query.And(Query.Exists(fieldId), Query.LT("timestamp", end), Query.GTE("timestamp", start))).SetSortOrder(SortBy.Ascending("timestamp"));
+                var docs = collection.FindAs<BsonDocument>(Query.And(Query.Exists(fieldId), Query.EQ("instrument", instrument), Query.LT("timestamp", end), Query.GTE("timestamp", start))).SetSortOrder(SortBy.Ascending("timestamp"));
                 docs.SetFlags(QueryFlags.NoCursorTimeout);
                 count = docs.Count();
 
@@ -291,12 +292,63 @@ namespace NinjaTrader_Client.Trader
                     });
                 }
 
+                progress.remove(name);
+
             }).Start();
         }
 
-        void DataminingDatabase.addMetaIndicator(string[] ids, double[] weights, string id)
+        void DataminingDatabase.addMetaIndicator(string[] ids, double[] weights, string fieldName)
         {
-            throw new NotImplementedException();
+            long start = database.getFirstTimestamp();
+            long end = database.getLastTimestamp();
+
+            long timeframe = (end - start) / threadsCount;
+            int threadId = 0;
+
+            var collection = mongodb.getDB().GetCollection("prices");
+
+            IMongoQuery fieldsExistQuery = Query.NotExists(fieldName);
+            foreach (string id in ids)
+                fieldsExistQuery = Query.And(fieldsExistQuery, Query.Exists(id));
+
+            while (threadId < threadsCount)
+            {
+                long threadBeginning = start + (timeframe * threadId);
+                long threadEnd = threadBeginning + timeframe;
+
+                new Thread(delegate () {
+
+                    string name = "Metaindicator" + " ID_" + threadBeginning + ":" + threadEnd;
+                    progress.setProgress(name, 0);
+                    int done = 0;
+                    long count = 0;
+
+                    var docs = collection.FindAs<BsonDocument>(Query.And(fieldsExistQuery, Query.LT("timestamp", threadEnd), Query.GTE("timestamp", threadBeginning)));
+                    docs.SetFlags(QueryFlags.NoCursorTimeout);
+
+                    count = docs.Count();
+                    foreach (BsonDocument doc in docs)
+                    {
+                        done++;
+                        progress.setProgress(name, Convert.ToInt32(Convert.ToDouble(done) / Convert.ToDouble(count) * 100d));
+
+                        double value = 0;
+                        for (int i = 0; i < ids.Length; i++)
+                            value += doc[ids[i]].AsDouble * weights[i];
+
+                        collection.FindAndModify(new FindAndModifyArgs()
+                        {
+                            Query = Query.EQ("_id", doc["_id"]),
+                            Update = Update.Set(fieldName, value)
+                        });
+                    }
+
+                    progress.remove(name);
+
+                }).Start();
+
+                threadId++;
+            }
         }
 
         void DataminingDatabase.getCorrelation(string indicatorId, int outcomeTimeframe, CorrelationCondition condition)

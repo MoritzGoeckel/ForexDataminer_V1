@@ -1,4 +1,4 @@
-﻿/Output/*
+/Output/*
 /NinjaTrader_Client/bin/Debug/*
 /Database/*
 /Database/
@@ -131,3 +131,5 @@ Output -- old/Historical Data/USDJPY ask.txt
 Output -- old/Historical Data/USDJPY bid.txt
 Output -- old/Last stable build/config.json
 Output -- old/Last stable build/netchartdir.xml
+NinjaTrader_Client/bin/x64/Debug/MongoDB/data/dataminingDb.4
+NinjaTrader_Client/bin/x64/Debug/MongoDB/data/journal/j._0
