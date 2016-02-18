@@ -13,13 +13,19 @@ namespace NinjaTrader_Client.Trader.Datamining
     {
         void importPair(string pair, long start, long end, Database database);
         void addOutcome(long timeframeSeconds);
-        void addIndicator(WalkerIndicator indicator, string instrument, string fieldId);
         void addData(string dataname, Database database);
-        void addMetaIndicator(string[] ids, double[] weights, string fieldId);
-        void getCorrelation(string indicatorId, int outcomeTimeframe, CorrelationCondition condition);
-        void getCorrelationTable();
+        void addMetaIndicatorSum(string[] ids, double[] weights, string fieldName);
+        void addMetaIndicatorDifference(string id, string id_subtract, string fieldName);
+
+        //Bound to an instrument
+        void addIndicator(WalkerIndicator indicator, string instrument, string fieldId);
         string getOutcomeIndicatorSampling(double min, double max, int steps, string indicatorId, int outcomeTimeframeSeconds, string instument = null);
 
+        //Not yet implemented
+        void getCorrelation(string indicatorId, int outcomeTimeframe, CorrelationCondition condition);
+        void getCorrelationTable();
+
+        //Trivial
         ProgressDict getProgress();
     }
 }

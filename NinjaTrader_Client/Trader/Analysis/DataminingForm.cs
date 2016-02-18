@@ -38,7 +38,7 @@ namespace NinjaTrader_Client.Trader.Analysis
 
         private void button2_Click(object sender, EventArgs e)
         {
-            dataminingDb.addOutcome(60 * 30); //30 Minuten
+            dataminingDb.addOutcome(60 * 60 * 2); //30 Minuten
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -59,12 +59,22 @@ namespace NinjaTrader_Client.Trader.Analysis
         private void button5_Click(object sender, EventArgs e)
         {
             //textBox1.Text = dataminingDb.getOutcomeIndicatorSampling(-1, 1, 60, "ssi-win-mt", 60 * 30, "EURUSD");
-            textBox1.Text = dataminingDb.getOutcomeIndicatorSampling(-0.3, 0.3, 60, "MA_10800000_last", 60 * 30, "EURUSD");
+            //textBox1.Text = dataminingDb.getOutcomeIndicatorSampling(0, 100, 50, "Stoch_" + 1000 * 60 * 60 * 3 + "_last", 60 * 30, "EURUSD");
+            //textBox1.Text = dataminingDb.getOutcomeIndicatorSampling(0, 100, 50, "Stoch_" + 1000 * 60 * 60 * 6 + "_last", 60 * 30, "EURUSD");
+            textBox1.Text = dataminingDb.getOutcomeIndicatorSampling(0, 100, 50, "Stoch_" + 1000 * 60 * 60 * 6 + "_last", 60 * 60 * 2, "EURUSD");
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            dataminingDb.addIndicator(new MovingAverageIndicator(1000 * 60 * 60 * 3), "EURUSD", "last");
+            //dataminingDb.addIndicator(new MovingAverageIndicator(1000 * 60 * 60 * 6), "EURUSD", "last");
+            dataminingDb.addIndicator(new StochIndicator(1000 * 60 * 60 * 3), "EURUSD", "last");
+            dataminingDb.addIndicator(new StochIndicator(1000 * 60 * 60 * 6), "EURUSD", "last");
+            dataminingDb.addIndicator(new StochIndicator(1000 * 60 * 60 * 12), "EURUSD", "last");
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            dataminingDb.addMetaIndicatorDifference("MA_" + 1000 * 60 * 60 * 3 + "_last", "MA_" + 1000 * 60 * 60 * 6 + "_last", "MA3-MA6");
         }
     }
 }

@@ -141,7 +141,7 @@ namespace NinjaTrader_Client.Trader
             }
         }
 
-        public void addData(string dataname, Database database)
+        void DataminingDatabase.addData(string dataname, Database database)
         {
             long start = database.getFirstTimestamp();
             long end = database.getLastTimestamp();
@@ -232,9 +232,13 @@ namespace NinjaTrader_Client.Trader
                     }
 
                     if (count == 0)
-                        returnedValues.Add(valueMin + seperator + valueMax + seperator + count + seperator + "-" + seperator + "-");
+                        returnedValues.Add(valueMin + seperator + valueMax + seperator + count + seperator + "-" + seperator + "-" + seperator + "-");
                     else
-                        returnedValues.Add(valueMin + seperator + valueMax + seperator + count + seperator + sumMax / count + seperator + sumMin / count);
+                    {
+                        double maxAvg = sumMax / count;
+                        double minAvg = sumMin / count;
+                        returnedValues.Add(valueMin + seperator + valueMax + seperator + count + seperator + maxAvg + seperator + minAvg + seperator + (maxAvg + minAvg));
+                    }
 
                 }).Start();
 
@@ -246,7 +250,7 @@ namespace NinjaTrader_Client.Trader
                 Thread.Sleep(300);
 
             //Create Graphics -> Todo!! ????
-            string output = "MinValue"+ seperator + "MaxValue"+ seperator + "Count"+ seperator + "AvgMax"+ seperator + "AvgMin" + Environment.NewLine;
+            string output = "MinValue"+ seperator + "MaxValue"+ seperator + "Count"+ seperator + "AvgMax"+ seperator + "AvgMin" + seperator + "AvgDifference" + Environment.NewLine;
             foreach(string entry in returnedValues)
             {
                 output += entry + Environment.NewLine;
@@ -267,7 +271,7 @@ namespace NinjaTrader_Client.Trader
             long start = database.getFirstTimestamp();
             long end = database.getLastTimestamp();
 
-            string name = "Indicator " + instrument + " " + fieldId;
+            string name = "Indicator " + indicator.getName() + " " + instrument + " " + fieldId;
             progress.setProgress(name, 0);
             int done = 0;
             long count = 0;
@@ -297,7 +301,7 @@ namespace NinjaTrader_Client.Trader
             }).Start();
         }
 
-        void DataminingDatabase.addMetaIndicator(string[] ids, double[] weights, string fieldName)
+        void DataminingDatabase.addMetaIndicatorSum(string[] ids, double[] weights, string fieldName)
         {
             long start = database.getFirstTimestamp();
             long end = database.getLastTimestamp();
@@ -318,7 +322,7 @@ namespace NinjaTrader_Client.Trader
 
                 new Thread(delegate () {
 
-                    string name = "Metaindicator" + " ID_" + threadBeginning + ":" + threadEnd;
+                    string name = "MetaindicatorSum" + " ID_" + threadBeginning + ":" + threadEnd;
                     progress.setProgress(name, 0);
                     int done = 0;
                     long count = 0;
@@ -336,6 +340,55 @@ namespace NinjaTrader_Client.Trader
                         for (int i = 0; i < ids.Length; i++)
                             value += doc[ids[i]].AsDouble * weights[i];
 
+                        collection.FindAndModify(new FindAndModifyArgs()
+                        {
+                            Query = Query.EQ("_id", doc["_id"]),
+                            Update = Update.Set(fieldName, value)
+                        });
+                    }
+
+                    progress.remove(name);
+
+                }).Start();
+
+                threadId++;
+            }
+        }
+
+        void DataminingDatabase.addMetaIndicatorDifference(string id, string id_subtract, string fieldName)
+        {
+            long start = database.getFirstTimestamp();
+            long end = database.getLastTimestamp();
+
+            long timeframe = (end - start) / threadsCount;
+            int threadId = 0;
+
+            var collection = mongodb.getDB().GetCollection("prices");
+
+            IMongoQuery fieldsExistQuery = Query.And(Query.NotExists(fieldName), Query.Exists(id), Query.Exists(id_subtract));
+
+            while (threadId < threadsCount)
+            {
+                long threadBeginning = start + (timeframe * threadId);
+                long threadEnd = threadBeginning + timeframe;
+
+                new Thread(delegate () {
+
+                    string name = "MetaindicatorDifference" + " ID_" + threadBeginning + ":" + threadEnd;
+                    progress.setProgress(name, 0);
+                    int done = 0;
+                    long count = 0;
+
+                    var docs = collection.FindAs<BsonDocument>(Query.And(fieldsExistQuery, Query.LT("timestamp", threadEnd), Query.GTE("timestamp", threadBeginning)));
+                    docs.SetFlags(QueryFlags.NoCursorTimeout);
+
+                    count = docs.Count();
+                    foreach (BsonDocument doc in docs)
+                    {
+                        done++;
+                        progress.setProgress(name, Convert.ToInt32(Convert.ToDouble(done) / Convert.ToDouble(count) * 100d));
+
+                        double value = doc[id].AsDouble - doc[id_subtract].AsDouble;
                         collection.FindAndModify(new FindAndModifyArgs()
                         {
                             Query = Query.EQ("_id", doc["_id"]),
