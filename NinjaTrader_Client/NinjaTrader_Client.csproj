@@ -69,6 +69,75 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Accord">
+      <HintPath>..\DLL\Accord-Framework\Accord.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Audio">
+      <HintPath>..\DLL\Accord-Framework\Accord.Audio.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Audio.DirectSound">
+      <HintPath>..\DLL\Accord-Framework\Accord.Audio.DirectSound.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Audition">
+      <HintPath>..\DLL\Accord-Framework\Accord.Audition.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Controls">
+      <HintPath>..\DLL\Accord-Framework\Accord.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Controls.Audio">
+      <HintPath>..\DLL\Accord-Framework\Accord.Controls.Audio.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Controls.Imaging">
+      <HintPath>..\DLL\Accord-Framework\Accord.Controls.Imaging.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Controls.Vision">
+      <HintPath>..\DLL\Accord-Framework\Accord.Controls.Vision.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Fuzzy">
+      <HintPath>..\DLL\Accord-Framework\Accord.Fuzzy.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Genetic">
+      <HintPath>..\DLL\Accord-Framework\Accord.Genetic.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Imaging">
+      <HintPath>..\DLL\Accord-Framework\Accord.Imaging.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.IO">
+      <HintPath>..\DLL\Accord-Framework\Accord.IO.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.MachineLearning">
+      <HintPath>..\DLL\Accord-Framework\Accord.MachineLearning.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Math">
+      <HintPath>..\DLL\Accord-Framework\Accord.Math.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Math.Noncommercial">
+      <HintPath>..\DLL\Accord-Framework\Noncommercial\Accord.Math.Noncommercial.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Neuro">
+      <HintPath>..\DLL\Accord-Framework\Accord.Neuro.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Statistics">
+      <HintPath>..\DLL\Accord-Framework\Accord.Statistics.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Video">
+      <HintPath>..\DLL\Accord-Framework\Accord.Video.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Video.DirectShow">
+      <HintPath>..\DLL\Accord-Framework\Accord.Video.DirectShow.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Video.Kinect">
+      <HintPath>..\DLL\Accord-Framework\Accord.Video.Kinect.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Video.VFW">
+      <HintPath>..\DLL\Accord-Framework\Accord.Video.VFW.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Video.Ximea">
+      <HintPath>..\DLL\Accord-Framework\Accord.Video.Ximea.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Vision">
+      <HintPath>..\DLL\Accord-Framework\Accord.Vision.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -101,6 +170,7 @@
       <HintPath>..\DLL\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.Management" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -109,6 +179,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="ZedGraph">
+      <HintPath>..\DLL\Accord-Framework\ZedGraph.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Trader\Analysis\AnalyseRawTestDataForm.cs">

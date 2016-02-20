@@ -16,6 +16,9 @@ namespace NinjaTrader_Client.Trader.Datamining
         void addData(string dataname, Database database);
         void addMetaIndicatorSum(string[] ids, double[] weights, string fieldName);
         void addMetaIndicatorDifference(string id, string id_subtract, string fieldName);
+        void addOutcomeCode(double percentDifference, int outcomeTimeframeSeconds);
+
+        void deleteAll();
 
         //Bound to an instrument
         void addIndicator(WalkerIndicator indicator, string instrument, string fieldId);
@@ -27,5 +30,11 @@ namespace NinjaTrader_Client.Trader.Datamining
 
         //Trivial
         ProgressDict getProgress();
+
+        //Come up with a better Name! ???
+        void doMachineLearning(string[] inputFields, string outcomeField, string instrument, string savePath = null);
+
+        string getInfo();
+        //void trainNeuralNetwork(ActivationNetwork ann, int iterations)
     }
 }

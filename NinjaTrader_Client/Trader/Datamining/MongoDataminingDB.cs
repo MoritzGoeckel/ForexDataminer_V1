@@ -10,6 +10,10 @@ using MongoDB.Driver.Builders;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using NinjaTrader_Client.Trader.Utils;
+using System.Data;
+using Accord.Math;
+using Accord.Neuro;
+using Accord.Neuro.Learning;
 
 namespace NinjaTrader_Client.Trader
 {
@@ -19,7 +23,7 @@ namespace NinjaTrader_Client.Trader
         MongoDatabase database;
         MongoFacade mongodb;
 
-        int threadsCount = 12;
+        int threadsCount = 30;
 
         ProgressDict progress = new ProgressDict();
 
@@ -89,7 +93,7 @@ namespace NinjaTrader_Client.Trader
                     int done = 0;
                     long count = 0;
 
-                    var docs = collection.FindAs<BsonDocument>(Query.And(Query.LT("timestamp", threadEnd), Query.GTE("timestamp", threadBeginning))).SetSortOrder(SortBy.Ascending("timestamp"));
+                    var docs = collection.FindAs<BsonDocument>(Query.And(Query.NotExists("outcome_max_" + timeframeSeconds), Query.LT("timestamp", threadEnd), Query.GTE("timestamp", threadBeginning))).SetSortOrder(SortBy.Ascending("timestamp"));
                     docs.SetFlags(QueryFlags.NoCursorTimeout);
 
                     count = docs.Count();
@@ -100,9 +104,6 @@ namespace NinjaTrader_Client.Trader
 
                         try
                         {
-                            if (doc.ContainsValue("outcome_max_" + timeframeSeconds))
-                                continue;
-
                             Tickdata inTimeframe = database.getPrice(doc["timestamp"].AsInt64 + (timeframeSeconds * 1000), doc["instrument"].AsString);
 
                             var min_doc = collection.FindAs<BsonDocument>(Query.And(Query.EQ("instrument", doc["instrument"].AsString), Query.LT("timestamp", doc["timestamp"].AsInt64 + (timeframeSeconds * 1000)), Query.GT("timestamp", doc["timestamp"].AsInt64)))
@@ -163,7 +164,7 @@ namespace NinjaTrader_Client.Trader
                     int done = 0;
                     long count = 0;
 
-                    var docs = collection.FindAs<BsonDocument>(Query.And(Query.LT("timestamp", threadEnd), Query.GTE("timestamp", threadBeginning))).SetSortOrder(SortBy.Ascending("timestamp"));
+                    var docs = collection.FindAs<BsonDocument>(Query.And(Query.NotExists(dataname), Query.LT("timestamp", threadEnd), Query.GTE("timestamp", threadBeginning))).SetSortOrder(SortBy.Ascending("timestamp"));
                     docs.SetFlags(QueryFlags.NoCursorTimeout);
 
                     count = docs.Count();
@@ -204,21 +205,24 @@ namespace NinjaTrader_Client.Trader
             var collection = mongodb.getDB().GetCollection("prices");
             double stepsize = (Convert.ToDouble(max - min) / Convert.ToDouble(steps));
 
+            int startedThreads = 0;
+
             double current = min;
             while(current <= max)
             {
+                startedThreads++;
                 double valueMin = current;
                 double valueMax = current + stepsize;
                 new Thread(delegate ()
                 {
                     instument = null;
 
-                    IMongoQuery query = Query.And(Query.Exists(indicatorId), Query.Exists("last"), Query.Exists("outcome_max_" + outcomeTimeframeSeconds), Query.Exists("outcome_min_" + outcomeTimeframeSeconds), Query.LT(indicatorId, valueMax), Query.GTE(indicatorId, valueMin));
+                    IMongoQuery query = Query.And(Query.Exists(indicatorId), Query.Exists("last"), Query.Exists("outcome_actual_" + outcomeTimeframeSeconds), Query.Exists("outcome_max_" + outcomeTimeframeSeconds), Query.Exists("outcome_min_" + outcomeTimeframeSeconds), Query.LT(indicatorId, valueMax), Query.GTE(indicatorId, valueMin));
                     if (instument != null)
                         query = Query.And(query, Query.EQ("instrument", instument));
 
                     var docs = collection.FindAs<BsonDocument>(query);
-                    double sumMax = 0, sumMin = 0;
+                    double sumMax = 0, sumMin = 0, sumActual = 0;
                     long count = docs.Count();
                     foreach (BsonDocument doc in docs)
                     {
@@ -226,18 +230,22 @@ namespace NinjaTrader_Client.Trader
 
                         double maxDiff = doc["outcome_max_" + outcomeTimeframeSeconds].AsDouble / onePercent - 100; //calculate percent difference
                         double minDiff = doc["outcome_min_" + outcomeTimeframeSeconds].AsDouble / onePercent - 100;
+                        double actualDiff = doc["outcome_actual_" + outcomeTimeframeSeconds].AsDouble / onePercent - 100;
 
                         sumMax += maxDiff;
                         sumMin += minDiff;
+                        sumActual += actualDiff;
                     }
 
                     if (count == 0)
-                        returnedValues.Add(valueMin + seperator + valueMax + seperator + count + seperator + "-" + seperator + "-" + seperator + "-");
+                        returnedValues.Add(valueMin + seperator + valueMax + seperator + count + seperator + "-" + seperator + "-" + seperator + "-" + seperator + "-");
                     else
                     {
                         double maxAvg = sumMax / count;
                         double minAvg = sumMin / count;
-                        returnedValues.Add(valueMin + seperator + valueMax + seperator + count + seperator + maxAvg + seperator + minAvg + seperator + (maxAvg + minAvg));
+                        double actualAvg = sumActual / count;
+
+                        returnedValues.Add(valueMin + seperator + valueMax + seperator + count + seperator + maxAvg + seperator + minAvg + seperator + actualAvg + seperator + (maxAvg + minAvg));
                     }
 
                 }).Start();
@@ -246,11 +254,11 @@ namespace NinjaTrader_Client.Trader
             }
 
             //Darstellungsthread
-            while (returnedValues.Count < steps)
+            while (returnedValues.Count < startedThreads - 1) //Warum kommt einer weniger an???? Fehler!!! ????
                 Thread.Sleep(300);
 
             //Create Graphics -> Todo!! ????
-            string output = "MinValue"+ seperator + "MaxValue"+ seperator + "Count"+ seperator + "AvgMax"+ seperator + "AvgMin" + seperator + "AvgDifference" + Environment.NewLine;
+            string output = "MinValue"+ seperator + "MaxValue"+ seperator + "Count"+ seperator + "AvgMax"+ seperator + "AvgMin" + seperator + "AvgActual" + seperator + "AvgDifference" + Environment.NewLine;
             foreach(string entry in returnedValues)
             {
                 output += entry + Environment.NewLine;
@@ -374,7 +382,7 @@ namespace NinjaTrader_Client.Trader
 
                 new Thread(delegate () {
 
-                    string name = "MetaindicatorDifference" + " ID_" + threadBeginning + ":" + threadEnd;
+                    string name = "MetaindicatorDifference" + id + "-" + id_subtract + " " + threadBeginning + ":" + threadEnd;
                     progress.setProgress(name, 0);
                     int done = 0;
                     long count = 0;
@@ -404,12 +412,214 @@ namespace NinjaTrader_Client.Trader
             }
         }
 
+        // Not implemented
+
         void DataminingDatabase.getCorrelation(string indicatorId, int outcomeTimeframe, CorrelationCondition condition)
         {
             throw new NotImplementedException();
         }
 
         void DataminingDatabase.getCorrelationTable()
+        {
+            throw new NotImplementedException();
+        }
+
+        //Machine Learning
+
+        void DataminingDatabase.doMachineLearning(string[] inputFields, string outcomeField, string instrument, string savePath = null)
+        {
+            string name = "ANN";
+
+            double learningRate = 0.1;
+            double sigmoidAlphaValue = 2;
+            int iterations = 100;
+
+            bool useRegularization = false;
+            bool useNguyenWidrow = false;
+            bool useSameWeights = false;
+
+            progress.setProgress(name, "Creating ANN...");
+            
+            // create multi-layer neural network
+            ActivationNetwork ann = new ActivationNetwork(
+                new BipolarSigmoidFunction(sigmoidAlphaValue),
+                inputFields.Length, 20, 2); //How many neuros ???? Standart is 1
+
+            if (useNguyenWidrow)
+            {
+                progress.setProgress(name, "Creating NguyenWidrow...");
+                
+                if (useSameWeights)
+                    Accord.Math.Random.Generator.Seed = 0;
+
+                NguyenWidrow initializer = new NguyenWidrow(ann);
+                initializer.Randomize();
+            }
+
+            progress.setProgress(name, "Creating LevenbergMarquardtLearning...");
+            
+            // create teacher
+            LevenbergMarquardtLearning teacher = new LevenbergMarquardtLearning(ann, useRegularization); //, JacobianMethod.ByBackpropagation
+
+            // set learning rate and momentum
+            teacher.LearningRate = learningRate;
+
+            IMongoQuery fieldsExistQuery = Query.And(Query.Exists(outcomeField + "_buy"), Query.Exists(outcomeField + "_sell"));
+            foreach (string inputField in inputFields)
+                fieldsExistQuery = Query.And(fieldsExistQuery, Query.Exists(inputField));
+
+            new Thread(delegate(){
+
+                progress.setProgress(name, "Importing...");
+                
+                // Load Data
+                long start = database.getFirstTimestamp();
+                long end = database.getLastTimestamp();
+
+                var collection = mongodb.getDB().GetCollection("prices");
+                var docs = collection.FindAs<BsonDocument>(Query.And(fieldsExistQuery, Query.EQ("instrument", instrument), Query.LT("timestamp", end), Query.GTE("timestamp", start))).SetSortOrder(SortBy.Ascending("timestamp"));
+                docs.SetFlags(QueryFlags.NoCursorTimeout);
+                long resultCount = docs.Count();
+
+                //Press into Array from
+                progress.setProgress(name, "Casting to array...");
+                
+                double[][] inputs = new double[resultCount][]; // [inputFields.Length]
+                double[][] outputs = new double[resultCount][]; // [2]
+
+                int row = 0;
+                foreach (var doc in docs)
+                {
+                    outputs[row] = new double[] { doc[outcomeField + "_buy"].AsInt32, doc[outcomeField + "_sell"].AsInt32 };
+
+                    double[] inputRow = new double[inputFields.Length];
+
+                    for (int i = 0; i < inputFields.Length; i++)
+                    {
+                        double value = doc[inputFields[i]].AsDouble;
+                        if (double.IsInfinity(value) || double.IsNegativeInfinity(value) || double.IsNaN(value))
+                            throw new Exception("Invalid value!");
+                        else
+                            inputRow[i] = value;
+                    }
+
+                    inputs[row] = inputRow;
+
+                    //Check these! :) ???
+
+                    row++;
+                }
+                
+                // Teach the ANN
+                for (int iteration = 0; iteration < iterations; iteration++)
+                {
+                    progress.setProgress(name, "Teaching... " + iteration + " of " + iterations);
+                    double error = teacher.RunEpoch(inputs, outputs);
+
+                    if (savePath != null)
+                        ann.Save(savePath);
+                }
+
+                //Compute Error
+                progress.setProgress(name, "Calculating error...");
+                
+                int successes = 0;
+                int fails = 0;
+                for (int i = 0; i < inputs.Length; i++)
+                {
+                    var realOutput = outputs[i];
+
+                    //Buys
+                    double[] calculated = ann.Compute(inputs[i]);
+                    if (calculated[0] == 0 || calculated[0] == realOutput[0])
+                        successes++;
+
+                    if (calculated[0] == 1 && realOutput[0] == 0)
+                        fails++;
+
+                    //Sells
+                    if (calculated[1] == 0 || calculated[1] == realOutput[1])
+                        successes++;
+
+                    if (calculated[1] == 1 && realOutput[1] == 0)
+                        fails++;
+                }
+
+                double successRate = (double)successes / (inputs.Length * 2);
+                double failRate = (double)fails / (inputs.Length * 2);
+
+                progress.setProgress(name, "Finished with successRate of " + successRate + " failRate of " + failRate);
+
+            }).Start();
+        }
+
+        void DataminingDatabase.addOutcomeCode(double percentDifference, int outcomeTimeframeSeconds)
+        {
+            long start = database.getFirstTimestamp();
+            long end = database.getLastTimestamp();
+
+            long timeframe = (end - start) / threadsCount;
+            int threadId = 0;
+
+            var collection = mongodb.getDB().GetCollection("prices");
+
+            string outcomeCodeFieldName = "outcome_code_" + outcomeTimeframeSeconds + "_" + percentDifference;
+
+            while (threadId < threadsCount)
+            {
+                long threadBeginning = start + (timeframe * threadId);
+                long threadEnd = threadBeginning + timeframe;
+
+                new Thread(delegate () {
+
+                    string name = "outcome code " + percentDifference + " ID_" + threadBeginning + ":" + threadEnd;
+                    progress.setProgress(name, 0);
+                    int done = 0;
+                    long count = 0;
+
+                    var docs = collection.FindAs<BsonDocument>(Query.And(Query.Exists("outcome_max_" + outcomeTimeframeSeconds), Query.NotExists(outcomeCodeFieldName + "_buy"), Query.LT("timestamp", threadEnd), Query.GTE("timestamp", threadBeginning))).SetSortOrder(SortBy.Ascending("timestamp"));
+                    docs.SetFlags(QueryFlags.NoCursorTimeout);
+
+                    count = docs.Count();
+                    foreach (BsonDocument doc in docs)
+                    {
+                        done++;
+                        progress.setProgress(name, Convert.ToInt32(Convert.ToDouble(done) / Convert.ToDouble(count) * 100d));
+
+                        try
+                        {
+                            double onePercent = doc["last"].AsDouble / 100d;
+
+                            double maxDiff = doc["outcome_max_" + outcomeTimeframeSeconds].AsDouble / onePercent - 100; //calculate percent difference
+                            double minDiff = doc["outcome_min_" + outcomeTimeframeSeconds].AsDouble / onePercent - 100;
+                            
+                            collection.FindAndModify(new FindAndModifyArgs()
+                            {
+                                Query = Query.EQ("_id", doc["_id"]),
+                                Update = Update.Combine(
+                                    Update.Set(outcomeCodeFieldName + "_buy", (maxDiff >= percentDifference ? 1 : 0)),
+                                    Update.Set(outcomeCodeFieldName + "_sell", (minDiff <= -percentDifference ? 1 : 0))
+                                    )
+                            });
+                        }
+                        catch { }
+                    }
+
+                    progress.remove(name);
+
+                }).Start();
+
+                threadId++;
+            }
+        }
+
+        void DataminingDatabase.deleteAll()
+        {
+            var collection = mongodb.getDB().GetCollection("prices");
+            collection.RemoveAll();
+        }
+
+        string DataminingDatabase.getInfo()
         {
             throw new NotImplementedException();
         }

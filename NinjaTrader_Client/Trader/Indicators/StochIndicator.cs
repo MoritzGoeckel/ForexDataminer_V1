@@ -37,12 +37,24 @@ namespace NinjaTrader_Client.Trader.Indicators
         double valueNow;
         public override void setNextData(long _timestamp, double _value)
         {
-            if (_timestamp <= timestampNow)
+            if (_timestamp < timestampNow)
                 throw new Exception("Cant add older data here!");
+
+            if (_timestamp == timestampNow && _value != valueNow)
+                throw new Exception("Same timestamp different value!");
+
+            if (_timestamp == timestampNow && _value == valueNow)
+                return;
 
             history.Add(new TimestampValuePair { timestamp = _timestamp, value = _value });
             timestampNow = _timestamp;
             valueNow = _value;
+
+            if (valueNow > cachedMax)
+                cachedMax = valueNow;
+
+            if (valueNow < cachedMin)
+                cachedMin = valueNow;
         }
 
         double cachedMin = double.MaxValue, cachedMax = double.MinValue;
@@ -59,7 +71,7 @@ namespace NinjaTrader_Client.Trader.Indicators
                 history.RemoveAt(0);
             }
 
-            if(cachedMax == double.MinValue || cachedMin == double.MaxValue)
+            if(cachedMax == double.MinValue || cachedMin == double.MaxValue && history.Count != 0)
             {
                 getMinMaxInPrices(ref cachedMin, ref cachedMax, history);
             }
@@ -67,7 +79,18 @@ namespace NinjaTrader_Client.Trader.Indicators
             double max = cachedMax;
             double min = cachedMin;
 
-            return new TimeValueData(timestampNow, (valueNow - min) / (max - min) * 100d);
+            double output;
+
+            if (history.Count == 0 || max == min)
+                output = 50;
+            else
+                output = ((valueNow - min) / (max - min)) * 100d;
+
+            if (output > 100 || output < 0)
+                throw new Exception("Stoch is calculating unexpected numbers:" + Environment.NewLine +
+                    "o" + output + " min" + min + " max"+max + " valueNow" + valueNow  + " max-min" + (max - min) + " now-min" + (valueNow - min) + " ratio" + (valueNow - min) / (max - min));
+
+            return new TimeValueData(timestampNow, output);
         }
 
         public override string getName()

@@ -19,13 +19,20 @@ namespace NinjaTrader_Client.Trader.Indicators
         long timestampNow;
         public override void setNextData(long _timestamp, double _value)
         {
-            if (_timestamp <= timestampNow)
+            if (_timestamp < timestampNow)
                 throw new Exception("Cant add older data here!");
+
+            if (_timestamp == timestampNow && _value != valueNow)
+                throw new Exception("Same timestamp different value!");
+
+            if (_timestamp == timestampNow && _value == valueNow)
+                return;
 
             history.Add(new TimestampValuePair { timestamp = _timestamp, value = _value });
             timestampNow = _timestamp;
-            sum += _value;
             valueNow = _value;
+
+            sum += _value;
         }
 
         double sum = 0;
