@@ -37,26 +37,23 @@ namespace NinjaTrader_Client.Trader.Backtest
                 throw new Exception("BacktestConstructor: startTimestamp > endTimestamp");
         }
 
-        public void startBacktest(Strategy strat, string pair, long resolutionInSeconds, int chartResolution)
+        public void startBacktest(Strategy strat, long resolutionInSeconds, int chartResolution)
         {
-            List<string> pairs = new List<string>();
-            pairs.Add(pair);
-
-            BacktestTradingAPI dedicatedAPI = new BacktestTradingAPI(startTimestamp, database, pairs);
+            BacktestTradingAPI dedicatedAPI = new BacktestTradingAPI(startTimestamp, database, strat.getUsedPairs());
 
             Strategy dedicatedStrategy = strat.copy();
             dedicatedStrategy.setAPI(dedicatedAPI); //Todo: Nicht schön, nicht sicher
 
-            Thread thread = new Thread(() => runBacktest(dedicatedStrategy, pair, resolutionInSeconds, chartResolution, dedicatedAPI));
+            Thread thread = new Thread(() => runBacktest(dedicatedStrategy, resolutionInSeconds, chartResolution, dedicatedAPI));
             thread.Start();
 
             threads.Add(thread);
         }
 
-        public void startBacktest(List<Strategy> strats, string pair, long resolutionInSeconds, int chartResolution)
+        public void startBacktest(List<Strategy> strats, long resolutionInSeconds, int chartResolution)
         {
             foreach (Strategy strat in strats)
-                startBacktest(strat, pair, resolutionInSeconds, chartResolution);
+                startBacktest(strat, resolutionInSeconds, chartResolution);
         }
 
         double doneTestsTime = 0;
@@ -68,7 +65,7 @@ namespace NinjaTrader_Client.Trader.Backtest
         double strategyCalcCount = 0;
         double strategyCalcTime = 0;
 
-        private void runBacktest(Strategy strat, string pair, long resolutionInSeconds, int visualizationSteps, BacktestTradingAPI api)
+        private void runBacktest(Strategy strat, long resolutionInSeconds, int visualizationSteps, BacktestTradingAPI api)
         {
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -78,7 +75,9 @@ namespace NinjaTrader_Client.Trader.Backtest
             if (currentTimestamp > startTimestamp)
                 throw new Exception("Backtester runBacktest: currentTimestamp > startTimestamp");
 
-            string name = getUniqueStrategyName(strat.getName() + "_" + pair);
+            string name = getUniqueStrategyName(strat.getName());
+            foreach (string pair in strat.getUsedPairs())
+                name += " " + pair;
 
             List<KeyValuePair<long, BacktestVisualizationData>> visualizationData = new List<KeyValuePair<long, BacktestVisualizationData>>(visualizationSteps + 1);
 
@@ -91,7 +90,7 @@ namespace NinjaTrader_Client.Trader.Backtest
                     long doneHours = (currentTimestamp - startTimestamp) / 1000 / 60 / 60;
                     double doneRatio = Convert.ToDouble(currentTimestamp - startTimestamp) / Convert.ToDouble(endTimestamp - startTimestamp);
 
-                    if (doneHours >= 1 && api.getHistory(pair).Count / doneHours > maxPositionsPerHour)
+                    if (doneHours >= 1 && api.getHistory(strat.getUsedPairs()[0]).Count / doneHours > maxPositionsPerHour) //strat.getNeededPairs()[0] Sollte eigentlich alle iterieren. ??? Todo (Performance?)
                     {
                         reportStrategy = false;
                         break;
@@ -109,7 +108,7 @@ namespace NinjaTrader_Client.Trader.Backtest
 
                     sw.Reset();
                     sw.Start();
-                    strat.doTick(pair);
+                    strat.doTick();
                     sw.Stop();
 
                     if (doneRatio >= nextVisualizationRatio)
@@ -151,10 +150,14 @@ namespace NinjaTrader_Client.Trader.Backtest
             if (reportStrategy)
             {
                 Dictionary<string, BacktestData> results = new Dictionary<string, BacktestData>();
-                api.closePositions(pair);
+                foreach(string pair in strat.getUsedPairs())
+                    api.closePositions(pair);
 
-                BacktestData result = new BacktestData(endTimestamp - startTimestamp, pair, strat.getName());
-                result.setPositions(api.getHistory(pair));
+                //Result temporaily for only the first pair ??? todo: Multiple results ???
+                string resultInstrument = strat.getUsedPairs()[0];
+
+                BacktestData result = new BacktestData(endTimestamp - startTimestamp, resultInstrument, strat.getName());
+                result.setPositions(api.getHistory(resultInstrument));
                 result.setParameter(strat.getParameters());
                 result.setResult(strat.getResult());
                 result.setVisualizationData(visualizationData);

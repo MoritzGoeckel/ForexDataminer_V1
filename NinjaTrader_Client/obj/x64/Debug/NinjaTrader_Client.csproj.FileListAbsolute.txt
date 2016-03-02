@@ -107,3 +107,4 @@ E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\bin\x64\Debug\Acco
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\bin\x64\Debug\Accord.Vision.pdb
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\bin\x64\Debug\Accord.Vision.xml
 E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\bin\x64\Debug\ZedGraph.xml
+E:\Programmieren\C# Neu\NinjaTrader_Client\NinjaTrader_Client\obj\x64\Debug\NinjaTrader_Client.AutopilotTradingForm.resources

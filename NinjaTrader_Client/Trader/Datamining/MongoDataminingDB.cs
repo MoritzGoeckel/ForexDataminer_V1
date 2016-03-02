@@ -623,5 +623,70 @@ namespace NinjaTrader_Client.Trader
         {
             throw new NotImplementedException();
         }
+
+        string DataminingDatabase.getSuccessRate(int outcomeTimeframeSeconds, string indicator, double min, double max, string instrument, double tpPercent, double slPercent, bool buy)
+        {
+            var collection = mongodb.getDB().GetCollection("prices");
+            var docs = collection.FindAs<BsonDocument>(
+                    Query.And(
+                        Query.EQ("instrument", instrument),
+                        Query.Exists("outcome_max_" + outcomeTimeframeSeconds), Query.Exists("outcome_min_" + outcomeTimeframeSeconds), Query.Exists("outcome_actual_" + outcomeTimeframeSeconds),
+                        Query.LTE(indicator, max), Query.GTE(indicator, min)
+                    )
+                ).SetSortOrder(SortBy.Ascending("timestamp"));
+
+            int successes = 0;
+
+            double result = 0;
+
+            long count = docs.Count();
+            foreach (BsonDocument doc in docs)
+            {
+                double onePercent = doc["last"].AsDouble / 100d;
+
+                double maxDiff = doc["outcome_max_" + outcomeTimeframeSeconds].AsDouble / onePercent - 100; //calculate percent difference
+                double minDiff = doc["outcome_min_" + outcomeTimeframeSeconds].AsDouble / onePercent - 100;
+                double actualDiff = doc["outcome_actual_" + outcomeTimeframeSeconds].AsDouble / onePercent - 100;
+
+                if (buy)
+                {
+                    if (maxDiff >= tpPercent && minDiff > -slPercent) //Kein SL ABER EIN TP -> TP
+                    {
+                        successes++;
+                        result += tpPercent;
+                    }
+                    else if (minDiff > -slPercent) //Kein SL Kein TP -> Actual
+                    {
+                        result += actualDiff;
+                    }
+                    else
+                        result -= slPercent; //-> SL
+
+                }
+                else
+                {
+                    if (minDiff <= -tpPercent && maxDiff < slPercent) //Kein SL ABER EIN TP -> TP
+                    {
+                        successes++;
+                        result += tpPercent;
+                    }
+                    else if (maxDiff < slPercent) //Kein SL Kein TP -> Actual
+                    {
+                        result -= actualDiff;
+                    }
+                    else
+                        result -= slPercent; //-> SL
+                }
+            }
+
+            string seperator = "\t";
+
+            double successRate = (Convert.ToDouble(successes) / Convert.ToDouble(count));
+            double slTpRatio = tpPercent / slPercent;
+
+            return "outcomeTimeframeSeconds:" + outcomeTimeframeSeconds + " Indicator:" + indicator + " min:" + min + " max:" + max + " instrument:" + instrument + " tp:" +tpPercent+ " sl:" +slPercent+ " buy:" + buy + Environment.NewLine
+                    + "Sucesses" + seperator + "Count" + seperator + "SucessRate" + seperator + "Result" + seperator + "Percent gained" + Environment.NewLine
+                    + successes + seperator + count + seperator + successRate + seperator + (successRate * slTpRatio) + seperator + result;
+        }
     }
 }

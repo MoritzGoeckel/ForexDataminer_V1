@@ -22,7 +22,7 @@ namespace NinjaTrader_Client
 {
     public abstract partial class BacktestForm : Form
     {
-        protected abstract void getNextStrategyToTest(ref Strategy strategy, ref String instrument, ref long resolutionInSeconds, ref bool continueBacktesting);
+        protected abstract void getNextStrategyToTest(ref Strategy strategy, ref long resolutionInSeconds, ref bool continueBacktesting);
         protected abstract void backtestResultArrived(Dictionary<string, string> parameters, Dictionary<string, string> result);
 
         private Backtester backtester;
@@ -67,13 +67,13 @@ namespace NinjaTrader_Client
 
                 long resolutionInSeconds = -1;
 
-                getNextStrategyToTest(ref strategy, ref pair, ref resolutionInSeconds, ref continueTesting);
+                getNextStrategyToTest(ref strategy, ref resolutionInSeconds, ref continueTesting);
 
                 if ((pair == null || strategy == null || resolutionInSeconds == -1) && continueTesting == true)
                     throw new Exception("Pair or Strategy eq NULL -> P: " + pair + " S: " + strategy);
 
                 if (continueTesting)
-                    backtester.startBacktest(strategy, pair, resolutionInSeconds, chartResolution);
+                    backtester.startBacktest(strategy, resolutionInSeconds, chartResolution);
                 else
                     break;
             }

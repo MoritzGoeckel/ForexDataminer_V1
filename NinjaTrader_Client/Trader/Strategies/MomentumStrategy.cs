@@ -16,8 +16,9 @@ namespace NinjaTrader_Client.Trader.Strategies
         int version = 0;
 
         private WalkerIndicator tradingTime;
+        private string instrument;
 
-        public MomentumStrategy(Database database, int preTime, int postTime, double thresholdPercent, double takeprofitPercent, double stoplossPercent, bool follow_trend)
+        public MomentumStrategy(Database database, string instrument, int preTime, int postTime, double thresholdPercent, double takeprofitPercent, double stoplossPercent, bool follow_trend)
             : base(database)
         {
             this.thresholdPercent = thresholdPercent;
@@ -26,6 +27,8 @@ namespace NinjaTrader_Client.Trader.Strategies
             this.takeprofitPercent = takeprofitPercent;
             this.stoplossPercent = stoplossPercent;
             this.follow_trend = follow_trend;
+
+            this.instrument = instrument;
 
             this.tradingTime = new TradingTimeIndicator();
 
@@ -41,13 +44,14 @@ namespace NinjaTrader_Client.Trader.Strategies
             takeprofitPercent = Double.Parse(parameters["tp"]);
             stoplossPercent = Double.Parse(parameters["sl"]);
             follow_trend = Boolean.Parse(parameters["followTrend"]);
+            instrument = parameters["instrument"];
 
             setupVisualizationData();
         }
 
         public override Strategy copy()
         {
-            return new MomentumStrategy(database, preTime, postTime, thresholdPercent, takeprofitPercent, stoplossPercent, follow_trend);
+            return new MomentumStrategy(database, instrument, preTime, postTime, thresholdPercent, takeprofitPercent, stoplossPercent, follow_trend);
         }
 
         public override string getName()
@@ -64,6 +68,8 @@ namespace NinjaTrader_Client.Trader.Strategies
             parameters.Add("tp", takeprofitPercent.ToString());
             parameters.Add("sl", stoplossPercent.ToString());
             parameters.Add("followTrend", follow_trend.ToString());
+
+            parameters.Add("instrument", instrument);
 
             parameters.Add("name", getName());
 
@@ -106,7 +112,7 @@ namespace NinjaTrader_Client.Trader.Strategies
         private bool follow_trend;
         private int hitSL = 0, hitTP = 0, hitTO = 0;
 
-        public override void doTick(string instrument)
+        public override void doTick()
         {
             price_vi.value = api.getAvgPrice(instrument);
 
@@ -221,6 +227,11 @@ namespace NinjaTrader_Client.Trader.Strategies
 
             //add newest in front
             old_tickdata.Insert(0, nowTick);
+        }
+
+        public override List<string> getUsedPairs()
+        {
+            return new List<string> { instrument };
         }
     }
 }

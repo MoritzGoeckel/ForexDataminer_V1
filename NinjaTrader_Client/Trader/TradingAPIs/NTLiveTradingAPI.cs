@@ -35,6 +35,11 @@ namespace NinjaTrader_Client.Trader.TradingAPIs
             api.tickdataArrived += api_tickdataArrived;
         }
 
+        public NinjaTraderAPI getAPI()
+        {
+            return api;
+        }
+
         public int getPositionSize()
         {
             return this.positionSize;

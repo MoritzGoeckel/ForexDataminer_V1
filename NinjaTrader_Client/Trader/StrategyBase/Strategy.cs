@@ -27,7 +27,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             return visualizationData.Copy();
         }
 
-        public abstract void doTick(string instrument);
+        public abstract void doTick();
 
         public abstract string getName();
         public abstract Dictionary<string, string> getParameters();
@@ -39,5 +39,7 @@ namespace NinjaTrader_Client.Trader.Strategies
         }
 
         public abstract Strategy copy();
+
+        public abstract List<string> getUsedPairs();
     }
 }

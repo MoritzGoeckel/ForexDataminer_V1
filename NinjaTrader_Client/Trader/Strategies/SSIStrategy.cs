@@ -16,12 +16,16 @@ namespace NinjaTrader_Client.Trader.Strategies
 
         private WalkerIndicator tradingTime;
 
-        public SSIStrategy(Database database, double thresholdOpen, double thresholdClose, bool followCrowd)
+        private string instrument;
+        
+        public SSIStrategy(Database database, string instrument, double thresholdOpen, double thresholdClose, bool followCrowd)
             : base(database)
         {
             this.thresholdOpen = thresholdOpen;
             this.thresholdClose = thresholdClose;
             this.followCrowd = followCrowd;
+
+            this.instrument = instrument;
 
             this.tradingTime = new TradingTimeIndicator();
 
@@ -36,6 +40,8 @@ namespace NinjaTrader_Client.Trader.Strategies
             thresholdOpen = Double.Parse(parameters["thresholdOpen"]);
             thresholdClose = Double.Parse(parameters["thresholdClose"]);
             followCrowd = Boolean.Parse(parameters["followCrowd"]);
+
+            instrument = parameters["instrument"];
             
             if (thresholdClose >= thresholdOpen)
                 throw new Exception("thresholdClose has to be < thresholdOpen");
@@ -45,7 +51,7 @@ namespace NinjaTrader_Client.Trader.Strategies
 
         public override Strategy copy()
         {
-            return new SSIStrategy(database, thresholdOpen, thresholdClose, followCrowd);
+            return new SSIStrategy(database, instrument, thresholdOpen, thresholdClose, followCrowd);
         }
 
         public override string getName()
@@ -60,6 +66,8 @@ namespace NinjaTrader_Client.Trader.Strategies
             parameters.Add("thresholdClose", thresholdClose.ToString());
             parameters.Add("followCrowd", followCrowd.ToString());
 
+            parameters.Add("instrument", instrument);
+            
             parameters.Add("name", getName());
 
             return parameters;
@@ -90,7 +98,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             ssi_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("ssi", BacktestVisualizationDataComponent.VisualizationType.OneToMinusOne, 1));
         }
 
-        public override void doTick(string instrument)
+        public override void doTick()
         {
             price_vi.value = api.getAvgPrice(instrument);
 
@@ -164,6 +172,11 @@ namespace NinjaTrader_Client.Trader.Strategies
                     if(ssi > -thresholdClose)
                         api.closePositions(instrument);
                 }
+        }
+
+        public override List<string> getUsedPairs()
+        {
+            return new List<string> { instrument };
         }
     }
 }

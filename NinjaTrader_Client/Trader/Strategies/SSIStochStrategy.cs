@@ -22,9 +22,11 @@ namespace NinjaTrader_Client.Trader.Strategies
 
         private int hitTimeout = 0, hitTp = 0, hitSl = 0;
 
+        private string instrument;
+
         int version = 0;
 
-        public SSIStochStrategy(Database database, double takeprofitPercent, double stoplossPercent, double threshold, int timeout, int stochTimeframe, bool againstCrowd)
+        public SSIStochStrategy(Database database, string instrument, double takeprofitPercent, double stoplossPercent, double threshold, int timeout, int stochTimeframe, bool againstCrowd)
             : base(database)
         {
             this.takeprofitPercent = takeprofitPercent;
@@ -33,6 +35,8 @@ namespace NinjaTrader_Client.Trader.Strategies
             this.stochTimeframe = stochTimeframe;
             this.stoplossPercent = stoplossPercent;
             this.againstCrowd = againstCrowd;
+
+            this.instrument = instrument;
 
             stochIndicator = new StochIndicator(stochTimeframe);
             tradingTime = new TradingTimeIndicator();
@@ -49,6 +53,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             takeprofitPercent = Double.Parse(parameters["tp"]);
             stoplossPercent = Double.Parse(parameters["sl"]);
             againstCrowd = Boolean.Parse(parameters["againstCrowd"]);
+            instrument = parameters["instrument"];
 
             stochIndicator = new StochIndicator(stochTimeframe);
 
@@ -57,7 +62,7 @@ namespace NinjaTrader_Client.Trader.Strategies
 
         public override Strategy copy()
         {
-            return new SSIStochStrategy(database, takeprofitPercent, stoplossPercent, threshold, timeout, stochTimeframe, againstCrowd);
+            return new SSIStochStrategy(database, instrument, takeprofitPercent, stoplossPercent, threshold, timeout, stochTimeframe, againstCrowd);
         }
 
         public override string getName()
@@ -75,6 +80,8 @@ namespace NinjaTrader_Client.Trader.Strategies
             parameters.Add("sl", stoplossPercent.ToString());
             parameters.Add("againstCrowd", againstCrowd.ToString());
 
+            parameters.Add("instrument", instrument);
+            
             parameters.Add("name", getName());
 
             return parameters;
@@ -106,7 +113,7 @@ namespace NinjaTrader_Client.Trader.Strategies
             //tp_vi = visualizationData.addComponent(new BacktestVisualizationDataComponent("tp", BacktestVisualizationDataComponent.VisualizationType.OnChart, 0));
         }
 
-        public override void doTick(string instrument)
+        public override void doTick()
         {
             price_vi.value = api.getAvgPrice(instrument);
 
@@ -221,6 +228,11 @@ namespace NinjaTrader_Client.Trader.Strategies
                     hitSl++;
                 }
             }
+        }
+
+        public override List<string> getUsedPairs()
+        {
+            return new List<string> { instrument };
         }
     }
 }

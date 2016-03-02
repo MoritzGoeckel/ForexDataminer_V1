@@ -23,9 +23,13 @@ namespace NinjaTrader_Client.Trader.Strategies
         private WalkerIndicator stochIndicator;
         private WalkerIndicator tradingTime;
 
-        public StochStrategy(Database database, double percentStoploss, double percentTakeprofit, int stochTimeframe, double threshold, bool followTrend)
+        private string instrument;
+        
+        public StochStrategy(Database database, string instrument, double percentStoploss, double percentTakeprofit, int stochTimeframe, double threshold, bool followTrend)
             : base(database)
         {
+            this.instrument = instrument;
+
             this.percentStoploss = percentStoploss;
             this.percentTakeprofit = percentTakeprofit;
             this.stochTimeframe = stochTimeframe;
@@ -47,6 +51,8 @@ namespace NinjaTrader_Client.Trader.Strategies
             followTrend = Boolean.Parse(parameters["followTrend"]);
             threshold = Double.Parse(parameters["threshold"]);
 
+            instrument = parameters["instrument"];
+            
             stochIndicator = new StochIndicator(stochTimeframe);
 
             setupVisualizationData();
@@ -69,7 +75,7 @@ namespace NinjaTrader_Client.Trader.Strategies
 
         public override Strategy copy()
         {
-            return new StochStrategy(database, percentStoploss, percentTakeprofit, stochTimeframe, threshold, followTrend);
+            return new StochStrategy(database, instrument, percentStoploss, percentTakeprofit, stochTimeframe, threshold, followTrend);
         }
 
         public override string getName()
@@ -85,6 +91,8 @@ namespace NinjaTrader_Client.Trader.Strategies
             parameters.Add("time", stochTimeframe.ToString());
             parameters.Add("threshold", threshold.ToString());
             parameters.Add("followTrend", followTrend.ToString());
+
+            parameters.Add("instrument", instrument);
 
             parameters.Add("name", getName());
 
@@ -102,7 +110,7 @@ namespace NinjaTrader_Client.Trader.Strategies
 
         private List<TimeValueData> old_Stoch = new List<TimeValueData>();
 
-        public override void doTick(string instrument)
+        public override void doTick()
         {
             Tickdata nowTick = new Tickdata(api.getNow(), 0, api.getBid(instrument), api.getAsk(instrument));
             price_vi.value = nowTick.getAvg();
@@ -176,6 +184,11 @@ namespace NinjaTrader_Client.Trader.Strategies
             }
 
             old_Stoch.Insert(0, stochTick);
+        }
+
+        public override List<string> getUsedPairs()
+        {
+            return new List<string> { instrument };
         }
     }
 }

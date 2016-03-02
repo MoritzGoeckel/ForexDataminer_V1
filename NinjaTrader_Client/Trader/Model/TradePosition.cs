@@ -8,10 +8,12 @@ namespace NinjaTrader_Client.Trader.Model
 {
     public class TradePosition
     {
-        public TradePosition(PositionType type, long timestampOpen, double priceOpen, long timestampClose, double priceClose)
+        public TradePosition(PositionType type, long timestampOpen, double priceOpen, long timestampClose, double priceClose, string instrument)
         {
             this.timestampOpen = timestampOpen;
             this.timestampClose = timestampClose;
+
+            this.instrument = instrument;
 
             this.priceOpen = priceOpen;
             this.priceClose = priceClose;
@@ -19,12 +21,12 @@ namespace NinjaTrader_Client.Trader.Model
             this.type = type;
         }
 
-        public TradePosition(long timestampOpen, double priceOpen, PositionType type, string pair)
+        public TradePosition(long timestampOpen, double priceOpen, PositionType type, string instrument)
         {
+            this.instrument = instrument;
             this.timestampOpen = timestampOpen;
             this.priceOpen = priceOpen;
             this.type = type;
-            this.pair = pair;
         }
 
         public double getDifference()
@@ -56,8 +58,7 @@ namespace NinjaTrader_Client.Trader.Model
         public double priceOpen;
         public double priceClose = -1;
         public PositionType type;
-
-        public string pair;
+        public string instrument;
 
         public enum PositionType{
             longPosition, shortPosition

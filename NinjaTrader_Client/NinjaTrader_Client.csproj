@@ -184,34 +184,40 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Trader\Analysis\AnalyseRawTestDataForm.cs">
+    <Compile Include="Trader\Forms\AutopilotTradingForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Trader\Analysis\AnalyseRawTestDataForm.Designer.cs">
+    <Compile Include="Trader\Forms\AutopilotTradingForm.Designer.cs">
+      <DependentUpon>AutopilotTradingForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Trader\Forms\AnalyseRawTestDataForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Trader\Forms\AnalyseRawTestDataForm.Designer.cs">
       <DependentUpon>AnalyseRawTestDataForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Trader\Analysis\CorrelationAnalysisForm.cs">
+    <Compile Include="Trader\Forms\CorrelationAnalysisForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Trader\Analysis\CorrelationAnalysisForm.Designer.cs">
+    <Compile Include="Trader\Forms\CorrelationAnalysisForm.Designer.cs">
       <DependentUpon>CorrelationAnalysisForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Trader\Analysis\DataDensityForm.cs">
+    <Compile Include="Trader\Forms\DataDensityForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Trader\Analysis\DataDensityForm.Designer.cs">
+    <Compile Include="Trader\Forms\DataDensityForm.Designer.cs">
       <DependentUpon>DataDensityForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Trader\Analysis\DataminingForm.cs">
+    <Compile Include="Trader\Datamining\DataminingForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Trader\Analysis\DataminingForm.Designer.cs">
+    <Compile Include="Trader\Datamining\DataminingForm.Designer.cs">
       <DependentUpon>DataminingForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Trader\Analysis\TradeHistoryChartForm.cs">
+    <Compile Include="Trader\Forms\TradeHistoryChartForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Trader\Analysis\TradeHistoryChartForm.Designer.cs">
+    <Compile Include="Trader\Forms\TradeHistoryChartForm.Designer.cs">
       <DependentUpon>TradeHistoryChartForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Trader\BacktestBase\BacktestForm.cs">
@@ -220,34 +226,34 @@
     <Compile Include="Trader\BacktestBase\BacktestForm.Designer.cs">
       <DependentUpon>BacktestForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ChartingForm.cs">
+    <Compile Include="Trader\Forms\ChartingForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ChartingForm.Designer.cs">
+    <Compile Include="Trader\Forms\ChartingForm.Designer.cs">
       <DependentUpon>ChartingForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ExportImportForm.cs">
+    <Compile Include="Trader\Forms\ExportImportForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ExportImportForm.Designer.cs">
+    <Compile Include="Trader\Forms\ExportImportForm.Designer.cs">
       <DependentUpon>ExportImportForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="LiveTradingForm.cs">
+    <Compile Include="Trader\Forms\LiveTradingForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="LiveTradingForm.Designer.cs">
+    <Compile Include="Trader\Forms\LiveTradingForm.Designer.cs">
       <DependentUpon>LiveTradingForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MainForm.cs">
+    <Compile Include="Trader\Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Include="Trader\Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Trader\Analysis\DataDensityPerDayForm.cs">
+    <Compile Include="Trader\Forms\DataDensityPerDayForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Trader\Analysis\DataDensityPerDayForm.Designer.cs">
+    <Compile Include="Trader\Forms\DataDensityPerDayForm.Designer.cs">
       <DependentUpon>DataDensityPerDayForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Trader\BacktestBase\Backtester.cs" />
@@ -297,10 +303,8 @@
     <Compile Include="Trader\Model\TradePosition.cs" />
     <Compile Include="Trader\StrategyBase\Strategy.cs" />
     <Compile Include="Trader\Model\Config.cs" />
-    <Compile Include="Trader\Main.cs" />
     <Compile Include="Trader\Model\TimeValueData.cs" />
     <Compile Include="Trader\Model\Tickdata.cs" />
-    <Compile Include="Trader\Model\UIData.cs" />
     <Compile Include="Trader\Databases\MongoFacade.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -314,34 +318,37 @@
     <Compile Include="Trader\Utils\ProgressDict.cs" />
     <Compile Include="Trader\Utils\StringCompressor.cs" />
     <Compile Include="Trader\Utils\Timestamp.cs" />
-    <EmbeddedResource Include="Trader\Analysis\AnalyseRawTestDataForm.resx">
+    <EmbeddedResource Include="Trader\Forms\AutopilotTradingForm.resx">
+      <DependentUpon>AutopilotTradingForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Trader\Forms\AnalyseRawTestDataForm.resx">
       <DependentUpon>AnalyseRawTestDataForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Trader\Analysis\CorrelationAnalysisForm.resx">
+    <EmbeddedResource Include="Trader\Forms\CorrelationAnalysisForm.resx">
       <DependentUpon>CorrelationAnalysisForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Trader\Analysis\DataDensityForm.resx">
+    <EmbeddedResource Include="Trader\Forms\DataDensityForm.resx">
       <DependentUpon>DataDensityForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Trader\Analysis\DataminingForm.resx">
+    <EmbeddedResource Include="Trader\Datamining\DataminingForm.resx">
       <DependentUpon>DataminingForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Trader\Analysis\TradeHistoryChartForm.resx">
+    <EmbeddedResource Include="Trader\Forms\TradeHistoryChartForm.resx">
       <DependentUpon>TradeHistoryChartForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Trader\BacktestBase\BacktestForm.resx">
       <DependentUpon>BacktestForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ChartingForm.resx">
+    <EmbeddedResource Include="Trader\Forms\ChartingForm.resx">
       <DependentUpon>ChartingForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ExportImportForm.resx">
+    <EmbeddedResource Include="Trader\Forms\ExportImportForm.resx">
       <DependentUpon>ExportImportForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LiveTradingForm.resx">
+    <EmbeddedResource Include="Trader\Forms\LiveTradingForm.resx">
       <DependentUpon>LiveTradingForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="Trader\Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -353,7 +360,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Trader\Analysis\DataDensityPerDayForm.resx">
+    <EmbeddedResource Include="Trader\Forms\DataDensityPerDayForm.resx">
       <DependentUpon>DataDensityPerDayForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Trader\ShowImageForm.resx">

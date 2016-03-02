@@ -23,6 +23,7 @@ namespace NinjaTrader_Client.Trader.Datamining
         //Bound to an instrument
         void addIndicator(WalkerIndicator indicator, string instrument, string fieldId);
         string getOutcomeIndicatorSampling(double min, double max, int steps, string indicatorId, int outcomeTimeframeSeconds, string instument = null);
+        string getSuccessRate(int outcomeTimeframeSeconds, string indicator, double min, double max, string instrument, double tpPercent, double slPercent, bool buy);
 
         //Not yet implemented
         void getCorrelation(string indicatorId, int outcomeTimeframe, CorrelationCondition condition);

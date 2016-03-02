@@ -54,7 +54,7 @@ namespace NinjaTrader_Client.Trader.BacktestBase
             if (positions.Count < 1000)
             {
                 foreach (TradePosition pos in positions)
-                    output.Append((pos.type == TradePosition.PositionType.longPosition ? "L" : "S") + ":" + pos.timestampOpen + ":" + pos.priceOpen + ":" + pos.timestampClose + ":" + pos.priceClose + "|");
+                    output.Append((pos.type == TradePosition.PositionType.longPosition ? "L" : "S") + ":" + pos.timestampOpen + ":" + pos.priceOpen + ":" + pos.timestampClose + ":" + pos.priceClose + ":" + pos.instrument + "|");
             }
             else
                 output.Append("More than 1000");
@@ -74,7 +74,7 @@ namespace NinjaTrader_Client.Trader.BacktestBase
                 try
                 {
                     string[] posArray = posString.Split(':');
-                    positionList.Add(new TradePosition((posArray[0] == "L" ? TradePosition.PositionType.longPosition : TradePosition.PositionType.shortPosition), long.Parse(posArray[1]), double.Parse(posArray[2]), long.Parse(posArray[3]), double.Parse(posArray[4])));
+                    positionList.Add(new TradePosition((posArray[0] == "L" ? TradePosition.PositionType.longPosition : TradePosition.PositionType.shortPosition), long.Parse(posArray[1]), double.Parse(posArray[2]), long.Parse(posArray[3]), double.Parse(posArray[4]), posArray[5]));
                 }
                 catch (Exception){ }
             }
@@ -157,7 +157,7 @@ namespace NinjaTrader_Client.Trader.BacktestBase
             return parameterList;
         }
 
-        public static void getStrategyFromString(Database database, string parameters, ref Strategy strategy, ref string instrument)
+        public static void getStrategyFromString(Database database, string parameters, ref Strategy strategy)
         {
             Dictionary<string, string> parameterDict = convertStringCodedToParameters(parameters);
 
@@ -181,11 +181,6 @@ namespace NinjaTrader_Client.Trader.BacktestBase
 
             if (strategy == null)
                 throw new Exception("Strategy not deserializable: " + name);
-
-            instrument = null;
-
-            if(parameterDict.ContainsKey("pair"))
-                instrument = parameterDict["pair"];
         }
 
         public static Dictionary<string, string> convertStringCodedToParameters(string str)

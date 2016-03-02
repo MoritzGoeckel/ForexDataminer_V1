@@ -23,7 +23,7 @@ namespace NinjaTrader_Client.Trader
 
         private void StrategyStringGenerator_Load(object sender, EventArgs e)
         {
-            Strategy strat = new SSIStrategy(null, 0.25, 0.25, false);
+            Strategy strat = new SSIStrategy(null, "EURUSD", 0.25, 0.25, false);
             textBox1.Text = BacktestFormatter.getDictStringCoded(strat.getParameters());
         }
 

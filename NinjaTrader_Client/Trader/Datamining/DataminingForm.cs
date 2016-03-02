@@ -152,5 +152,69 @@ namespace NinjaTrader_Client.Trader.Analysis
             if (MessageBox.Show("Echt?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
                 dataminingDb.deleteAll();
         }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            //Stoch12H 60m Outcome
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 12 + "_last", 98, 100, "EURUSD", 0.20, 0.20, false) + Environment.NewLine + Environment.NewLine;
+
+            //Stoch6H 60m Outcome
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 6 + "_last", 96, 100, "EURUSD", 0.20, 0.20, false) + Environment.NewLine + Environment.NewLine;
+
+            //Stoch3H 60m Outcome
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 3 + "_last", 98, 100, "EURUSD", 0.20, 0.20, false) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 3 + "_last", 52, 56, "EURUSD", 0.20, 0.20, true) + Environment.NewLine + Environment.NewLine;
+
+            //MA9H-MA12H 60m Outcome
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "MA9-MA12", 0.26, 0.32, "EURUSD", 0.20, 0.20, false) + Environment.NewLine + Environment.NewLine;
+
+            /*textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 12 + "_last", 98, 100, "EURUSD", 0.11, 0.11, false) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 12 + "_last", 98, 100, "EURUSD", 0.15, 0.12, false) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 12 + "_last", 98, 100, "EURUSD", 0.20, 0.12, false) + Environment.NewLine + Environment.NewLine;
+
+            //Stoch6H 60m Outcome
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 6 + "_last", 96, 100, "EURUSD", 0.10, 0.15, false) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 6 + "_last", 96, 100, "EURUSD", 0.11, 0.11, false) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 6 + "_last", 96, 100, "EURUSD", 0.15, 0.12, false) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 6 + "_last", 96, 100, "EURUSD", 0.20, 0.12, false) + Environment.NewLine + Environment.NewLine;
+
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 6 + "_last", 58, 62, "EURUSD", 0.11, 0.10, true) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 6 + "_last", 58, 62, "EURUSD", 0.11, 0.11, true) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 6 + "_last", 58, 62, "EURUSD", 0.15, 0.12, true) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 6 + "_last", 58, 62, "EURUSD", 0.20, 0.12, true) + Environment.NewLine + Environment.NewLine;
+
+            //Stoch3H 60m Outcome
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 3 + "_last", 98, 100, "EURUSD", 0.10, 0.15, false) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 3 + "_last", 98, 100, "EURUSD", 0.11, 0.11, false) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 3 + "_last", 98, 100, "EURUSD", 0.15, 0.12, false) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 3 + "_last", 98, 100, "EURUSD", 0.20, 0.12, false) + Environment.NewLine + Environment.NewLine;
+
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 3 + "_last", 52, 56, "EURUSD", 0.11, 0.10, true) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 3 + "_last", 52, 56, "EURUSD", 0.11, 0.11, true) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 3 + "_last", 52, 56, "EURUSD", 0.15, 0.12, true) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "Stoch_" + 1000 * 60 * 60 * 3 + "_last", 52, 56, "EURUSD", 0.20, 0.12, true) + Environment.NewLine + Environment.NewLine;
+
+            //Stoch6H 30m Outcome
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 30, "Stoch_" + 1000 * 60 * 60 * 6 + "_last", 98, 100, "EURUSD", 0.10, 0.15, false) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 30, "Stoch_" + 1000 * 60 * 60 * 6 + "_last", 98, 100, "EURUSD", 0.11, 0.11, false) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 30, "Stoch_" + 1000 * 60 * 60 * 6 + "_last", 98, 100, "EURUSD", 0.15, 0.12, false) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 30, "Stoch_" + 1000 * 60 * 60 * 6 + "_last", 98, 100, "EURUSD", 0.20, 0.12, false) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 30, "Stoch_" + 1000 * 60 * 60 * 6 + "_last", 98, 100, "EURUSD", 0.10, 0.10, false) + Environment.NewLine + Environment.NewLine;
+
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 30, "Stoch_" + 1000 * 60 * 60 * 6 + "_last", 56, 62, "EURUSD", 0.11, 0.10, true) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 30, "Stoch_" + 1000 * 60 * 60 * 6 + "_last", 56, 62, "EURUSD", 0.11, 0.11, true) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 30, "Stoch_" + 1000 * 60 * 60 * 6 + "_last", 56, 62, "EURUSD", 0.15, 0.12, true) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 30, "Stoch_" + 1000 * 60 * 60 * 6 + "_last", 56, 62, "EURUSD", 0.20, 0.12, true) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 30, "Stoch_" + 1000 * 60 * 60 * 6 + "_last", 56, 62, "EURUSD", 0.10, 0.10, true) + Environment.NewLine + Environment.NewLine;
+
+            //MA9H-MA12H 60m Outcome
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "MA9-MA12", 0.26, 0.32, "EURUSD", 0.16, 0.16, false) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "MA9-MA12", 0.26, 0.32, "EURUSD", 0.16, 0.11, false) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "MA9-MA12", 0.26, 0.32, "EURUSD", 0.15, 0.12, false) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "MA9-MA12", 0.26, 0.32, "EURUSD", 0.20, 0.12, false) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "MA9-MA12", 0.26, 0.32, "EURUSD", 0.10, 0.10, false) + Environment.NewLine + Environment.NewLine;
+            textBox1.Text += dataminingDb.getSuccessRate(60 * 60, "MA9-MA12", 0.26, 0.32, "EURUSD", 0.12, 0.12, false) + Environment.NewLine + Environment.NewLine;*/
+
+        }
     }
 }

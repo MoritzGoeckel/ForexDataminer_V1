@@ -55,9 +55,8 @@ namespace NinjaTrader_Client.Trader.Backtests
             }
         }
 
-        protected override void getNextStrategyToTest(ref Strategy strategy, ref string instrument, ref long resolutionInSeconds, ref bool continueBacktesting)
+        protected override void getNextStrategyToTest(ref Strategy strategy, ref long resolutionInSeconds, ref bool continueBacktesting)
         {
-            instrument = all[z.Next(0, all.Count)];
             continueBacktesting = true;
 
             resolutionInSeconds = 10; //Normalerweise 10er res, bei SSI 60er res
@@ -71,6 +70,7 @@ namespace NinjaTrader_Client.Trader.Backtests
 
             if (r == 1)
                 strategy = new StochStrategy(database,
+                    all[z.Next(0, all.Count)],
                     sl,
                     tp,
                     generateInt(1000 * 60 * 30, 1000 * 60 * 60 * 12, 1000 * 60 * 30), //Stochtimeframe
@@ -81,18 +81,18 @@ namespace NinjaTrader_Client.Trader.Backtests
             else if (r == 2)
             {
                 strategy = new SSIStochStrategy(database,
+                    majors[z.Next(0, majors.Count)],
                     tp, //TP
                     sl, //SL
                     generateDouble(0.00, 0.3, 0.05), //Threshold
                     generateInt(1000 * 60 * 30, 1000 * 60 * 60 * 10, 1000 * 60 * 30), //To
                     generateInt(1000 * 60 * 60 * 1, 1000 * 60 * 60 * 24, 1000 * 60 * 20), //StochTime
                     generateBool()); //againstCrowd
-
-                instrument = majors[z.Next(0, majors.Count)];
             }
 
             else if (r == 3)
                 strategy = new MomentumStrategy(database,
+                    majors[z.Next(0, majors.Count)],
                     generateInt(1000 * 60 * 1, 1000 * 60 * 60, 1000 * 60 * 1), //Pre time
                     generateInt(1000 * 60 * 1, 1000 * 60 * 60, 1000 * 60 * 1), //Post time
                     generateDouble(0.01, 0.7, 0.01), //Threshold
@@ -105,13 +105,12 @@ namespace NinjaTrader_Client.Trader.Backtests
                 double open = generateDouble(0.0, 0.6, 0.05);
 
                 strategy = new SSIStrategy(database, 
+                    majors[z.Next(0, majors.Count)],
                     open,  //Open
                     open - generateDouble(0.1, 0.8, 0.05), //Close
                     generateBool());
 
                 resolutionInSeconds = 240;
-
-                instrument = majors[z.Next(0, majors.Count)];
             }
         }
 

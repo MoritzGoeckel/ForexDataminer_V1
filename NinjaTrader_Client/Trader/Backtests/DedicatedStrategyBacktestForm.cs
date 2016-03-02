@@ -32,7 +32,7 @@ namespace NinjaTrader_Client.Trader.Backtests
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        protected override void getNextStrategyToTest(ref Strategy strategy, ref string instrument, ref long resolutionInSeconds, ref bool continueBacktesting)
+        protected override void getNextStrategyToTest(ref Strategy strategy, ref long resolutionInSeconds, ref bool continueBacktesting)
         {
             
             resolutionInSeconds = 120; //??? wirklich ???
@@ -45,8 +45,8 @@ namespace NinjaTrader_Client.Trader.Backtests
                 return;
             }
 
-            BacktestFormatter.getStrategyFromString(database, parameterList[nextStratId], ref strategy, ref instrument);
-            continueBacktesting = (strategy != null) && instrument != null;
+            BacktestFormatter.getStrategyFromString(database, parameterList[nextStratId], ref strategy);
+            continueBacktesting = (strategy != null);
 
             nextStratId++;
         }
